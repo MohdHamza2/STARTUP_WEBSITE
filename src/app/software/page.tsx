@@ -38,7 +38,7 @@ export default function SoftwarePage() {
         title="Software Solutions"
         lead={{ first: "You have the idea.", second: "We build the system." }}
         body="GENRA builds digital products, software systems and automation for ideas, startups and businesses."
-        cta={{ label: cta.software, href: "/contact" }}
+        cta={{ label: cta.software, href: "#start" }}
       />
       <ServiceCatalog />
       <Process />

@@ -24,7 +24,23 @@ export default defineConfig({
    */
   projects: [
     { name: "desktop", use: { ...devices["Desktop Chrome"] } },
-    { name: "tablet", use: { ...devices["iPad (gen 7)"] } },
+    {
+      /**
+       * Tablet viewport on Chromium rather than the built-in iPad device, which
+       * defaults to WebKit and would require a second browser download for what
+       * is a LAYOUT breakpoint check. Touch is emulated so touch-target rules
+       * are still exercised.
+       *
+       * If real Safari coverage is wanted later, run
+       * `npx playwright install webkit` and swap in devices["iPad (gen 7)"].
+       */
+      name: "tablet",
+      use: {
+        ...devices["Desktop Chrome"],
+        viewport: { width: 820, height: 1180 },
+        hasTouch: true,
+      },
+    },
     { name: "mobile", use: { ...devices["Pixel 7"] } },
   ],
 

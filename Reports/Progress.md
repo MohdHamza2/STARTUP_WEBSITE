@@ -83,6 +83,81 @@ Known issues: `leads.email` nullability unresolved (D1)
 
 # CHANGE LOG
 
+## 2026-09-18 (5)
+
+### Agent
+
+FRONTEND
+
+### Feature
+
+Phase 13 — recruiting and project forms, plus the Playwright E2E suite
+
+### Work Completed
+
+- `ResumeUpload` — drag-and-drop layered over a real `<input type="file">`, so
+  keyboard and assistive-technology users keep the native picker. PDF only,
+  10 MB. Client checks are for feedback; the server re-validates.
+- `RecruitingForm` — sections per DOC5 §5.7, name and email required, everything
+  else optional. Consent states plainly that submitting does not guarantee
+  employment or placement.
+- `ProjectForm` — dropdown sourced from `content/services.ts` so it cannot drift
+  from the catalog. The conditional "Other" field is UNMOUNTED when not
+  selected, not hidden, because a hidden input still submits.
+- Forms mounted inline at their conversion points: the project form in the
+  homepage and `/software` final CTA (§30 asks for "Start a Project → project
+  form" with no extra click), the recruiting form at `/recruiting#apply`.
+- E2E suite: `navigation.spec.ts`, `hero.spec.ts`, `forms.spec.ts`.
+
+### Verification
+
+- [x] Code reviewed
+- [x] Build passed — build, lint, typecheck clean
+- [x] Tests passed — **30 unit + 84 E2E across desktop, tablet and mobile**
+- [x] Browser tested
+- [x] Responsive tested — all three viewports in CI, no horizontal overflow
+- [ ] API tested — still NOT verified end to end (no credentials, D4)
+- [ ] Database verified — still NOT verified
+- [x] Regression tested — full suite green after every fix
+
+E2E now covers the §66–§68 requirements directly: all six hero panels route
+correctly, exactly one panel is ever active, a settled panel clicks through,
+hover produces no transform/glow/navigation, Enter activates a focused panel,
+reduced motion yields the full static hero, the dropdown holds exactly the
+approved catalog, Other appears and its stale value is removed, and the resume
+input rejects non-PDF and oversized files.
+
+### Bugs Found
+
+1. **E2E ran against the dev server, not a production build.** 12 of 29 tests
+   failed with `main h1` = 0 and a non-interactive menu — hydration had not
+   completed because Next was compiling routes on demand under three parallel
+   workers. Root cause: `reuseExistingServer` picked up the dev server already
+   on port 3000. Stopping it dropped failures from 12 to 3. Not an app defect.
+
+2. **Two test bugs, not app bugs.** `getByRole("alert")` matched both the form
+   error and Next's route announcer, and the contact radio is `sr-only` inside
+   its label so Playwright could not click the input directly. Fixed by scoping
+   the alert query to the form and clicking the label, which is what a real user
+   does. The app behaviour was correct in both cases.
+
+3. **Tablet project could not run at all.** `devices["iPad (gen 7)"]` defaults to
+   WebKit, which was not installed — it reported as failures rather than a
+   missing browser. Since the requirement is viewport coverage, tablet now runs
+   on Chromium at an iPad viewport with touch emulated, with a note on how to
+   add real WebKit later.
+
+### Commit
+
+`<pending>`
+
+### Remaining Work
+
+Performance pass and final visual QA. Then end-to-end verification of the submit
+path, which remains blocked on credentials.
+
+---
+
 ## 2026-09-18 (4)
 
 ### Agent

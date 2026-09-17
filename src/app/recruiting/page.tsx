@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { PageHero } from "@/components/sections/PageHero";
 import { Reveal } from "@/components/ui/Reveal";
+import { RecruitingForm } from "@/components/forms/RecruitingForm";
 import {
   recruitingAudience,
   recruitingProcess,
@@ -47,7 +47,7 @@ export default function RecruitingPage() {
           second: "Focus more on the opportunity.",
         }}
         body="You tell us the roles you want and share your profile. GENRA works through the applications from the information you provide."
-        cta={{ label: cta.recruiting, href: "/contact" }}
+        cta={{ label: cta.recruiting, href: "#apply" }}
       />
 
       {/* Who it's for */}
@@ -154,12 +154,13 @@ export default function RecruitingPage() {
         </div>
       </section>
 
-      {/* CTA */}
+      {/* Form — the conversion point, inline rather than behind another click */}
       <section
+        id="apply"
         aria-labelledby="recruiting-cta-heading"
         className="rule-dark bg-obsidian"
       >
-        <div className="container-wide py-40 sm:py-52">
+        <div className="container-wide py-32 sm:py-40">
           <Reveal>
             <h2
               id="recruiting-cta-heading"
@@ -167,17 +168,16 @@ export default function RecruitingPage() {
             >
               Start with your <span className="text-mint">profile.</span>
             </h2>
-          </Reveal>
-          <Reveal delay={0.1}>
             <p className="mt-10 max-w-lg text-body-lg text-silver">
-              Share what you have. The team reviews every profile that comes in.
+              Name and email are all that&apos;s required. Everything else helps,
+              but you can leave it out.
             </p>
-            <Link
-              href="/contact"
-              className="mt-14 inline-flex items-center rounded-pill bg-mint px-8 py-4 text-[0.9375rem] font-semibold text-obsidian transition-colors duration-[var(--duration-fast)] hover:bg-mint-deep"
-            >
-              {cta.recruiting}
-            </Link>
+          </Reveal>
+
+          <Reveal delay={0.1}>
+            <div className="mt-16 max-w-3xl">
+              <RecruitingForm />
+            </div>
           </Reveal>
         </div>
       </section>
