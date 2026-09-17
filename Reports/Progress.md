@@ -83,6 +83,120 @@ Known issues: `leads.email` nullability unresolved (D1)
 
 # CHANGE LOG
 
+## 2026-09-18 (3)
+
+### Agent
+
+FRONTEND
+
+### Feature
+
+Phase 5 — homepage sections 3–12
+
+### Work Completed
+
+Built the remaining homepage sections in exactly the order prompt §6 specifies.
+Every one is typography-led: no card grids, no icon rows, no statistics, no
+stock imagery, per §6, §50 and §52.
+
+- `SplitSection` (§13) — "One company / Two directions" as a full-bleed editorial
+  split divided by a single hairline. Not a two-card grid. The divider is
+  horizontal on mobile and vertical from md up, so the idea survives the
+  breakpoint.
+- `WhatWeBuild` (§14) — the nine-service catalog as a refined index: number,
+  title, supporting line per row. The number column carries the rhythm icons
+  would otherwise have to. Service 09 routes to `/recruiting`, not `/software`.
+- `Process` (§19) — five steps marked along one continuous journey line,
+  horizontal on desktop and vertical on mobile. No icon cards.
+- `Capabilities` (§21) — six capability categories as text on a hairline grid.
+  No technology logo wall. No framework is named.
+- `SelectedWork` (§22) — wired to `content/projects.ts` and renders NOTHING
+  while that array is empty, which it is. See Bugs/Notes below.
+- `WorkThatMoves` (§23) — brand statement, typography-led, one mint hairline.
+- `RecruitingIntro` (§24) — CTA is "Explore Recruiting", never "Start a Project".
+- `AboutPreview` (§6 item 11) — no history, team or founder claims.
+- `FinalCTA` (§30) — "Let's build something." with the Start a Project CTA.
+- `Reveal` — shared scroll-reveal primitive.
+
+### Files Changed
+
+- Added: `src/components/ui/Reveal.tsx`
+- Added: `src/components/sections/{SplitSection,WhatWeBuild,Process,Capabilities,SelectedWork,WorkThatMoves,RecruitingIntro,AboutPreview,FinalCTA}.tsx`
+- Added: `src/content/projects.ts`
+- Modified: `src/app/page.tsx`, `src/app/layout.tsx`, `src/components/sections/BrandStatement.tsx`
+
+### Verification
+
+- [x] Code reviewed
+- [x] Build passed — build, lint and typecheck clean
+- [ ] Tests passed — automated specs are Phase 13
+- [x] Browser tested
+- [x] Responsive tested — desktop and 375x812, no horizontal overflow
+- [ ] API tested — N/A
+- [ ] Database verified — N/A
+- [x] Regression tested — hero, header, menu re-checked after sections mounted
+
+Browser verification:
+- Heading hierarchy asserted: exactly one `h1`, section `h2`s, nested `h3`s
+- All nine sections render in §6 order
+- Reveal state asserted per section at several scroll positions
+
+### Bugs Found
+
+1. **Scroll reveals could leave content permanently invisible.** A section the
+   visitor jumped past — scroll restoration on reload, back navigation, an
+   anchor link — stayed at `opacity: 0` with no way to recover. Reproduced by
+   jumping to 7x viewport height: "Two directions" measured `opacity: 0` while
+   sitting above the viewport.
+   Root cause: IntersectionObserver, and therefore Motion's `whileInView`, only
+   fires when the intersection STATE changes. A jump moves an element from below
+   the viewport to above it between two frames; both states are "not
+   intersecting", so no callback fires at all.
+   First fix attempt was insufficient — a hand-rolled observer that checked
+   position inside its callback, which for this case never ran a second time.
+   Re-tested, still hidden. Final fix: an rAF-throttled position check on scroll
+   and resize, which cannot be skipped regardless of how the visitor arrived.
+   Verified: the jumped-past section now reveals, and sections still below the
+   fold correctly stay hidden.
+   Also added a `<noscript>` rule forcing `[data-reveal]` visible, so content
+   never depends on the animation system at all (DOC5 §5.34).
+
+2. **Process journey line was invisible and the markup was invalid.** The line
+   sat at `z-index: -10` inside an `<ol>` whose `relative` does not create a
+   stacking context, so it painted behind the section background. The same
+   element was a `<span>` as a direct child of `<ol>`, which is invalid — only
+   `<li>` is permitted, and the list reported 6 children for 5 steps.
+   Fix: moved the line onto a wrapper around the `<ol>` and dropped the negative
+   z-index; the `<ol>` is positioned and later in DOM order, so steps paint above
+   it without any z-index. Verified: 5 children, all `<li>`, line visible.
+
+3. **Second `h1` on the page.** `BrandStatement` carried an `h1` alongside the
+   hero's. Fix: demoted to `h2` and gave the scrubbing hero an `sr-only` `h1` —
+   its content is painted to a canvas, which carries no semantics, so without it
+   the document opened on an `h2`.
+
+### Notes
+
+`SelectedWork` renders nothing rather than showing an empty section. §22 permits
+either omitting it or shipping an empty structural section; an empty-but-visible
+section reads as broken to a visitor, and a populated one would be fabricated.
+The component and layout exist and are wired to `projects`, so adding one
+verified entry makes the section appear with no markup change.
+
+### Commit
+
+`<pending>`
+
+### Commit Message
+
+`feat(home): add homepage sections per prompt section 6`
+
+### Remaining Work
+
+Phases 6–16 per `Reports/Implementation_Plan.md` §6. Next: `/software`.
+
+---
+
 ## 2026-09-18 (2)
 
 ### Agent

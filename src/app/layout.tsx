@@ -62,6 +62,16 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={`${sora.variable} ${inter.variable}`}>
+      <head>
+        {/*
+          Scroll reveals start hidden and are revealed by JavaScript. Without
+          JS that would leave the page blank, so force them visible. Content
+          must never depend on the animation system (DOC5 §5.34).
+        */}
+        <noscript>
+          <style>{`[data-reveal]{opacity:1!important;transform:none!important}`}</style>
+        </noscript>
+      </head>
       <body>
         <a href="#main" className="sr-only-focusable">
           Skip to content

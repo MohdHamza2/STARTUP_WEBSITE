@@ -212,6 +212,16 @@ export function Hero() {
       className="relative bg-obsidian"
     >
       <div className="sticky top-0 h-screen overflow-hidden bg-obsidian">
+        {/*
+          The hero's content is painted to a canvas, which carries no semantics.
+          This is the page's single h1 — without it the document would open on an
+          h2 and a screen-reader user would get no statement of what GENRA is.
+        */}
+        <h1 className="sr-only">
+          GENRA — {site.tagline} {site.proposition.lead}{" "}
+          {site.proposition.follow}
+        </h1>
+
         {/* Closing card — bottom layer, revealed when the brand beat lifts. */}
         <div className="absolute inset-0 z-10 bg-obsidian">
           <canvas ref={closingCanvas} className="size-full" aria-hidden="true" />

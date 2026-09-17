@@ -14,14 +14,15 @@ export function BrandStatement() {
       className="relative flex min-h-screen items-center bg-obsidian"
     >
       <div className="container-wide py-32">
-        <h1
+        {/* h2, not h1 — the hero owns the page's single h1. */}
+        <h2
           id="brand-statement"
           className="max-w-4xl text-display uppercase text-ivory"
         >
           Build.{" "}
           <span className="block sm:inline">Automate.</span>{" "}
           <span className="text-mint">Advance.</span>
-        </h1>
+        </h2>
 
         <div className="mt-16 max-w-xl rule-dark pt-10">
           <p className="text-h3 font-display text-ivory">
