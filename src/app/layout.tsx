@@ -3,6 +3,7 @@ import { Sora, Inter } from "next/font/google";
 import { site } from "@/config/site";
 import { Header } from "@/components/navigation/Header";
 import { Footer } from "@/components/navigation/Footer";
+import { SmoothScroll } from "@/components/providers/SmoothScroll";
 import "./globals.css";
 
 /**
@@ -65,6 +66,7 @@ export default function RootLayout({
         <a href="#main" className="sr-only-focusable">
           Skip to content
         </a>
+        <SmoothScroll />
         <Header />
         <main id="main">{children}</main>
         <Footer />

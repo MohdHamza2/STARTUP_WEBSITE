@@ -83,6 +83,103 @@ Known issues: `leads.email` nullability unresolved (D1)
 
 # CHANGE LOG
 
+## 2026-09-18 (2)
+
+### Agent
+
+FRONTEND
+
+### Feature
+
+Phases 3–4 — hero sequence, brand resolution, clickable service panels
+
+### Work Completed
+
+- `Hero` renders the full story from the owner-supplied frames: "Have an Idea?"
+  holds, the card lifts away like a page to reveal the workstation, six service
+  panels emerge and retract, the GENRA brand resolves, the closing card lands.
+- Scroll position drives the frame index directly, so the visitor controls the
+  sequence in both directions. ScrollTrigger reports progress; pinning is CSS
+  `position: sticky` rather than ScrollTrigger's `pin`, which re-parents the
+  pinned node and fights React's ownership of the DOM.
+- Stage transitions translate upward like a page scroll — no zoom, no fade to
+  black, no particles (prompt §8).
+- GENRA brand resolution built in DOM from the real mark, because the owner
+  supplied no frames for that beat and §12 asks for the brand identity rather
+  than another animation frame.
+- Six hotspots positioned per frame from the generated timeline, against the
+  canvas's cover rect rather than its box, so they stay aligned at any aspect
+  ratio. `pointer-events` and `tabIndex` are enabled only while a panel is
+  settled — a half-retracted panel is visible but inert.
+- `HeroStatic` serves reduced-motion visitors and doubles as the failure mode if
+  the timeline cannot load: same six services, same routing, no scrubbing.
+- `SmoothScroll` adds Lenis driving GSAP's ticker, disabled entirely under
+  reduced motion.
+- Progressive frame loading in coarse-to-fine order, so the hero is scrubbable
+  before every frame has downloaded and sharpens as it fills in.
+
+### Files Changed
+
+- Added: `src/components/hero/{Hero,HeroStatic}.tsx`
+- Added: `src/lib/hero/{timeline,useFrameSequence}.ts`
+- Added: `src/components/providers/SmoothScroll.tsx`
+- Modified: `src/app/{page,layout}.tsx`
+
+### Verification
+
+- [x] Code reviewed
+- [x] Build passed — `npm run build` clean, lint and typecheck clean
+- [ ] Tests passed — automated specs land in Phase 13; this phase verified in-browser
+- [x] Browser tested
+- [x] Responsive tested — no horizontal overflow (`scrollWidth === clientWidth`)
+- [ ] API tested — N/A
+- [ ] Database verified — N/A
+- [x] Regression tested — header, menu and footer re-checked after hero mount
+
+Browser verification performed:
+- Opening frame renders full-screen Obsidian with "Have an Idea?"
+- Scrubbing verified at multiple scroll positions; panels, brand beat and closing
+  card each render at the expected progress
+- All six hotspots present with correct routing: five → `/software`,
+  one → `/recruiting`
+- Exactly ONE hotspot active at any scroll position — zero overlap confirmed at
+  runtime, not just in the source material
+- Settled panels report `pointer-events: auto` and `tabIndex 0`; emerging and
+  retracting panels report `none` and `-1`
+- Hover asserted inert per §11: no transform, no box-shadow, no filter, no
+  navigation
+- `elementFromPoint` at a panel's visual centre returns that panel's anchor,
+  confirming the clickable region matches the visible panel
+
+### Bugs Found
+
+1. **ESLint `react-hooks/set-state-in-effect` in the frame loader.** Root cause:
+   `ready`/`progress` state was reset synchronously at effect start — and nothing
+   consumed either value. Fix: removed the state entirely and kept frames in a
+   ref. Loading 150 images would otherwise have triggered 150 re-renders of a
+   component that paints imperatively and never reads them during render.
+
+### Bugs Fixed
+
+The above. No defect was found in the hero's scroll or hotspot behaviour — an
+apparent pacing fault during verification turned out to be an error in the
+measurement probe, which divided by the document's scroll range instead of the
+pinned container's. The component was correct.
+
+### Commit
+
+`<pending>`
+
+### Commit Message
+
+`feat(hero): scroll-driven hero sequence with clickable service panels`
+
+### Remaining Work
+
+Phases 5–16 per `Reports/Implementation_Plan.md` §6.
+
+---
+
 ## 2026-09-18
 
 ### Agent
