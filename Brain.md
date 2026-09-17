@@ -14,19 +14,28 @@ It must always represent the current known state of the project.
 
 ## Project Name
 
-[NAME]
+GENRA
 
 ## Purpose
 
-[DESCRIPTION]
+GENRA is a technology company with two service lines. It builds software (MVPs, SaaS,
+web applications, business software, portfolio sites, AI-powered applications, automation
+systems) and it provides career/recruiting assistance, handling the job-application
+workflow for candidates based on information those candidates supply.
+
+The website is the public acquisition layer for both lines. Its job is to convert visitors
+into qualified leads — not to be a brochure.
 
 ## Primary Users
 
-[USERS]
+- International students, recent graduates and early-career professionals targeting US
+  employment (recruiting funnel)
+- Founders, businesses and individuals needing software built (software funnel)
 
 ## Primary Business Goal
 
-[GOAL]
+Generate qualified leads into a shared lead database that a future CRM/outreach system can
+consume through a controlled API.
 
 ---
 
@@ -34,31 +43,50 @@ It must always represent the current known state of the project.
 
 ## Main Website
 
-[DESCRIPTION]
+Routes: `/`, `/software`, `/recruiting`, `/about`, `/contact`, `/privacy`, `/terms`, plus
+404 and error states. Homepage is the brand entry point and splits into the two funnels.
 
 ## Recruiting Platform
 
-[DESCRIPTION]
+`/recruiting` — service explanation, four-step process, recruiting enquiry form with
+optional resume upload. No employment, interview, placement or outcome claims are made
+anywhere. Not a job board, not an ATS, no candidate accounts.
 
 ## Software Services
 
-[DESCRIPTION]
+`/software` — the approved nine-service catalog presented as an editorial service book,
+process, capabilities, and the project enquiry form.
+
+Official catalog (supersedes older lists in DOC1/DOC3.1/DOC4 per prompt §15):
+01 MVP Development · 02 SaaS Development · 03 End-to-End Software Production ·
+04 Web Application · 05 Business Software · 06 Portfolio Websites ·
+07 AI-Powered Applications · 08 Automation Systems · 09 Career & Recruiting
+
+Career & Recruiting is a separate service line, not a software development category.
 
 ## Other Services
 
-[DESCRIPTION]
+None. Scope is deliberately limited — no blog, newsletter, pricing calculator, chatbot,
+admin dashboard, CRM, client portal, payments, booking or CMS in this version.
 
 ---
 
 # 3. CURRENT DEVELOPMENT STATUS
 
-Current phase:
+Current phase: PLAN COMPLETE — awaiting owner decisions
 
-Current feature:
+Current feature: None in progress
 
-Current sprint:
+Current sprint: Pre-implementation
 
-Overall completion:
+Overall completion: 0% of application code. Audit and implementation plan complete.
+
+**No application code exists yet.** There is no source tree, no `package.json`, no schema
+applied, no components, no tests. See `Reports/Implementation_Plan.md` for the full audit
+and the phased build order.
+
+Work is blocked on six owner decisions (D1–D6) recorded in
+`Reports/Implementation_Plan.md` §9.
 
 ---
 
@@ -66,91 +94,109 @@ Overall completion:
 
 ## Frontend
 
-[STACK]
+Next.js (App Router), React, TypeScript, Tailwind CSS, shadcn/ui, Lucide React
 
 ## Backend
 
-[STACK]
+Next.js server actions / route handlers. No separate backend service.
 
 ## Database
 
 PostgreSQL
 
+Hosted via Supabase. Schema is specified in DOC4 §4.31 and is to be implemented verbatim.
+
 ## Authentication
 
-[STACK]
+**None.** The approved architecture has no public user accounts. `admin_users` exists in
+the schema for a future internal dashboard only; that dashboard is out of MVP scope
+(DOC1 §47).
 
 ## Storage
 
-[STACK]
+Supabase Storage — private bucket for resumes. No public URLs; signed URLs only.
 
 ## Hosting
 
-[STACK]
+Vercel, with Cloudflare for DNS/SSL/CDN. Docker is explicitly excluded.
 
 ## Testing
 
-[STACK]
+Vitest (unit/integration) + Playwright (E2E)
 
 ## Animation
 
-[STACK]
+Motion (UI-level), GSAP + ScrollTrigger (cinematic scroll), Lenis (smooth scroll)
+
+## Deferred by phase (approved in DOC2 §45, not yet implemented)
+
+Sanity CMS (Phase 3), PostHog (Phase 4), Cloudinary, Three.js/R3F
 
 ---
 
 # 5. ARCHITECTURE
 
-Describe the current architecture here.
+```
+Visitor → Cloudflare → Vercel (Next.js)
+                          │
+        ┌─────────────────┼─────────────────┐
+        ▼                 ▼                 ▼
+   Supabase          Supabase            Resend
+   PostgreSQL         Storage             Email
+   (leads)           (resumes)        (notifications)
+```
 
-Frontend
-↓
-API
-↓
-Backend
-↓
-Database
+Important boundaries:
 
-Document important boundaries and dependencies.
+- The browser never reaches PostgreSQL. All database access is server-side.
+- The Supabase service-role key is server-only and must never be prefixed `NEXT_PUBLIC_`.
+- Form functionality must never depend on the animation system (DOC5 §5.34). If GSAP,
+  video or animation fails, forms still work.
 
 ---
 
 # 6. FRONTEND ARCHITECTURE
 
-Document:
+To be documented as built. Planned shape:
 
-- Pages
-- Components
-- Layout
-- State management
-- API integration
-- Styling
-- Animation system
-- Form architecture
+- Pages: the routes in §2
+- Header: minimal. Desktop primary nav is **Software and Recruiting only**. About and
+  Contact live in the hamburger overlay. No "Start a Project" and no sign-up in the header.
+- Hero: scroll-linked frame sequence driven by the owner-supplied clips, with DOM hotspot
+  overlays for the six clickable service panels
+- State: React Hook Form for forms; no global state library
+- Styling: Tailwind with centralised design tokens — no hardcoded colour or spacing values
+- Animation: layered per DOC3.1 §3.5 (Motion → GSAP → Lenis)
 
 ---
 
 # 7. BACKEND ARCHITECTURE
 
-Document:
+To be documented as built. Planned shape:
 
-- API routes
-- Business logic
-- Validation
-- Authentication
-- External services
-- Error handling
+- `POST /api/leads/recruiting`, `POST /api/leads/software`, `POST /api/contact`
+- Every endpoint: Zod server validation → Turnstile server verification → rate limit →
+  transactional write → event record → email notification
+- Client-submitted data is never trusted. Client-side validation is UX only.
+- Email failure must not lose a submission.
 
 ---
 
 # 8. DATABASE ARCHITECTURE
 
-Document:
+Specified in DOC4 §4.31. **Not yet applied.**
 
-- Tables
-- Relationships
-- Constraints
-- Indexes
-- Important migrations
+Tables: `leads` (central) → `recruiting_leads`, `software_leads`, `resume_files`,
+`lead_events`, `lead_notes`; plus `admin_users`.
+
+All primary keys are UUID. Thirteen indexes per DOC4 §4.32. RLS enabled on every table
+with no public policy.
+
+Deliberately NOT implemented yet (DOC4 §4.4): `outreach_contacts`, `outreach_campaigns`,
+`outreach_messages`, `outreach_events`.
+
+**Open:** whether `leads.email` stays `NOT NULL`. DOC4/DOC5 require it; the owner's build
+prompt §29 marks recruiting email optional. Unresolved — decision D1.
 
 ---
 
@@ -158,79 +204,154 @@ Document:
 
 ## Completed
 
-- [ ] Feature 1
-- [ ] Feature 2
-- [ ] Feature 3
+- [x] Repository audit
+- [x] Hero asset audit and panel-timeline mapping
+- [x] Implementation plan (`Reports/Implementation_Plan.md`)
 
 ## In Progress
 
-- [ ] Feature
+- [ ] None — blocked on owner decisions D1–D6
 
 ## Pending
 
-- [ ] Feature
-- [ ] Feature
+- [ ] Phase 0 scaffold and design tokens
+- [ ] Layout shell, header, hamburger, footer, error pages
+- [ ] Hero asset pipeline and timeline generation
+- [ ] Hero sequence, brand resolution, clickable panels
+- [ ] Homepage sections
+- [ ] `/software`, `/recruiting`, `/about`, `/contact`, `/privacy`, `/terms`
+- [ ] Database migrations, RLS, storage policies
+- [ ] Backend endpoints, validation, Turnstile, rate limiting
+- [ ] Resume upload and secure storage
+- [ ] Email notifications
+- [ ] All three forms
+- [ ] SEO, performance, accessibility, final visual QA
 
 ---
 
 # 10. API CONTRACTS
 
-Document important APIs.
-
-Example:
-
-POST /api/applications
-
-Request:
-...
-
-Response:
-...
-
-Errors:
-...
+None implemented yet. Contracts will be recorded here as each endpoint is built, per the
+shape proposed in DOC5 §5.18.
 
 ---
 
 # 11. IMPORTANT DECISIONS
 
-## Decision 1
+## Decision 1 — Nine-service catalog supersedes older lists
 
-Date:
+Date: 2026-09-17
 
-Decision:
+Decision: The public service catalog is the nine services in §2.
 
-Reason:
+Reason: Owner instruction explicitly supersedes the older six-category and eleven-item
+project-type lists in DOC1 §23, DOC3.1 §3.9 and DOC4 §4.13.
 
-Impact:
+Impact: No schema change — DOC4 §4.13 already requires project types to be application
+config rather than a database enum, and `software_leads.project_type` is `VARCHAR(100)`.
+
+## Decision 2 — Obsidian is #0B0B0B
+
+Date: 2026-09-17
+
+Decision: Use `#0B0B0B`.
+
+Reason: The brand kit DOCX says `#080B0B`; the brand board PNG and the owner's build
+prompt both say `#0B0B0B`. Two of three sources agree.
+
+Impact: Single token value. Recorded so the discrepancy is not silently re-litigated.
+
+## Decision 3 — No public authentication
+
+Date: 2026-09-17
+
+Decision: No sign-up, login, sessions or protected routes.
+
+Reason: The approved architecture defines no public accounts. Introducing auth would be
+inventing a system the PRD does not require.
+
+Impact: Hamburger menu contains About and Contact only.
+
+## Decision 4 — Sanity and PostHog deferred, not removed
+
+Date: 2026-09-17
+
+Decision: Content lives in typed TypeScript modules shaped 1:1 to future Sanity documents.
+Analytics events are emitted through a thin `trackEvent()` adapter with no vendor SDK.
+
+Reason: DOC2 §45 already stages Sanity as Phase 3 and PostHog as Phase 4, after MVP.
+
+Impact: Both can be attached later without touching call sites.
+
+## Decision 5 — No testimonials, no case studies rendered
+
+Date: 2026-09-17
+
+Decision: Types and content shapes exist; nothing is published.
+
+Reason: DOC1 §14, DOC2 §37 and DOC3.1 Risk 4 all independently forbid publishing fabricated
+testimonials as real. No verified GENRA project exists in the repository.
+
+Impact: "Ideas We've Brought to Life" ships as an empty structural section.
 
 ---
 
 # 12. DESIGN SYSTEM
 
-Document:
+Source of truth: `assets/brand/GENRA_Brand_Kit_DOC.docx` and
+`assets/brand/brand_kit_img_main.png`.
 
-- Brand colors
-- Typography
-- Spacing
-- Components
-- Buttons
-- Forms
-- Animation conventions
-- Responsive rules
+## Brand colors
+
+| Token | Hex | Role |
+|---|---|---|
+| Obsidian | `#0B0B0B` | Primary dark background |
+| Ivory | `#F5F4EF` | Primary light background |
+| GENRA Mint | `#34D399` | Signature accent — buttons, links, active states |
+| Deep Mint | `#10B981` | Hover, gradient depth |
+| Graphite | `#374151` | Secondary text, icons, borders |
+| Silver | `#D1D5DB` | Fine borders, disabled, metadata |
+| Dark card | `#111615` | |
+| Dark border | `#1F2926` | |
+| Light card | `#FFFFFF` | |
+| Light border | `#E5E7E5` | |
+
+Balance ratio: ~50% Obsidian · 35% Ivory · 10% Graphite/Silver · 5% Mint.
+Mint behaves as a signal, never a wash.
+
+## Typography
+
+Sora for display and headings (SemiBold 600). Inter for body (400), UI/nav (500),
+buttons (600), captions (500).
+
+H1 48–72px · H2 32–44px · H3 24–30px · Body 16–18px at 1.5–1.65 line height.
+
+## Animation conventions
+
+Motion for UI, GSAP+ScrollTrigger for cinematic scroll, Lenis for smoothing. Animation must
+enhance, never block. `prefers-reduced-motion` collapses cinematic motion while preserving
+all content and navigation.
+
+## Prohibited
+
+Purple/blue gradients, neon, glowing brains, robots, circuit boards, neural-net backgrounds,
+excessive glassmorphism, floating-card clutter, icon-per-paragraph, generic dashboard
+collages, stock-looking people. The site must not read as an AI-generated template.
 
 ---
 
 # 13. SECURITY RULES
 
-Document:
-
-- Authentication
-- Authorization
-- Secret management
-- File upload rules
-- Validation
-- Sensitive data handling
+- Server-side Zod validation on every endpoint. Client validation is UX only.
+- Cloudflare Turnstile verified **server-side** on every public form. A client token is
+  never treated as proof.
+- Rate limiting on all public submission endpoints.
+- Resume uploads: extension + MIME + size validation, filename sanitisation, no path
+  injection, private bucket, signed URLs only.
+- RLS enabled on all tables, no public policy. Browser never touches Postgres.
+- Service-role key, Resend key and Turnstile secret are server-only.
+- No secrets in source. No secrets in logs. No resume contents in logs.
+- Safe error messages — never expose database IDs or internal detail to users.
 
 Never store actual secrets in this file.
 
@@ -238,40 +359,32 @@ Never store actual secrets in this file.
 
 # 14. TESTING STATUS
 
-Document:
+Nothing implemented, therefore nothing tested. Test plan is recorded in
+`Reports/Implementation_Plan.md` §7.
 
-- Unit testing
-- Integration testing
-- Browser testing
-- Responsive testing
-- API testing
-- Database testing
+Browser testing is mandatory for every UI feature (DOC6 §6.13) — a passing build is
+explicitly not sufficient evidence.
 
 ---
 
 # 15. KNOWN BUGS
 
-## BUG-001
-
-Description:
-
-Severity:
-
-Affected area:
-
-Status:
-
-Root cause:
-
-Fix:
-
-Verification:
+None recorded. No code exists yet.
 
 ---
 
 # 16. KNOWN LIMITATIONS
 
-Document known limitations.
+- `Documents/DOC3 PRD-Application_Architecture.md` is 0 bytes. The real architecture
+  document is `DOC3.1 AppLICATION_ARCHITECTURE.md`. DOC3 is left in place to preserve
+  project history.
+- No GENRA brand-resolution frames were supplied. That beat (prompt §12) will be built in
+  DOM/CSS from the logo assets.
+- `clips/clip3fr.zip` sets the closing line in a serif typeface and renders "We build it."
+  in muted sage rather than Mint — both deviate from the approved brand kit. Flagged to the
+  owner as decision D5; supplied frames preserved by default.
+- No verified contact details, social accounts, domain, legal entity or data-retention
+  period exist. Dependent UI ships omitted rather than invented.
 
 ---
 
@@ -279,19 +392,24 @@ Document known limitations.
 
 | Date | Agent | Commit | Description |
 |------|-------|--------|-------------|
-| | | | |
+| 2026-09-17 | PLANNING | (pending) | docs: add repository audit and implementation plan |
 
 ---
 
 # 18. CURRENT BLOCKERS
 
-- None
+Six owner decisions, detailed in `Reports/Implementation_Plan.md` §9:
 
-or:
+- **D1** — Is recruiting email required? DOC4/DOC5 say yes; build prompt §29 says optional.
+  Blocks the database migration.
+- **D2** — Verified contact email, phone, address, socials, domain, legal entity.
+  Blocks footer contact block, `/contact` details, SEO canonical and sitemap.
+- **D3** — Data retention period. Blocks an accurate `/privacy`.
+- **D4** — Supabase, Resend and Turnstile credentials. Blocks end-to-end verification.
+- **D5** — clip3 typography/colour: preserve supplied frames or rebuild in DOM.
+- **D6** — Resume formats: PDF-only or PDF/DOC/DOCX per DOC5 §5.11.
 
-- Description
-- Owner
-- Required action
+Owner action required on all six. D1 and D4 gate the backend; D2 and D3 gate three pages.
 
 ---
 
@@ -299,21 +417,22 @@ or:
 
 ## Frontend Agent
 
-Owns:
-
-...
+Owns: pages, components, layouts, navigation, forms UI, client validation, loading/error/
+success states, responsive behaviour, accessibility, animation, hero sequence and hotspots,
+frontend API integration, browser testing.
 
 ## Backend Agent
 
-Owns:
-
-...
+Owns: route handlers and server actions, server-side Zod validation, Turnstile verification,
+rate limiting, transactional writes, storage upload handling, Resend integration, error
+handling and logging.
 
 ## Database Agent
 
-Owns:
+Owns: schema, migrations, constraints, indexes, RLS policies, storage bucket policies,
+query patterns.
 
-...
+Shared files must be coordinated, not silently claimed.
 
 ---
 
@@ -321,23 +440,30 @@ Owns:
 
 ## Last Agent
 
-...
+Planning/audit session
 
 ## Last Completed Task
 
-...
+Full repository audit and implementation plan. Hero asset inspection including the
+frame-by-frame panel timeline for `clip2fr.zip`.
 
 ## Current State
 
-...
+Repository contains documentation, brand assets and hero source frames only. No application
+code. `Reports/Implementation_Plan.md` records the audit, ten resolved conflicts, the
+database plan, the hero implementation approach, a seventeen-phase build order and the
+test plan.
 
 ## Exact Next Action
 
-...
+Obtain owner decisions D1–D6. Then begin Phase 0 (scaffold + design tokens). Phases 0–7 can
+proceed for everything not gated by D2/D3; Phase 9 onward requires D1 and D4.
 
 ## Important Warning
 
-...
+Do not begin Phase 9 (database) before D1 is answered — `leads.email` nullability changes
+the migration, the duplicate-detection strategy and whether candidate confirmation email is
+possible. Do not invent any business fact listed under D2/D3.
 
 ---
 
