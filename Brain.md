@@ -283,7 +283,22 @@ Reason: DOC2 §45 already stages Sanity as Phase 3 and PostHog as Phase 4, after
 
 Impact: Both can be attached later without touching call sites.
 
-## Decision 5 — No testimonials, no case studies rendered
+## Decision 5 — Recruiting email required; resume upload is PDF-only
+
+Date: 2026-09-18
+
+Decision: `leads.email` stays `NOT NULL`. Resume upload accepts PDF only.
+
+Reason: Owner resolved the DOC4/DOC5-vs-prompt contradiction in favour of the approved
+database architecture, so no schema deviation is needed. PDF-only is tighter than
+DOC5 §5.11 permits, chosen because DOC/DOCX carry a macro-borne malware vector and this
+stack has no malware scanning.
+
+Impact: Duplicate detection can key on email (DOC4 §4.26). Candidate confirmation email is
+possible for every submission. Accepted file types are configuration, so widening later is
+a one-line change.
+
+## Decision 6 — No testimonials, no case studies rendered
 
 Date: 2026-09-17
 
@@ -398,18 +413,28 @@ None recorded. No code exists yet.
 
 # 18. CURRENT BLOCKERS
 
-Six owner decisions, detailed in `Reports/Implementation_Plan.md` §9:
+All six owner decisions resolved 2026-09-18. Full reasoning in
+`Reports/Implementation_Plan.md` §9. Summary:
 
-- **D1** — Is recruiting email required? DOC4/DOC5 say yes; build prompt §29 says optional.
-  Blocks the database migration.
-- **D2** — Verified contact email, phone, address, socials, domain, legal entity.
-  Blocks footer contact block, `/contact` details, SEO canonical and sitemap.
-- **D3** — Data retention period. Blocks an accurate `/privacy`.
-- **D4** — Supabase, Resend and Turnstile credentials. Blocks end-to-end verification.
-- **D5** — clip3 typography/colour: preserve supplied frames or rebuild in DOM.
-- **D6** — Resume formats: PDF-only or PDF/DOC/DOCX per DOC5 §5.11.
+- **D1** — Recruiting email is **REQUIRED**. DOC4 schema stands unchanged, no deviation.
+- **D2/D3** — No verified contact details, domain, legal entity or retention period exist.
+  **Omitted, never invented.** `TODO(business-facts)` anchors mark every insertion point.
+- **D4** — No service credentials yet. Backend is built against documented contracts with
+  `.env.example`; **end-to-end integration remains unverified** until keys are supplied.
+- **D5** — clip3 supplied frames **preserved** as delivered, serif and sage included.
+- **D6** — Resume upload is **PDF only** (MIME + extension + `%PDF-` magic bytes, 10 MB).
 
-Owner action required on all six. D1 and D4 gate the backend; D2 and D3 gate three pages.
+## Remaining blocker
+
+**Service credentials (D4).** Phases 9–12 can be written and unit-tested but cannot be
+verified against live Supabase, Storage, Resend or Turnstile. Any completion claim for
+those phases must state this explicitly rather than report a passing integration.
+
+## Repository access
+
+Pushes to `origin/arsh` require the owner's GitHub sign-in; Git Credential Manager cannot
+prompt from the agent session. Commits are made locally and the owner runs
+`git push origin arsh`. **Never push to `main`.**
 
 ---
 

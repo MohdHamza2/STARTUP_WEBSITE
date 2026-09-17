@@ -1,6 +1,6 @@
 # GENRA WEBSITE — IMPLEMENTATION PLAN
 
-Status: PLAN — awaiting owner decisions on 4 blocking items (Section 9)
+Status: PLAN VERIFIED — owner decisions received, implementation started (see §9)
 Author: Frontend/Backend/Database agent session
 Date: 2026-09-17
 Branch: `arsh`
@@ -307,39 +307,68 @@ copy and terms.
 
 ---
 
-# 9. BLOCKING DECISIONS REQUIRED FROM OWNER
+# 9. OWNER DECISIONS — RESOLVED 2026-09-18
 
-Per prompt §83 — stop at the decision point and report rather than guess.
+Escalated per prompt §83 rather than guessed. All six answered by the owner.
 
-**D1 — Recruiting form: is email required?**
-DOC4 §4.31 (`NOT NULL`) + DOC4 §4.24 + DOC5 §5.8 say required. Prompt §29 says optional.
-Affects schema, duplicate detection, candidate confirmation email.
+## D1 — Recruiting email: **REQUIRED**
 
-**D2 — Verified business facts.**
-Needed: contact email, phone (if any), physical address (if any), social account URLs,
-production domain, legal entity name. DOC1 §50 Q20–27 were never answered. Until supplied,
-the footer ships without contact/social blocks, `/contact` without direct details, and SEO
-canonical/sitemap cannot be generated.
+Resolution: follow DOC4 §4.24/§4.31 and DOC5 §5.8 unchanged. `leads.email` stays
+`VARCHAR(320) NOT NULL`.
 
-**D3 — Data retention period** for resumes and lead records. DOC4 §4.30 explicitly defers
-this and forbids inventing a period. `/privacy` cannot make an accurate retention statement
-without it.
+Consequence: **no schema deviation is needed.** Duplicate detection can key on email as
+DOC4 §4.26 intends, and the candidate confirmation email (DOC5 §5.24) is possible for every
+submission. The prompt §29 "Email: OPTIONAL" instruction is superseded by the approved
+database architecture, which sits higher in the §81 hierarchy.
 
-**D4 — Service accounts.** Supabase project, Resend domain/API key, Turnstile site+secret
-keys. Backend can be written without them but cannot be verified end-to-end, and prompt §84
-requires a tested, database-backed, email-enabled result.
+Recruiting form required fields are therefore: Name, Email. Phone, resume and every other
+field remain optional per DOC5 §5.8–§5.13.
 
-**D5 — clip3 typography/colour** (see §1.3). Preserve the supplied serif + sage frames, or
-render that card in DOM using Sora + Mint per prompt §12.
+## D2 / D3 — Verified business facts and retention period: **NOT AVAILABLE — OMIT**
 
-**D6 — Resume file formats.** DOC5 §5.11 explicitly supports PDF/DOC/DOCX at 10 MB. Prompt
-§29 says "PDF only unless the existing PRD explicitly supports other formats" — which it
-does. Confirm whether to honour the PRD (all three) or tighten to PDF-only; DOC/DOCX carry a
-macro-borne malware vector that PDF-only avoids.
+Resolution: no contact email, phone, address, social URL, production domain, legal entity
+name or data-retention period exists yet. None is invented (prompt §53, §76, §77).
+
+Consequence:
+- Footer ships without contact and social blocks
+- `/contact` ships with the enquiry form but no direct contact details
+- `/privacy` describes what is collected, why, where it is stored and how to request
+  deletion, but makes **no retention-period claim**
+- SEO canonical and `sitemap.xml` use a single `SITE_URL` constant, unset until the domain
+  exists
+
+Every such location carries a `TODO(business-facts)` anchor so supplying the real values
+later is a contained change rather than a hunt.
+
+## D4 — Service accounts: **NOT YET — BUILD FIRST**
+
+Resolution: write the complete backend, migrations, RLS, storage policies and email against
+the documented contracts. Ship `.env.example` enumerating every required variable.
+
+Consequence: the submit → database → storage → email path is **implemented but not verified
+end-to-end** until the owner supplies credentials. This limitation is stated plainly rather
+than reported as a passing integration. Unit and E2E tests run against mocked service
+boundaries in the meantime.
+
+## D5 — clip3 typography/colour: **PRESERVE SUPPLIED FRAMES**
+
+Resolution: default stands. The closing card renders from the supplied frames with its serif
+face and sage "We build it.", deviating from Sora/Mint. Prompt §7 and §83 require preserving
+the owner's finished animation over matching the type system.
+
+## D6 — Resume formats: **PDF ONLY**
+
+Resolution: tighter than DOC5 §5.11 permits. Accepted MIME `application/pdf`, extension
+`.pdf`, magic-byte check on `%PDF-`, 10 MB limit per DOC5 §5.11.
+
+Rationale: DOC/DOCX carry a macro-borne malware vector, and this stack has no malware
+scanning (DOC2 §19 lists scanning as a "strategy", not an implementation). Rejecting the
+formats outright is the safe direction. The limit and accepted-type list are configuration,
+so widening later is a one-line change.
 
 ---
 
 # 10. NEXT ACTION
 
-On receipt of D1–D6: begin Phase 0. Phases 0–7 for everything not gated by D2/D3, and
-Phase 9 onward once D1 and D4 are resolved.
+Begin Phase 0. All phases are unblocked except end-to-end verification of Phases 9–12,
+which awaits D4 credentials.

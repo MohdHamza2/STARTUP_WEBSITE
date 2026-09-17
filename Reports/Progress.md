@@ -83,6 +83,129 @@ Known issues: `leads.email` nullability unresolved (D1)
 
 # CHANGE LOG
 
+## 2026-09-18
+
+### Agent
+
+FRONTEND
+
+### Feature
+
+Phases 0–2 — scaffold, design system, layout shell, hero asset pipeline
+
+### Work Completed
+
+**Phase 0 — scaffold and design system**
+- Next.js 16.3.5 (App Router) + React 19.2.8 + TypeScript + Tailwind v4, src/ layout
+- Full approved dependency set installed: Motion, GSAP, Lenis, React Hook Form, Zod,
+  Supabase, Resend, Lucide, Vitest, Playwright
+- Design tokens in `src/app/globals.css` under Tailwind v4 `@theme` — brand palette,
+  type scale, radius, motion durations and easings, container widths. No raw values
+  outside that block.
+- Sora + Inter wired via `next/font`, matching brand kit §4
+- `prefers-reduced-motion` handling, brand-consistent `:focus-visible`, skip link
+- `.env.example` documenting every variable; `.gitignore` corrected so `.env.example`
+  is committed while all real env files stay ignored
+- Vitest + Playwright configured (Playwright covers desktop/tablet/mobile projects)
+
+**Phase 1 — layout shell**
+- `Header`: logo, primary nav restricted to Software + Recruiting per prompt §5,
+  overlay menu holding About + Contact per §37. Transparent over hero, gains a surface
+  on scroll. Focus trap, Escape to close, focus restoration, body scroll lock.
+- `Footer`: omits contact and social blocks entirely because no verified values exist
+- `Logo`: supplied brand mark (never redrawn) + Sora wordmark per brand kit §4
+- Branded 404 (`Lost the path?`) and error boundary with safe messaging
+- `site.ts` and `services.ts` content modules, shaped for a later Sanity migration
+
+**Phase 2 — hero asset pipeline**
+- `scripts/build-hero-assets.mjs` derives delivery assets and the interaction timeline
+  from `clips/*.zip`. Source archives are never modified.
+- Panel geometry is derived FROM THE FRAMES, not hardcoded and not OCR'd
+- Output: 270 frames x 3 width tiers, plus `timeline.json`
+- Idempotent; runs as `prebuild`; derived output gitignored
+
+### Files Changed
+
+- Added: `package.json`, `tsconfig.json`, `next.config.ts`, `postcss.config.mjs`,
+  `eslint.config.mjs`, `vitest.config.ts`, `vitest.setup.ts`, `playwright.config.ts`,
+  `.env.example`, `.claude/launch.json`
+- Added: `src/app/{layout,page,not-found,error}.tsx`, `src/app/globals.css`
+- Added: `src/components/{brand/Logo,navigation/Header,navigation/Footer,sections/BrandStatement}.tsx`
+- Added: `src/config/site.ts`, `src/content/services.ts`, `src/lib/utils.ts`
+- Added: `scripts/build-hero-assets.mjs`, `public/brand/*`
+- Modified: `.gitignore`, `Brain.md`, `Reports/Implementation_Plan.md`
+
+### Verification
+
+- [x] Code reviewed — `git diff` reviewed, no secrets, no unrelated changes
+- [x] Build passed — `npm run build` clean
+- [x] Tests passed — N/A, no test specs written yet (Phase 13+)
+- [x] Browser tested — see below
+- [x] Responsive tested — desktop and 375x812 mobile
+- [ ] API tested — N/A this phase
+- [ ] Database verified — N/A this phase
+- [ ] Regression tested — N/A, first feature
+
+Browser verification performed (DOC6 §6.13):
+- Homepage renders; typography, palette and spacing match the brand kit
+- Header shows ONLY Software + Recruiting, as §5 requires
+- Overlay menu opens, lists Software/Recruiting/About/Contact
+- Escape closes it; asserted in-browser that the menu hides, `aria-expanded`
+  returns to false, focus returns to the trigger, and the body scroll lock releases
+- No horizontal overflow at 375px (`scrollWidth === clientWidth`)
+
+### Bugs Found
+
+1. **Overlay menu clipped its own secondary row on short viewports.** At 455px
+   height the legal/contact row below the divider was unreachable.
+   Root cause: the panel was a fixed-height flex column with no overflow handling.
+   Fix: `overflow-y-auto overscroll-contain` on the panel, reduced vertical padding.
+
+2. **Header nav overlapped the logo at 375px.** "Software" rendered on top of the
+   GENRA wordmark. Root cause: logo, two nav items and the menu trigger cannot fit
+   in 375px. Fix: primary nav is `hidden md:block`; below that navigation is the
+   hamburger, per prompt §45. Nothing is lost — the overlay already lists both.
+
+3. **Hero pipeline: static-camera assumption was wrong.** First implementation
+   shipped one static workstation "plate" plus per-frame panel crops. A build-time
+   assertion caught that clip2 does not return to its reference composition.
+   Root cause: the camera slowly pushes in across clip2; the workstation at frame
+   300 is measurably larger than at frame 1. Verified by rendering frame 1 against
+   frame 300 side by side. Fix: dropped plate-plus-crop, ship full frames, and
+   replaced reference-differencing (which the drift contaminates) with absolute
+   luminance thresholding plus a workstation exclusion zone, which is invariant to
+   the camera move.
+
+4. **Panel run detection returned 4 runs instead of 6.** Root cause: retracting
+   panels collapse to a thin bright streak rather than disappearing, and two of the
+   five troughs are only ONE frame below threshold — which the one-frame gap
+   tolerance absorbed, merging two pairs of panels. Fix: gap tolerance reduced to
+   zero and runs split on bounding-box height; humps sit at 90–130 against a
+   threshold of 30, so they never split internally. A minimum run length rejects
+   noise, which is what the tolerance was actually guarding against.
+
+5. **ESLint `react-hooks/set-state-in-effect`** on the menu's close-on-navigation
+   effect. Fix: replaced with React's documented adjust-state-during-render pattern,
+   which also covers browser back/forward that the effect handled.
+
+### Bugs Fixed
+
+All five above, each verified after the fix.
+
+### Commit
+
+`<pending>`
+
+### Commit Message
+
+`feat: scaffold GENRA site, design system, layout shell and hero asset pipeline`
+
+### Remaining Work
+
+Phases 3–16 per `Reports/Implementation_Plan.md` §6.
+
+---
+
 ## 2026-09-17
 
 ### Agent

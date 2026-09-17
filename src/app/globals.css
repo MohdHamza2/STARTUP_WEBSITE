@@ -1,0 +1,216 @@
+@import "tailwindcss";
+
+/* ==========================================================================
+   GENRA DESIGN TOKENS
+   Source of truth: assets/brand/GENRA_Brand_Kit_DOC.docx
+                    assets/brand/brand_kit_img_main.png
+   Recorded in Brain.md §12. Never hardcode a raw value outside this block.
+   ========================================================================== */
+
+@theme {
+  /* --- Brand palette ---------------------------------------------------- */
+  /* Obsidian is #0B0B0B: the brand board and the owner's brief agree.
+     The brand kit DOCX says #080B0B; that discrepancy is recorded as
+     Decision 2 in Brain.md §11 so it is not silently re-litigated. */
+  --color-obsidian: #0b0b0b;
+  --color-ivory: #f5f4ef;
+  --color-mint: #34d399;
+  --color-mint-deep: #10b981;
+  --color-graphite: #374151;
+  --color-silver: #d1d5db;
+
+  /* --- UI surfaces (brand kit §5 "Digital & UI Language") --------------- */
+  --color-surface-dark: #0b0b0b;
+  --color-surface-light: #f5f4ef;
+  --color-card-dark: #111615;
+  --color-card-light: #ffffff;
+  --color-line-dark: #1f2926;
+  --color-line-light: #e5e7e5;
+
+  /* --- Typography -------------------------------------------------------
+     Sora for display/headings, Inter for body and UI.
+     Font family variables are injected by next/font in layout.tsx. */
+  --font-display: var(--font-sora), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
+  /* Display scale — brand kit §4 "Recommended digital hierarchy".
+     Clamped so desktop reaches the upper bound without a mobile override. */
+  --text-display: clamp(2.75rem, 1.6rem + 5.2vw, 4.5rem); /* H1 44 → 72 */
+  --text-display--line-height: 1.04;
+  --text-display--letter-spacing: -0.03em;
+
+  --text-h2: clamp(2rem, 1.4rem + 2.6vw, 2.75rem); /* 32 → 44 */
+  --text-h2--line-height: 1.1;
+  --text-h2--letter-spacing: -0.02em;
+
+  --text-h3: clamp(1.5rem, 1.25rem + 1vw, 1.875rem); /* 24 → 30 */
+  --text-h3--line-height: 1.2;
+  --text-h3--letter-spacing: -0.015em;
+
+  --text-body-lg: 1.125rem; /* 18 */
+  --text-body-lg--line-height: 1.6;
+
+  --text-body: 1rem; /* 16 */
+  --text-body--line-height: 1.65;
+
+  --text-caption: 0.8125rem; /* 13 */
+  --text-caption--line-height: 1.45;
+  --text-caption--letter-spacing: 0.04em;
+
+  /* Eyebrow/label treatment used throughout the brand board */
+  --text-eyebrow: 0.75rem;
+  --text-eyebrow--line-height: 1.2;
+  --text-eyebrow--letter-spacing: 0.18em;
+
+  /* --- Radius ----------------------------------------------------------- */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.875rem;
+  --radius-xl: 1.25rem;
+  --radius-pill: 9999px;
+
+  /* --- Motion (DOC2 §32: fast / normal / slow / cinematic) -------------- */
+  --duration-fast: 150ms;
+  --duration-normal: 300ms;
+  --duration-slow: 600ms;
+  --duration-cinematic: 1200ms;
+
+  /* Restrained, slightly weighted easing. Nothing bouncy — the brand kit
+     calls for "spacious, precise and quiet". */
+  --ease-genra: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-genra-in: cubic-bezier(0.64, 0, 0.78, 0);
+
+  /* --- Layout ----------------------------------------------------------- */
+  --container-content: 68rem;
+  --container-wide: 84rem;
+}
+
+/* ==========================================================================
+   BASE
+   Dark-first. The brand ratio is ~50% Obsidian / 35% Ivory / 10% Graphite &
+   Silver / 5% Mint — mint is a signal, never a wash.
+   ========================================================================== */
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-obsidian);
+    color: var(--color-ivory);
+    font-family: var(--font-sans);
+    font-size: var(--text-body);
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    /* Guards against any single wide child forcing a horizontal scrollbar.
+       Section-level overflow is still fixed at source, not masked here. */
+    overflow-x: clip;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  /* Visible, brand-consistent focus on every interactive element.
+     :focus-visible only, so pointer users never see a ring they did not earn. */
+  :focus-visible {
+    outline: 2px solid var(--color-mint);
+    outline-offset: 3px;
+    border-radius: var(--radius-sm);
+  }
+
+  /* Lenis drives scroll position; it needs native smooth scrolling off. */
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ==========================================================================
+   REDUCED MOTION
+   Prompt §46 / DOC2 §30: cinematic motion is removed, content and navigation
+   are fully preserved. The hero degrades to static key frames — handled in the
+   component, not hidden here.
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ==========================================================================
+   UTILITIES
+   ========================================================================== */
+
+@utility container-content {
+  width: 100%;
+  max-width: var(--container-content);
+  margin-inline: auto;
+  padding-inline: 1.5rem;
+}
+
+@utility container-wide {
+  width: 100%;
+  max-width: var(--container-wide);
+  margin-inline: auto;
+  padding-inline: 1.5rem;
+}
+
+/* The thin dividers that carry structure across the brand board. */
+@utility rule-dark {
+  border-top: 1px solid var(--color-line-dark);
+}
+
+@utility rule-light {
+  border-top: 1px solid var(--color-line-light);
+}
+
+/* Screen-reader-only, with a focusable variant for the skip link. */
+@utility sr-only-focusable {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+
+  &:focus {
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    z-index: 100;
+    width: auto;
+    height: auto;
+    margin: 0;
+    padding: 0.75rem 1.25rem;
+    overflow: visible;
+    clip-path: none;
+    background-color: var(--color-mint);
+    color: var(--color-obsidian);
+    font-weight: 600;
+    border-radius: var(--radius-md);
+  }
+}
