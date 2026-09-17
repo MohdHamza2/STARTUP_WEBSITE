@@ -83,6 +83,94 @@ Known issues: `leads.email` nullability unresolved (D1)
 
 # CHANGE LOG
 
+## 2026-09-18 (4)
+
+### Agent
+
+BACKEND + DATABASE + FRONTEND
+
+### Feature
+
+Phases 9–13 — database, backend, storage, email, spam protection, contact form
+
+### Work Completed
+
+**Database** — `supabase/migrations/0001_init.sql` implements DOC4 §4.31 and
+§4.32 verbatim: seven tables, thirteen indexes, UUID keys, CHECK constraints on
+`lead_type`, `status` and `consent_status`, and an `updated_at` trigger. The four
+outreach tables DOC4 §4.4 defers are deliberately not created.
+
+RLS is enabled on every table with **no policy**, which denies anon and
+authenticated everything — correct here because the app has no public accounts
+and all access is server-side. Default grants are also revoked as a second layer.
+The resume bucket is created private with a 10 MB limit and `application/pdf` as
+the only permitted MIME type.
+
+**Backend**
+- `lib/db/client.ts` — service-role client behind a `server-only` import, so a
+  stray import into a Client Component fails the build rather than shipping the
+  key to the browser.
+- `lib/security/turnstile.ts` — server-side token exchange with Cloudflare.
+  Fails closed when unconfigured.
+- `lib/security/rateLimit.ts` — fixed-window limiter, with its per-instance
+  limitation documented rather than implied.
+- `lib/email/notify.ts` — Resend notification and optional confirmation. Both
+  return results instead of throwing, so email failure cannot lose a lead.
+- `lib/actions/submitLead.ts` — three server actions following DOC5 §5.19.
+
+**Forms**
+- `Turnstile` implemented directly against Cloudflare's script, no wrapper dep
+- `Field` primitives with labels, `aria-describedby`, `aria-invalid`, `role=alert`
+- `ContactForm` with topic selection driving dynamic fields
+- `/contact` page
+
+### Verification
+
+- [x] Code reviewed
+- [x] Build passed — build, lint, typecheck clean; all 8 routes compile
+- [x] Tests passed — 30 unit tests
+- [x] Browser tested — form renders, 0 unlabelled controls, topic switch
+      verified to change both the message label and the consent text
+- [x] Responsive tested
+- [ ] **API tested — NOT VERIFIED END-TO-END**
+- [ ] **Database verified — NOT VERIFIED**
+- [ ] Regression tested — pending for the submit path
+
+**This is the honest state:** no Supabase, Resend or Turnstile credentials exist
+(owner decision D4), so the migration has never been applied and no submission
+has ever been written, uploaded or emailed. The code is complete and typechecked
+but the integration is unproven. It must not be reported as working until keys
+are supplied and a real submission is traced end to end.
+
+Because Turnstile fails closed, the form currently states plainly that it cannot
+accept submissions rather than appearing functional and failing on submit.
+
+### Security notes
+
+- Server re-validates with the same Zod schema; nothing from the client trusted
+- Turnstile verified server-side; a token is never treated as proof
+- Resume validated by MIME, size, extension AND leading `%PDF-` bytes, since a
+  declared content type is attacker-controlled
+- Filename sanitised; storage path built server-side from the lead id so a
+  crafted name cannot escape its prefix
+- No transaction available in supabase-js, so a failed detail insert triggers a
+  compensating delete of the parent lead, avoiding the partial state DOC5 §5.20
+  warns about
+- Resume contents never emailed and never logged
+- Error messages are generic; no database detail or ids reach the visitor
+
+### Commit
+
+`<pending>`
+
+### Remaining Work
+
+Phase 13 (recruiting and project forms as dedicated components), 14 (SEO:
+sitemap, robots), 15 (performance), 16 (final visual QA), plus the Playwright E2E
+suite. Then end-to-end verification once credentials exist.
+
+---
+
 ## 2026-09-18 (3)
 
 ### Agent
