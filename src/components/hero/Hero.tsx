@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { gsap } from "gsap";
@@ -49,6 +49,15 @@ export function Hero() {
   const hotspotRefs = useRef<(HTMLAnchorElement | null)[]>([]);
   const progressRef = useRef(0);
 
+  /**
+   * Holds the current paint function so newly-loaded frames can trigger a
+   * repaint. Stable identity, so passing it to the loaders does not restart
+   * their downloads. Without this the hero stays black on load until the
+   * visitor scrolls — the first paint runs before any frame has arrived.
+   */
+  const renderRef = useRef<() => void>(() => {});
+  const repaint = useCallback(() => renderRef.current(), []);
+
   useEffect(() => {
     const query = window.matchMedia("(prefers-reduced-motion: reduce)");
     const sync = () => setReducedMotion(query.matches);
@@ -68,27 +77,41 @@ export function Hero() {
   useEffect(() => {
     if (reducedMotion !== false) return;
     const controller = new AbortController();
+
     loadTimeline(controller.signal)
-      .then(setTimeline)
+      .then((loaded) => {
+        if (!controller.signal.aborted) setTimeline(loaded);
+      })
       // A failed timeline must not take the page down — the static hero is a
       // complete experience on its own (DOC5 §5.34: content never depends on
       // the animation system).
-      .catch(() => setTimeline(null));
+      //
+      // The aborted check is load-bearing, not defensive noise. Without it, an
+      // abort rejection from a superseded run lands in this catch and sets the
+      // timeline back to null — overwriting the result of the run that actually
+      // succeeded, and silently downgrading every visitor to the static hero.
+      // React's double-invoked effects make that the NORMAL path in development.
+      .catch(() => {
+        if (!controller.signal.aborted) setTimeline(null);
+      });
+
     return () => controller.abort();
   }, [reducedMotion]);
 
   const seq1 = useFrameSequence(
     tier && timeline ? `/hero/seq1/${tier}` : null,
     timeline?.sequences.seq1.frames ?? 0,
-    { priority: true },
+    { priority: true, onFrameLoad: repaint },
   );
   const seq2 = useFrameSequence(
     tier && timeline ? `/hero/seq2/${tier}` : null,
     timeline?.sequences.seq2.frames ?? 0,
+    { onFrameLoad: repaint },
   );
   const seq3 = useFrameSequence(
     tier && timeline ? `/hero/seq3/${tier}` : null,
     timeline?.sequences.seq3.frames ?? 0,
+    { onFrameLoad: repaint },
   );
 
   /* --- Scroll-driven render ---------------------------------------------- */
@@ -175,6 +198,9 @@ export function Hero() {
       });
     };
 
+    // Expose the current paint function to the frame loaders.
+    renderRef.current = render;
+
     const trigger = ScrollTrigger.create({
       trigger: container,
       start: "top top",
@@ -192,6 +218,7 @@ export function Hero() {
     return () => {
       trigger.kill();
       window.removeEventListener("resize", render);
+      renderRef.current = () => {};
     };
   }, [timeline, reducedMotion, seq1, seq2, seq3]);
 

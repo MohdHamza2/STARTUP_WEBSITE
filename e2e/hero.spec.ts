@@ -38,6 +38,53 @@ async function activePanel(page: Page) {
 }
 
 test.describe("hero panels", () => {
+  /**
+   * Regression: the hero must paint its opening frame WITHOUT any scroll.
+   *
+   * This bug shipped and the rest of this suite missed it, because every other
+   * hero test scrolls before asserting. The first paint ran before any frame
+   * had downloaded, drew nothing, and never re-ran — its only triggers were
+   * scroll and resize — so a visitor landing on the page saw pure black until
+   * they happened to scroll.
+   *
+   * Asserting on painted pixels rather than on element presence is the point:
+   * the canvas existed the whole time, it was simply blank.
+   */
+  test("paints the opening frame on load, with no scroll", async ({ page }) => {
+    await page.goto("/");
+
+    await expect
+      .poll(
+        async () =>
+          page.evaluate(() => {
+            // The main stage is the LAST canvas; the first is the closing card,
+            // which is correctly blank until late in the sequence.
+            const canvases = [
+              ...document.querySelectorAll<HTMLCanvasElement>("main canvas"),
+            ];
+            const canvas = canvases[canvases.length - 1];
+            if (!canvas?.width || !canvas.height) return 0;
+
+            const ctx = canvas.getContext("2d");
+            if (!ctx) return 0;
+
+            const { data } = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            let lit = 0;
+            for (let i = 0; i < data.length; i += 4) {
+              if (data[i] > 14 || data[i + 1] > 14 || data[i + 2] > 14) lit++;
+            }
+            return lit;
+          }),
+        {
+          message: "hero canvas never painted without a scroll",
+          timeout: 15_000,
+        },
+      )
+      .toBeGreaterThan(0);
+
+    expect(await page.evaluate(() => window.scrollY)).toBe(0);
+  });
+
   test("all six panels exist with the approved routing", async ({ page }) => {
     await page.goto("/");
     await page.waitForTimeout(1500);

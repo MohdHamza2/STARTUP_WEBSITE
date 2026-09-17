@@ -16,7 +16,24 @@ import { useCallback, useEffect, useRef } from "react";
 export function useFrameSequence(
   basePath: string | null,
   count: number,
-  { priority = false }: { priority?: boolean } = {},
+  {
+    priority = false,
+    onFrameLoad,
+  }: {
+    priority?: boolean;
+    /**
+     * Called after each frame finishes loading.
+     *
+     * Load-bearing: the consumer paints imperatively, so without this the first
+     * paint happens before any frame exists, draws nothing, and never runs
+     * again until a scroll or resize event. On a fresh page load that leaves
+     * the hero black until the visitor happens to scroll.
+     *
+     * Must be referentially stable — it is an effect dependency, and a new
+     * identity each render would restart the whole download.
+     */
+    onFrameLoad?: () => void;
+  } = {},
 ) {
   // Frames live in a ref, never in state. Loading 150 images would otherwise
   // trigger 150 re-renders of a component that paints to a canvas imperatively
@@ -55,6 +72,7 @@ export function useFrameSequence(
       img.onload = () => {
         if (cancelled) return;
         framesRef.current[index] = img;
+        onFrameLoad?.();
         loadNext();
       };
       // A single missing frame must not stall the sequence — `nearest()` falls
@@ -69,7 +87,7 @@ export function useFrameSequence(
     return () => {
       cancelled = true;
     };
-  }, [basePath, count, priority]);
+  }, [basePath, count, priority, onFrameLoad]);
 
   /** Nearest loaded frame to `index`, or null if nothing has loaded yet. */
   const nearest = useCallback(

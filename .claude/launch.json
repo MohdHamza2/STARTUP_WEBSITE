@@ -6,6 +6,13 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev"],
       "port": 3000
+    },
+    {
+      "comment": "Serves the production build. Run `npm run build` first. Use this to review the real site — the dev server's HMR degrades badly after many edits.",
+      "name": "genra-prod",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "start"],
+      "port": 3000
     }
   ]
 }

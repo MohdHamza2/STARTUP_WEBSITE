@@ -83,6 +83,76 @@ Known issues: `leads.email` nullability unresolved (D1)
 
 # CHANGE LOG
 
+## 2026-09-18 (8)
+
+### Agent
+
+FRONTEND
+
+### Feature
+
+Two hero bugs found by actually running the site
+
+### Context
+
+Asked to run the website, I started it and looked — which surfaced two real
+defects that 116 passing E2E tests had not. Both are cases where the tests
+verified structure but never the thing a visitor sees first.
+
+### Bugs Found
+
+1. **The hero never painted until the visitor scrolled.** On a fresh load the
+   canvas measured 300x150 — the HTML default — with zero painted pixels, so the
+   page showed pure black beneath the header.
+
+   Root cause: `render()` runs once on mount, before any frame has downloaded.
+   `nearest()` returns null, nothing is drawn, and `drawCover` — which sizes the
+   canvas — never executes. Its only other triggers are ScrollTrigger's
+   `onUpdate` and window resize, so with no scroll the hero stayed blank
+   indefinitely.
+
+   Why the suite missed it: every existing hero test scrolls before asserting.
+   They proved the sequence works once driven, never that it starts.
+
+   Fix: `useFrameSequence` accepts an `onFrameLoad` callback and fires it as each
+   frame arrives; `Hero` passes a referentially stable `repaint` backed by a ref,
+   so newly-loaded frames trigger a paint without restarting the download.
+   Added a regression test asserting painted PIXELS at `scrollY === 0` — element
+   presence would have passed throughout, since the canvas existed all along.
+
+2. **An aborted fetch could downgrade every visitor to the static hero.**
+   The timeline effect aborted its request on cleanup, and the abort rejection
+   landed in `.catch(() => setTimeline(null))` — overwriting the result of the
+   run that had actually succeeded. React's double-invoked effects make that the
+   normal path in development, and it is a genuine race anywhere the effect
+   re-runs. Symptom: `prefers-reduced-motion: false` and `timeline.json`
+   returning 200, yet `HeroStatic` rendering.
+
+   Fix: both handlers now check `controller.signal.aborted` before touching
+   state, so a superseded run can never clobber a live one.
+
+### Also
+
+- Added a `genra-prod` launch configuration. The dev server's HMR degrades badly
+  after a long editing session — it was serving stale errors referencing code
+  deleted hours earlier — so the production build is the reliable way to review
+  the real site.
+
+### Verification
+
+- [x] Build, lint, typecheck clean
+- [x] 30 unit tests
+- [x] 116 E2E tests across desktop, tablet and mobile, plus the new regression
+- [x] Browser tested against the production build: hero paints "Have an Idea?"
+      on load with no scroll, panels scrub, correct hotspot activates
+- [ ] API / database — still NOT verified (no credentials, D4)
+
+### Commit
+
+`<pending>`
+
+---
+
 ## 2026-09-18 (7)
 
 ### Agent
