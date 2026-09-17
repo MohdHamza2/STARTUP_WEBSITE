@@ -73,20 +73,23 @@ admin dashboard, CRM, client portal, payments, booking or CMS in this version.
 
 # 3. CURRENT DEVELOPMENT STATUS
 
-Current phase: BUILD — Phases 0–4 complete of 17
+Current phase: BUILD — Phases 0–12 complete, 14 partially
 
-Current feature: Next up is Phase 5 (homepage sections 2–13)
+Current feature: Next is Phase 13 (dedicated recruiting and project forms) and the
+Playwright E2E suite
 
-Current sprint: Frontend foundation
+Current sprint: Feature complete pass
 
-Overall completion: roughly 25% of the planned build.
+Overall completion: roughly 75% of the planned build.
 
-Done: scaffold and design system, layout shell (header/overlay menu/footer/404/error),
-hero asset pipeline, hero sequence with clickable service panels.
+Done: scaffold and design system; layout shell; hero asset pipeline; hero sequence with
+clickable panels; all homepage sections; `/software`, `/recruiting`, `/about`, `/contact`,
+`/privacy`, `/terms`; database migration; server actions; storage; email; Turnstile; rate
+limiting; shared validation with 30 passing unit tests; sitemap and robots.
 
-Not started: homepage sections beyond the brand statement, `/software`, `/recruiting`,
-`/about`, `/contact`, legal pages, database, backend, storage, email, all three forms,
-SEO, performance pass, automated tests.
+Remaining: dedicated recruiting and project form components (the contact form covers both
+funnels today), Playwright E2E suite, performance pass, final visual QA — and end-to-end
+verification of the submit path, which is blocked on credentials.
 
 All six owner decisions D1–D6 are resolved — see `Reports/Implementation_Plan.md` §9.
 
@@ -467,28 +470,37 @@ Shared files must be coordinated, not silently claimed.
 
 ## Last Agent
 
-FRONTEND
+BACKEND + DATABASE + FRONTEND
 
 ## Last Completed Task
 
-Phases 0–4: scaffold and design system, layout shell, hero asset pipeline, hero sequence
-with clickable service panels. Three commits on `arsh`, all browser-verified.
+Phases 5–12 plus SEO: all homepage sections, every route, the database migration, server
+actions, storage, email, Turnstile, rate limiting, validation with 30 passing unit tests,
+sitemap and robots. Eight commits on `arsh`.
 
 ## Current State
 
-The site builds, lints and typechecks clean. Homepage renders the full hero story and the
-brand statement. Header, overlay menu, footer, 404 and error boundary all work. The hero
-asset pipeline derives panel geometry from the frames and is idempotent.
+Build, lint and typecheck are clean across ten routes. 30 unit tests pass. Every page
+renders and every internal link resolves.
 
-Routes `/software`, `/recruiting`, `/about`, `/contact`, `/privacy`, `/terms` **do not exist
-yet** — hero panels and nav links currently resolve to the 404 page. That is expected at
-this phase, not a defect, and Phases 6–8 create them.
+**The submit path has never been executed.** No Supabase, Resend or Turnstile credentials
+exist, so the migration has not been applied and no submission has been written, uploaded
+or emailed. The code is written and typechecked; the integration is unproven. Do not
+describe it as working until a real submission is traced end to end.
+
+Because Turnstile fails closed, `/contact` currently tells the visitor plainly that it
+cannot accept submissions, rather than appearing functional and failing on submit.
 
 ## Exact Next Action
 
-Phase 5 — homepage sections 2–13 per prompt §6, starting with the Software/Recruiting
-editorial split (§13), then What We Build (§14), Process (§19), capabilities (§21),
-recruiting intro (§24) and the final CTA (§30).
+1. Apply `supabase/migrations/0001_init.sql` once a Supabase project exists.
+2. Build the dedicated recruiting form (with resume upload) and project form (with the
+   conditional "Other" field) as their own components — the schemas and server actions for
+   both already exist, only the UI is missing.
+3. Write the Playwright E2E suite: the six hero panel routes, hover-does-not-navigate,
+   keyboard activation, the project dropdown catalog, the Other field in both directions,
+   and the recruiting form's file rules.
+4. Performance pass and final visual QA.
 
 ## Important Warning
 
