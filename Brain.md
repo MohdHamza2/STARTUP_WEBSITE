@@ -73,23 +73,23 @@ admin dashboard, CRM, client portal, payments, booking or CMS in this version.
 
 # 3. CURRENT DEVELOPMENT STATUS
 
-Current phase: BUILD — Phases 0–12 complete, 14 partially
+Current phase: BUILD COMPLETE — all 17 phases implemented
 
-Current feature: Next is Phase 13 (dedicated recruiting and project forms) and the
-Playwright E2E suite
+Current feature: none in progress
 
-Current sprint: Feature complete pass
+Current sprint: awaiting credentials for end-to-end verification
 
-Overall completion: roughly 75% of the planned build.
+Overall completion: the build is feature-complete. The only outstanding
+implementation work is whatever the owner decides after reviewing it.
 
 Done: scaffold and design system; layout shell; hero asset pipeline; hero sequence with
-clickable panels; all homepage sections; `/software`, `/recruiting`, `/about`, `/contact`,
-`/privacy`, `/terms`; database migration; server actions; storage; email; Turnstile; rate
-limiting; shared validation with 30 passing unit tests; sitemap and robots.
+clickable panels; all homepage sections; every route including legal pages; database
+migration; server actions; storage; email; Turnstile; rate limiting; all three forms;
+SEO; performance pass; 30 unit tests and 84 E2E tests across desktop, tablet and mobile.
 
-Remaining: dedicated recruiting and project form components (the contact form covers both
-funnels today), Playwright E2E suite, performance pass, final visual QA — and end-to-end
-verification of the submit path, which is blocked on credentials.
+**Not verified: the submit path.** No Supabase, Resend or Turnstile credentials exist, so
+the migration has never been applied and no submission has been written, uploaded or
+emailed. Treat that integration as unproven until a real submission is traced end to end.
 
 All six owner decisions D1–D6 are resolved — see `Reports/Implementation_Plan.md` §9.
 
@@ -493,14 +493,15 @@ cannot accept submissions, rather than appearing functional and failing on submi
 
 ## Exact Next Action
 
-1. Apply `supabase/migrations/0001_init.sql` once a Supabase project exists.
-2. Build the dedicated recruiting form (with resume upload) and project form (with the
-   conditional "Other" field) as their own components — the schemas and server actions for
-   both already exist, only the UI is missing.
-3. Write the Playwright E2E suite: the six hero panel routes, hover-does-not-navigate,
-   keyboard activation, the project dropdown catalog, the Other field in both directions,
-   and the recruiting form's file rules.
-4. Performance pass and final visual QA.
+1. Create the Supabase project and apply `supabase/migrations/0001_init.sql`.
+2. Fill `.env.local` from `.env.example` — Supabase, Resend, Turnstile.
+3. Trace one real submission end to end: form → `leads` row → detail row → resume in the
+   private bucket → `lead_events` row → team notification email. Only then may the submit
+   path be described as working.
+4. Supply the business facts under D2/D3 so the footer, `/contact`, `/privacy` and the
+   sitemap can render them. Search `TODO(business-facts)`.
+5. Optional: `npx playwright install webkit` and switch the tablet project back to
+   `devices["iPad (gen 7)"]` if real Safari coverage is wanted.
 
 ## Important Warning
 

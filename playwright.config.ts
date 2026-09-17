@@ -1,6 +1,17 @@
 import { defineConfig, devices } from "@playwright/test";
 
-const PORT = 3000;
+/**
+ * Deliberately NOT 3000.
+ *
+ * With the dev server on 3000, `reuseExistingServer` silently pointed the suite
+ * at it instead of building production. Next compiles routes on demand, so under
+ * parallel workers hydration had not finished before assertions ran and tests
+ * failed for reasons that had nothing to do with the code. It happened twice.
+ *
+ * A dedicated port means `npm run e2e` always tests a production build, whether
+ * or not a dev server is running.
+ */
+const PORT = 3100;
 const baseURL = `http://127.0.0.1:${PORT}`;
 
 export default defineConfig({
@@ -45,7 +56,7 @@ export default defineConfig({
   ],
 
   webServer: {
-    command: "npm run build && npm run start",
+    command: `npm run build && npm run start -- --port ${PORT}`,
     url: baseURL,
     reuseExistingServer: !process.env.CI,
     timeout: 180_000,
