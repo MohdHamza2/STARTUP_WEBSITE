@@ -1,12 +1,14 @@
 ﻿"use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect, useState } from "react";
 import Link from "next/link";
 import { submitRecruiting, IDLE } from "@/lib/actions/submitLead";
 import { visaStatusOptions, educationOptions } from "@/content/recruiting";
 import { TextField, TextArea, SelectField, Checkbox } from "./Field";
 import { ResumeUpload } from "./ResumeUpload";
 import { Turnstile } from "./Turnstile";
+import { Attribution } from "./Attribution";
+import { createStartTracker, trackEvent } from "@/lib/analytics/track";
 import { cn } from "@/lib/utils";
 
 const toOptions = (values: readonly string[]) =>
@@ -29,6 +31,20 @@ const toOptions = (values: readonly string[]) =>
  */
 export function RecruitingForm() {
   const [state, action, pending] = useActionState(submitRecruiting, IDLE);
+
+  // Lazy state initialiser rather than a ref: the tracker must be created once
+  // and is read during render to attach as a handler, which a ref forbids.
+  const [trackStart] = useState(() =>
+    createStartTracker("recruiting_form_started"),
+  );
+
+  useEffect(() => {
+    if (state.status === "success") {
+      trackEvent("recruiting_form_submitted");
+    } else if (state.status === "error") {
+      trackEvent("form_submit_failed", { form: "recruiting" });
+    }
+  }, [state.status]);
 
   if (state.status === "success") {
     return (
@@ -56,7 +72,14 @@ export function RecruitingForm() {
   }
 
   return (
-    <form action={action} noValidate className="space-y-14">
+    <form
+      action={action}
+      onFocus={trackStart}
+      noValidate
+      className="space-y-14"
+    >
+      <Attribution />
+
       <Section title="About you">
         <div className="grid gap-8 sm:grid-cols-2">
           <TextField

@@ -166,6 +166,57 @@ test.describe("recruiting form", () => {
   });
 });
 
+test.describe("lead attribution", () => {
+  test("captures source and UTM parameters from the landing URL", async ({
+    page,
+  }) => {
+    await page.goto(
+      "/contact?source=linkedin&utm_source=li&utm_medium=social&utm_campaign=fall-2026",
+    );
+    await page.waitForTimeout(600);
+
+    const values = await page.evaluate(() => {
+      const form = document.querySelector("form")!;
+      const read = (name: string) =>
+        form.querySelector<HTMLInputElement>(`input[name="${name}"]`)?.value ?? "";
+      return {
+        source: read("source"),
+        utmSource: read("utmSource"),
+        utmMedium: read("utmMedium"),
+        utmCampaign: read("utmCampaign"),
+      };
+    });
+
+    expect(values).toEqual({
+      source: "linkedin",
+      utmSource: "li",
+      utmMedium: "social",
+      utmCampaign: "fall-2026",
+    });
+  });
+
+  test("attribution survives navigating to another page before submitting", async ({
+    page,
+  }) => {
+    // First touch carries the campaign; the visitor then browses elsewhere and
+    // submits there. Reading only location.search at submit time would lose it.
+    await page.goto("/?source=reddit&utm_campaign=spring");
+    await page.waitForTimeout(500);
+
+    await page.goto("/recruiting#apply");
+    await page.waitForTimeout(700);
+
+    const values = await page.evaluate(() => {
+      const form = document.querySelector("form")!;
+      const read = (name: string) =>
+        form.querySelector<HTMLInputElement>(`input[name="${name}"]`)?.value ?? "";
+      return { source: read("source"), utmCampaign: read("utmCampaign") };
+    });
+
+    expect(values).toEqual({ source: "reddit", utmCampaign: "spring" });
+  });
+});
+
 test.describe("contact form", () => {
   test("topic selection changes the message field and consent text", async ({
     page,

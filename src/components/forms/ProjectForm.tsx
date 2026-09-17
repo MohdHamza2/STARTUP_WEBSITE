@@ -1,11 +1,13 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useEffect, useState } from "react";
 import Link from "next/link";
 import { submitProject, IDLE } from "@/lib/actions/submitLead";
 import { projectTypeOptions, OTHER_PROJECT_TYPE } from "@/content/services";
 import { TextField, TextArea, SelectField, Checkbox } from "./Field";
 import { Turnstile } from "./Turnstile";
+import { Attribution } from "./Attribution";
+import { createStartTracker, trackEvent } from "@/lib/analytics/track";
 import { cn } from "@/lib/utils";
 
 /**
@@ -24,6 +26,19 @@ import { cn } from "@/lib/utils";
 export function ProjectForm() {
   const [state, action, pending] = useActionState(submitProject, IDLE);
   const [projectType, setProjectType] = useState("");
+
+  const [trackStart] = useState(() =>
+    createStartTracker("software_form_started"),
+  );
+
+  useEffect(() => {
+    if (state.status === "success") {
+      // The chosen service is a useful signal and is not personal data.
+      trackEvent("software_form_submitted", { projectType });
+    } else if (state.status === "error") {
+      trackEvent("form_submit_failed", { form: "project" });
+    }
+  }, [state.status, projectType]);
 
   const isOther = projectType === OTHER_PROJECT_TYPE;
 
@@ -51,7 +66,14 @@ export function ProjectForm() {
   }
 
   return (
-    <form action={action} noValidate className="space-y-10">
+    <form
+      action={action}
+      onFocus={trackStart}
+      noValidate
+      className="space-y-10"
+    >
+      <Attribution />
+
       <div className="grid gap-8 sm:grid-cols-2">
         <TextField
           name="name"

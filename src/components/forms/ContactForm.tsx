@@ -1,11 +1,13 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useEffect, useState } from "react";
 import Link from "next/link";
 import { submitContact, IDLE } from "@/lib/actions/submitLead";
 import { CONTACT_TOPICS, type ContactTopic } from "@/lib/validation/schemas";
 import { TextField, TextArea, Checkbox } from "./Field";
 import { Turnstile } from "./Turnstile";
+import { Attribution } from "./Attribution";
+import { createStartTracker, trackEvent } from "@/lib/analytics/track";
 import { cn } from "@/lib/utils";
 
 const TOPIC_LABELS: Record<ContactTopic, { title: string; blurb: string }> = {
@@ -34,6 +36,21 @@ export function ContactForm() {
   const [state, action, pending] = useActionState(submitContact, IDLE);
   const [topic, setTopic] = useState<ContactTopic>("software");
 
+  // Fires once, on first interaction — so form STARTS are measurable separately
+  // from form views and abandonment is visible (DOC1 §33).
+  const [trackStart] = useState(() =>
+    createStartTracker("contact_form_started"),
+  );
+
+  useEffect(() => {
+    if (state.status === "success") {
+      trackEvent("contact_form_submitted", { topic });
+    } else if (state.status === "error") {
+      // The reason only — never the field values.
+      trackEvent("form_submit_failed", { form: "contact", topic });
+    }
+  }, [state.status, topic]);
+
   if (state.status === "success") {
     return (
       <div
@@ -61,7 +78,14 @@ export function ContactForm() {
   }
 
   return (
-    <form action={action} noValidate className="space-y-10">
+    <form
+      action={action}
+      onFocus={trackStart}
+      noValidate
+      className="space-y-10"
+    >
+      <Attribution />
+
       {/* Topic selection — radios, so it works without JS and is keyboard
           navigable as a group. */}
       <fieldset>

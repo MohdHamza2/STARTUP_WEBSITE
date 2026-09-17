@@ -83,6 +83,86 @@ Known issues: `leads.email` nullability unresolved (D1)
 
 # CHANGE LOG
 
+## 2026-09-18 (7)
+
+### Agent
+
+FRONTEND + BACKEND
+
+### Feature
+
+Closing three gaps between the documentation and the implementation
+
+### Context
+
+Asked whether only credentials and business facts remained, I audited the code
+against the docs instead of answering from memory. Three specified behaviours had
+never been built — including one I had explicitly promised in my own plan.
+
+### Work Completed
+
+1. **Analytics events** (DOC5 §5.39 acceptance criteria; plan conflict C6).
+   `lib/analytics/track.ts` is the thin adapter the plan committed to and never
+   delivered. Call sites emit `*_form_started`, `*_form_submitted`,
+   `resume_selected` and `form_submit_failed`; a provider attaches in Phase 4
+   without touching any of them. Until then events log in development and go
+   nowhere in production — no vendor SDK, no tracking cookie.
+   Event properties carry no personal data: which form, which project type,
+   resume size in KB. Never a name, email, phone or filename, since filenames
+   routinely contain the candidate's name.
+   Start events fire on first focus, so form STARTS are measurable separately
+   from views and abandonment is visible (DOC1 §33).
+
+2. **Lead attribution** (DOC5 §5.27; DOC2 §39). The schemas accepted `source`
+   and five UTM fields but nothing populated them, so every lead would have
+   recorded `source=WEBSITE` with no campaign.
+   `components/forms/Attribution.tsx` captures them from the landing URL and
+   submits them as hidden fields. Deliberately FIRST-touch, held in
+   `sessionStorage`: a visitor who arrives from a campaign, browses to another
+   page and submits there still carries the original attribution. Reading only
+   `location.search` at submit time would attribute that lead to nothing, which
+   is the usual way this gets built wrong — and is covered by a test.
+   Falls back to the referrer hostname when no campaign tag is present.
+
+3. **Duplicate detection** (DOC4 §4.26). Not implemented; every submission
+   created a new lead. DOC4 is deliberate that `UNIQUE(email)` is NOT a database
+   constraint, because one person may legitimately raise different enquiries, so
+   detection belongs in business logic. A repeat of the same email AND lead type
+   within 30 minutes now records a `DUPLICATE_SUBMISSION` event against the
+   existing lead instead of creating a second one. The visitor still sees
+   success, because from their side the enquiry did arrive. This complements the
+   disabled submit button: that stops a double click, this stops a
+   refresh-and-resubmit later.
+
+### Verification
+
+- [x] Build, lint, typecheck clean
+- [x] 30 unit tests
+- [x] E2E green, with two new attribution tests including the cross-page
+      first-touch case
+- [ ] API / database — still NOT verified (no credentials, D4). Duplicate
+      detection in particular is written but has never run against a database.
+
+### Bugs Found
+
+1. **`useRef().current` read during render** in all three forms —
+   `react-hooks/refs`. Replaced with a lazy `useState` initialiser, which gives
+   a guaranteed-stable value that may be read during render.
+2. **`setState` inside an effect** in `Attribution`. Rewritten to write straight
+   to the uncontrolled inputs via a ref, which is the textbook use of an effect
+   — synchronising the DOM — and avoids re-rendering the whole form for data
+   nobody reads.
+
+### Commit
+
+`<pending>`
+
+### Remaining Work
+
+Nothing further that is not blocked on owner input.
+
+---
+
 ## 2026-09-18 (6)
 
 ### Agent

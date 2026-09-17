@@ -129,6 +129,52 @@ interface LeadCore {
  *
  * Returns the lead id, or null when persistence failed.
  */
+/**
+ * Duplicate detection (DOC4 §4.26).
+ *
+ * DOC4 is deliberate that `UNIQUE(email)` is NOT enforced in the database,
+ * because the same person may legitimately submit different service enquiries.
+ * Detection therefore happens here, in business logic, and is scoped to the
+ * same email AND the same lead type within a short window.
+ *
+ * A repeat submission does not create a second lead and is not rejected either
+ * — the visitor still sees success, because from their side the enquiry did
+ * arrive. It is recorded as a DUPLICATE_SUBMISSION event against the existing
+ * lead so the team can see it happened.
+ *
+ * This complements the disabled submit button (DOC5 §5.36): that stops a double
+ * click, this stops a refresh-and-resubmit ten minutes later.
+ */
+const DUPLICATE_WINDOW_MS = 30 * 60 * 1000;
+
+async function findRecentDuplicate(
+  email: string,
+  leadType: "RECRUITING" | "SOFTWARE",
+): Promise<string | null> {
+  const db = getServiceClient();
+  if (!db) return null;
+
+  const since = new Date(Date.now() - DUPLICATE_WINDOW_MS).toISOString();
+
+  const { data, error } = await db
+    .from("leads")
+    .select("id")
+    .eq("email", email)
+    .eq("lead_type", leadType)
+    .gte("created_at", since)
+    .limit(1)
+    .maybeSingle();
+
+  // A lookup failure must not block a genuine submission — fall through and
+  // create the lead rather than losing it.
+  if (error) {
+    console.error("[submit] duplicate lookup failed:", error.message);
+    return null;
+  }
+
+  return (data?.id as string | undefined) ?? null;
+}
+
 async function createLead(
   core: LeadCore,
   detailTable: "recruiting_leads" | "software_leads",
@@ -268,6 +314,17 @@ export async function submitRecruiting(
   if (blocked) return blocked;
 
   const d = parsed.data;
+
+  const duplicate = await findRecentDuplicate(d.email, "RECRUITING");
+  if (duplicate) {
+    await recordEvent(duplicate, "DUPLICATE_SUBMISSION", {
+      lead_type: "RECRUITING",
+      source: d.source || "WEBSITE",
+    });
+    // Success from the visitor's point of view — their profile did arrive.
+    return { status: "success", message: MESSAGES.success };
+  }
+
   const leadId = await createLead(
     {
       leadType: "RECRUITING",
@@ -372,6 +429,19 @@ export async function submitProject(
    */
   const isRecruiting = d.projectType === "CAREER_AND_RECRUITING";
 
+  const duplicate = await findRecentDuplicate(
+    d.email,
+    isRecruiting ? "RECRUITING" : "SOFTWARE",
+  );
+  if (duplicate) {
+    await recordEvent(duplicate, "DUPLICATE_SUBMISSION", {
+      lead_type: isRecruiting ? "RECRUITING" : "SOFTWARE",
+      project_type: d.projectType,
+      source: d.source || "WEBSITE",
+    });
+    return { status: "success", message: MESSAGES.success };
+  }
+
   const leadId = isRecruiting
     ? await createLead(
         {
@@ -461,6 +531,16 @@ export async function submitContact(
   const d = parsed.data;
   const isRecruiting = d.topic === "recruiting";
   const leadType = isRecruiting ? "RECRUITING" : "SOFTWARE";
+
+  const duplicate = await findRecentDuplicate(d.email, leadType);
+  if (duplicate) {
+    await recordEvent(duplicate, "DUPLICATE_SUBMISSION", {
+      lead_type: leadType,
+      origin: "CONTACT_FORM",
+      source: d.source || "WEBSITE",
+    });
+    return { status: "success", message: MESSAGES.success };
+  }
 
   const leadId = await createLead(
     {

@@ -6,6 +6,7 @@ import {
   RESUME_MAX_BYTES,
   RESUME_ACCEPTED_EXTENSIONS,
 } from "@/lib/validation/schemas";
+import { trackEvent } from "@/lib/analytics/track";
 import { cn } from "@/lib/utils";
 
 /**
@@ -56,6 +57,8 @@ export function ResumeUpload({ error }: { error?: string }) {
     }
     setLocalError(null);
     setFile(candidate);
+    // Size only — never the filename, which often contains the candidate's name.
+    trackEvent("resume_selected", { sizeKb: Math.round(candidate.size / 1024) });
   }
 
   function clear() {
