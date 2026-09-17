@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import Link from "next/link";
 import { site } from "@/config/site";
 
@@ -12,25 +12,25 @@ export const metadata: Metadata = {
 /**
  * /privacy
  *
- * ACCURACY CONSTRAINT (prompt §77; DOC4 §4.30; DOC1 §38):
+ * ACCURACY CONSTRAINT (prompt Â§77; DOC4 Â§4.30; DOC1 Â§38):
  * Privacy language must reflect what the system actually does. Specifically:
  *
- *  - No retention PERIOD is stated. DOC4 §4.30 explicitly defers setting one and
+ *  - No retention PERIOD is stated. DOC4 Â§4.30 explicitly defers setting one and
  *    forbids inventing arbitrary periods. The basis for retention IS stated,
  *    because that part is defined. When the owner sets a period, replace the
  *    marked paragraph. TODO(business-facts).
- *  - No "we never store your data" or similar claim appears — it would be false.
+ *  - No "we never store your data" or similar claim appears â€” it would be false.
  *  - No data controller identity, postal address or DPO contact is given,
  *    because no legal entity is on record. TODO(business-facts).
  *
  * This page describes the implementation honestly. It is not legal advice and
- * should be reviewed before production launch (DOC1 §38, DOC5 §5.30).
+ * should be reviewed before production launch (DOC1 Â§38, DOC5 Â§5.30).
  */
 export default function PrivacyPage() {
   return (
     <div className="bg-obsidian">
       <div className="container-content pb-32 pt-40">
-        <p className="text-eyebrow uppercase text-graphite">Legal</p>
+        <p className="text-eyebrow uppercase text-silver">Legal</p>
         <h1 className="mt-6 text-display text-ivory">Privacy</h1>
 
         <div className="mt-16 space-y-14">
@@ -47,7 +47,7 @@ export default function PrivacyPage() {
               {[
                 "Your name and email address.",
                 "Your phone number, if you provide one.",
-                "For recruiting enquiries: education, university, graduation year, work authorisation status, target role, preferred industry and location, and a LinkedIn URL — all optional.",
+                "For recruiting enquiries: education, university, graduation year, work authorisation status, target role, preferred industry and location, and a LinkedIn URL â€” all optional.",
                 "For project enquiries: company, project type and a description of what you need.",
                 "A resume file, if you choose to upload one.",
                 "Anything you write in a free-text field.",
@@ -77,7 +77,7 @@ export default function PrivacyPage() {
             <p>
               Form submissions are stored in a PostgreSQL database hosted on
               Supabase. Resume files are stored separately in a private storage
-              bucket — they are not public, and there is no public URL that
+              bucket â€” they are not public, and there is no public URL that
               exposes them. Access happens server-side; your browser never talks
               to the database directly.
             </p>
@@ -96,7 +96,7 @@ export default function PrivacyPage() {
 
           <Section title="How long we keep it">
             {/* TODO(business-facts): no retention PERIOD is stated here because
-                none has been set. DOC4 §4.30 defers this and forbids inventing
+                none has been set. DOC4 Â§4.30 defers this and forbids inventing
                 one. Replace this paragraph once the owner defines a period. */}
             <p>
               Enquiry records are kept for as long as they are needed for

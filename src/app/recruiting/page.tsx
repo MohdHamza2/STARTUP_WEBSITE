@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import { PageHero } from "@/components/sections/PageHero";
 import { Reveal } from "@/components/ui/Reveal";
 import { RecruitingForm } from "@/components/forms/RecruitingForm";
@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     "GENRA handles the job-application workflow for international students, recent graduates and early-career professionals targeting US employment.",
   alternates: { canonical: "/recruiting" },
   openGraph: {
-    title: "GENRA — Career & Recruiting",
+    title: "GENRA â€” Career & Recruiting",
     description:
       "You find the opportunity. GENRA handles the applications.",
     url: "/recruiting",
@@ -26,15 +26,15 @@ export const metadata: Metadata = {
  * /recruiting
  *
  * Its own identity within the GENRA system, not a duplicate of the software
- * hero (prompt §25).
+ * hero (prompt Â§25).
  *
  * TRUTHFULNESS: no promise of a job, interview, offer, placement or outcome
- * appears anywhere, and there are no statistics (§25; DOC1 §43). Per §27 there
- * is no "What We Don't Promise" section — step 04 of the process states who owns
+ * appears anywhere, and there are no statistics (Â§25; DOC1 Â§43). Per Â§27 there
+ * is no "What We Don't Promise" section â€” step 04 of the process states who owns
  * hiring decisions, which carries the same information without the defensive
  * framing.
  *
- * The CTA is "Get Started", never "Start a Project" (§28).
+ * The CTA is "Get Started", never "Start a Project" (Â§28).
  */
 export default function RecruitingPage() {
   return (
@@ -55,7 +55,7 @@ export default function RecruitingPage() {
         <div className="container-wide py-32 sm:py-40">
           <div className="grid gap-16 lg:grid-cols-[minmax(0,24rem)_1fr] lg:gap-24">
             <Reveal>
-              <p className="text-eyebrow uppercase text-graphite">Who it&apos;s for</p>
+              <p className="text-eyebrow uppercase text-silver">Who it&apos;s for</p>
               <h2 id="audience-heading" className="mt-5 text-h2 text-ivory">
                 Built around one problem.
               </h2>
@@ -87,7 +87,7 @@ export default function RecruitingPage() {
       <section aria-labelledby="how-heading" className="bg-obsidian">
         <div className="container-wide py-32 sm:py-40">
           <Reveal>
-            <p className="text-eyebrow uppercase text-graphite">How it works</p>
+            <p className="text-eyebrow uppercase text-silver">How it works</p>
             <h2 id="how-heading" className="mt-5 max-w-2xl text-h2 text-ivory">
               Four steps, stated plainly.
             </h2>
@@ -123,7 +123,7 @@ export default function RecruitingPage() {
         <div className="container-wide py-32 sm:py-40">
           <div className="grid gap-16 lg:grid-cols-[minmax(0,24rem)_1fr] lg:gap-24">
             <Reveal>
-              <p className="text-eyebrow uppercase text-graphite">
+              <p className="text-eyebrow uppercase text-silver">
                 What we ask for
               </p>
               <h2 id="inputs-heading" className="mt-5 text-h2 text-ivory">
@@ -154,7 +154,7 @@ export default function RecruitingPage() {
         </div>
       </section>
 
-      {/* Form — the conversion point, inline rather than behind another click */}
+      {/* Form â€” the conversion point, inline rather than behind another click */}
       <section
         id="apply"
         aria-labelledby="recruiting-cta-heading"

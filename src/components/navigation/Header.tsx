@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
@@ -11,11 +11,11 @@ import { cn } from "@/lib/utils";
 /**
  * Global header.
  *
- * Prompt §5 is explicit about what may appear here:
+ * Prompt Â§5 is explicit about what may appear here:
  *   - Left: the GENRA logo
  *   - Primary nav: Software and Recruiting, and NOTHING else
  *   - No About, no Contact, no "Start a Project", no sign-up button
- * Everything else lives in the overlay menu (prompt §37).
+ * Everything else lives in the overlay menu (prompt Â§37).
  *
  * The header is transparent over the hero and gains a surface once the visitor
  * scrolls, so it never competes with the opening sequence.
@@ -37,7 +37,7 @@ export function Header() {
 
   // Close on route change, so a client-side navigation never strands the overlay.
   // Adjusting state during render is React's documented pattern for deriving
-  // state from a changed input — an effect here would cause a cascading render
+  // state from a changed input â€” an effect here would cause a cascading render
   // and leave the overlay visible for a frame after navigating.
   const [lastPath, setLastPath] = useState(pathname);
   if (pathname !== lastPath) {
@@ -101,13 +101,13 @@ export function Header() {
         )}
       >
         <div className="container-wide flex h-20 items-center justify-between">
-          <Link href="/" aria-label="GENRA — home" className="relative z-10">
+          <Link href="/" aria-label="GENRA â€” home" className="relative z-10">
             <Logo />
           </Link>
 
           <div className="flex items-center gap-8">
             {/* Below md the logo, two nav items and the trigger collide at 375px.
-                Navigation becomes the hamburger there (prompt §45) — nothing is
+                Navigation becomes the hamburger there (prompt Â§45) â€” nothing is
                 lost, because the overlay already lists Software and Recruiting. */}
             <nav aria-label="Primary" className="hidden md:block">
               <ul className="flex items-center gap-8">
@@ -155,7 +155,7 @@ export function Header() {
         </div>
       </header>
 
-      {/* Overlay menu — prompt §37: premium and simple, never a mega-menu. */}
+      {/* Overlay menu â€” prompt Â§37: premium and simple, never a mega-menu. */}
       <div
         id="site-menu"
         role="dialog"
@@ -229,7 +229,7 @@ export function Header() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="text-caption text-graphite transition-colors hover:text-silver"
+                  className="text-caption text-silver transition-colors hover:text-silver"
                 >
                   {item.label}
                 </Link>

@@ -1,20 +1,20 @@
-import Image from "next/image";
+﻿import Image from "next/image";
 import { projects } from "@/content/projects";
 import { Reveal } from "@/components/ui/Reveal";
 
 /**
- * "Ideas we've brought to life." (prompt §22)
+ * "Ideas we've brought to life." (prompt Â§22)
  *
  * Renders nothing while no verified project exists.
  *
- * §22 offers two options: omit the section, or ship an empty structural one that
+ * Â§22 offers two options: omit the section, or ship an empty structural one that
  * can be populated later. Taken literally, an empty-but-visible section reads as
- * broken to a visitor, so this takes the spirit of both — the component and its
+ * broken to a visitor, so this takes the spirit of both â€” the component and its
  * layout exist and are wired to `projects`, but output nothing until there is
  * something true to show. Adding one verified entry makes the section appear.
  *
  * The layout is large-format visual storytelling rather than a case-study card
- * grid, which §22 rules out.
+ * grid, which Â§22 rules out.
  */
 export function SelectedWork() {
   if (projects.length === 0) return null;
@@ -23,7 +23,7 @@ export function SelectedWork() {
     <section aria-labelledby="work-heading" className="bg-obsidian">
       <div className="container-wide py-32 sm:py-40">
         <Reveal>
-          <p className="text-eyebrow uppercase text-graphite">Selected work</p>
+          <p className="text-eyebrow uppercase text-silver">Selected work</p>
           <h2 id="work-heading" className="mt-5 max-w-3xl text-h2 uppercase text-ivory">
             Ideas we&apos;ve brought to life.
           </h2>
@@ -46,7 +46,7 @@ export function SelectedWork() {
                 )}
                 <div>
                   {project.year && (
-                    <p className="font-display text-caption text-graphite">
+                    <p className="font-display text-caption text-silver">
                       {project.year}
                     </p>
                   )}

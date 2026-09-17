@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useId } from "react";
 import type { ReactNode } from "react";
@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 /**
  * Form field primitives.
  *
- * Accessibility contract, applied consistently (prompt §32, §46; DOC5 §5.31):
+ * Accessibility contract, applied consistently (prompt Â§32, Â§46; DOC5 Â§5.31):
  *  - every control has a real <label>, associated by id
  *  - errors are linked with aria-describedby and announced via role="alert"
  *  - aria-invalid marks the control itself, so a screen reader announces the
@@ -18,7 +18,7 @@ import { cn } from "@/lib/utils";
 
 const controlClass =
   "w-full rounded-md border border-line-dark bg-card-dark px-4 py-3.5 text-body " +
-  "text-ivory placeholder:text-graphite transition-colors duration-[var(--duration-fast)] " +
+  "text-ivory placeholder:text-silver transition-colors duration-[var(--duration-fast)] " +
   "hover:border-graphite focus:border-mint focus:outline-none " +
   "aria-[invalid=true]:border-red-500/70";
 
@@ -42,11 +42,11 @@ function Shell({
       <label htmlFor={id} className="block text-caption font-medium text-silver">
         {label}
         {optional && (
-          <span className="ml-2 font-normal text-graphite">Optional</span>
+          <span className="ml-2 font-normal text-silver">Optional</span>
         )}
       </label>
       {hint && (
-        <p id={`${id}-hint`} className="mt-1.5 text-caption text-graphite">
+        <p id={`${id}-hint`} className="mt-1.5 text-caption text-silver">
           {hint}
         </p>
       )}
@@ -152,7 +152,7 @@ export function SelectField({
   optional,
   hint,
   error,
-  placeholder = "Select…",
+  placeholder = "Selectâ€¦",
   value,
   onChange,
 }: {

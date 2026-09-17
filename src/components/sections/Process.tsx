@@ -1,13 +1,13 @@
-import { processSteps } from "@/content/services";
+﻿import { processSteps } from "@/content/services";
 import { Reveal } from "@/components/ui/Reveal";
 
 /**
- * GENRA process (prompt §19).
+ * GENRA process (prompt Â§19).
  *
  * "Do not turn this into five giant icon cards. Use typography, movement and
  * whitespace. The process should feel like a journey."
  *
- * So: a single continuous rule with the five steps marked along it — horizontal
+ * So: a single continuous rule with the five steps marked along it â€” horizontal
  * on desktop, vertical on mobile. The line IS the journey; the steps sit on it.
  * No cards, no icons, no boxes.
  */
@@ -16,7 +16,7 @@ export function Process() {
     <section aria-labelledby="process-heading" className="bg-obsidian">
       <div className="container-wide py-32 sm:py-40">
         <Reveal>
-          <p className="text-eyebrow uppercase text-graphite">Process</p>
+          <p className="text-eyebrow uppercase text-silver">Process</p>
           <h2 id="process-heading" className="mt-5 max-w-2xl text-h2 text-ivory">
             How the work moves.
           </h2>
@@ -47,7 +47,7 @@ export function Process() {
                 aria-hidden="true"
                 className="absolute left-0 top-1.5 block size-[7px] rounded-full bg-mint lg:top-0"
               />
-              <p className="font-display text-caption text-graphite">
+              <p className="font-display text-caption text-silver">
                 {step.number}
               </p>
               <h3 className="mt-3 font-display text-h3 uppercase text-ivory">

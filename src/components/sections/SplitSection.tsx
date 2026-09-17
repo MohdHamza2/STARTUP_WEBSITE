@@ -1,8 +1,8 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import { Reveal } from "@/components/ui/Reveal";
 
 /**
- * "One company. Two directions." (prompt §13)
+ * "One company. Two directions." (prompt Â§13)
  *
  * Explicitly NOT a two-card grid. The two paths are expressed as a full-bleed
  * editorial split divided by a single hairline: typography, negative space and
@@ -17,7 +17,7 @@ export function SplitSection() {
     <section aria-labelledby="split-heading" className="bg-obsidian">
       <div className="container-wide py-32 sm:py-40">
         <Reveal>
-          <p className="text-eyebrow uppercase text-graphite">One company</p>
+          <p className="text-eyebrow uppercase text-silver">One company</p>
           <h2
             id="split-heading"
             className="mt-5 max-w-2xl text-h2 uppercase text-ivory"
@@ -77,7 +77,7 @@ function Direction({
         <div>
           <div className="flex items-baseline gap-5">
             <span className="font-display text-caption text-mint">{index}</span>
-            <p className="text-eyebrow uppercase text-graphite">{eyebrow}</p>
+            <p className="text-eyebrow uppercase text-silver">{eyebrow}</p>
           </div>
 
           <div className="mt-10 space-y-2">

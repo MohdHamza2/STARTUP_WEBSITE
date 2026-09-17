@@ -83,6 +83,71 @@ Known issues: `leads.email` nullability unresolved (D1)
 
 # CHANGE LOG
 
+## 2026-09-18 (6)
+
+### Agent
+
+FRONTEND
+
+### Feature
+
+Phase 16 — brand icons, PWA manifest, loading state, accessibility audit
+
+### Work Completed
+
+- `scripts/build-brand-icons.mjs` generates the favicon, apple icon, PWA icons
+  (192/512) and the 1200x630 Open Graph card from the supplied brand mark, per
+  brand kit §7. The default create-next-app `favicon.ico` has been removed — the
+  site was still shipping it.
+- `manifest.ts`, `loading.tsx` (CSS-only, so reduced motion is respected without
+  JavaScript)
+- `e2e/accessibility.spec.ts` — axe-core WCAG 2.0/2.1 A and AA audit across
+  every route plus the 404, and a keyboard-reachability check on the recruiting
+  form including the visually-hidden file input.
+
+### Verification
+
+- [x] Build, lint, typecheck clean
+- [x] 30 unit tests
+- [x] **110 E2E tests pass across desktop, tablet and mobile**, including the
+      full accessibility audit
+- [x] Browser tested
+- [ ] API / database — still NOT verified (no credentials, D4)
+
+### Bugs Found
+
+1. **Graphite text failed WCAG contrast on every route — serious impact.**
+   The audit flagged `color-contrast` violations on all seven routes plus the
+   404. Root cause: `text-graphite` (`#374151`) on Obsidian (`#0B0B0B`) measures
+   roughly **1.9:1 against a 4.5:1 requirement**. The brand kit lists Graphite
+   for "secondary text", which holds on Ivory (~8.6:1) but not on a dark
+   surface — the kit does not specify dark-mode text pairings, and I had applied
+   it to every eyebrow, caption and footer label.
+
+   Fix: all 43 instances of `text-graphite` across 22 files replaced with
+   `text-silver` (~12.9:1). Graphite is retained for borders, dividers, icons
+   and disabled backgrounds, none of which carry a contrast requirement.
+   Hierarchy between body copy and labels now comes from size, casing and
+   letter-spacing rather than from a colour that could not be read.
+
+   The rule is recorded in `Brain.md` §12 so it does not regress. Re-audited:
+   zero violations on every route. The eyebrow labels are also simply better
+   design now — they were close to invisible before.
+
+2. **Site was still serving the default Next.js favicon.** Replaced with the
+   GENRA mark across the full icon set.
+
+### Commit
+
+`<pending>`
+
+### Remaining Work
+
+None that is not blocked. Outstanding items require owner input: service
+credentials (D4) to verify the submit path, and the business facts under D2/D3.
+
+---
+
 ## 2026-09-18 (5)
 
 ### Agent

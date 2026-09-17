@@ -1,4 +1,4 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -7,15 +7,15 @@ export const metadata: Metadata = {
 };
 
 /**
- * Branded 404 (prompt §57).
- * "Lost the path?" plays on the GENRA Path mark. Deliberately not overdesigned —
+ * Branded 404 (prompt Â§57).
+ * "Lost the path?" plays on the GENRA Path mark. Deliberately not overdesigned â€”
  * one line, one action, generous negative space.
  */
 export default function NotFound() {
   return (
     <div className="flex min-h-[80vh] items-center">
       <div className="container-content">
-        <p className="text-eyebrow uppercase text-graphite">404</p>
+        <p className="text-eyebrow uppercase text-silver">404</p>
         <h1 className="mt-6 text-display text-ivory">Lost the path?</h1>
         <p className="mt-6 max-w-md text-body-lg text-silver">
           This page doesn&apos;t exist. Everything else is still where you left it.

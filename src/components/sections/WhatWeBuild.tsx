@@ -1,12 +1,12 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import { services } from "@/content/services";
 import { Reveal } from "@/components/ui/Reveal";
 
 /**
- * "What we build" (prompt §14).
+ * "What we build" (prompt Â§14).
  *
- * A refined index, not nine repetitive cards and not a giant icon grid — §14
- * and §52 both rule those out. Each service is one row: number, title,
+ * A refined index, not nine repetitive cards and not a giant icon grid â€” Â§14
+ * and Â§52 both rule those out. Each service is one row: number, title,
  * supporting line. The number column carries the rhythm that icons would
  * otherwise have to.
  *
@@ -19,7 +19,7 @@ export function WhatWeBuild() {
     <section aria-labelledby="what-we-build" className="bg-obsidian">
       <div className="container-wide py-32 sm:py-40">
         <Reveal>
-          <p className="text-eyebrow uppercase text-graphite">What we build</p>
+          <p className="text-eyebrow uppercase text-silver">What we build</p>
           <h2 id="what-we-build" className="mt-5 max-w-2xl text-h2 text-ivory">
             Ideas into useful systems.
           </h2>
@@ -37,7 +37,7 @@ export function WhatWeBuild() {
                 href={service.line === "recruiting" ? "/recruiting" : "/software"}
                 className="group grid grid-cols-[auto_1fr] items-baseline gap-x-6 gap-y-2 py-7 sm:grid-cols-[auto_minmax(0,22rem)_1fr] sm:gap-x-10"
               >
-                <span className="font-display text-caption text-graphite transition-colors duration-[var(--duration-fast)] group-hover:text-mint">
+                <span className="font-display text-caption text-silver transition-colors duration-[var(--duration-fast)] group-hover:text-mint">
                   {service.number}
                 </span>
                 <span className="font-display text-h3 text-ivory">

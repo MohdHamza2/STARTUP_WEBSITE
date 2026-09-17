@@ -1,10 +1,10 @@
-import { capabilities } from "@/content/services";
+﻿import { capabilities } from "@/content/services";
 import { Reveal } from "@/components/ui/Reveal";
 
 /**
- * "Built with modern technology." (prompt §21)
+ * "Built with modern technology." (prompt Â§21)
  *
- * Explicitly NOT a technology logo wall — §21 rules that out, and §50 rules out
+ * Explicitly NOT a technology logo wall â€” Â§21 rules that out, and Â§50 rules out
  * the generic logo-collage look generally. Six capability categories, set as
  * text, with only a hairline between them.
  *
@@ -18,7 +18,7 @@ export function Capabilities() {
       <div className="container-wide py-32 sm:py-40">
         <div className="grid gap-16 lg:grid-cols-[minmax(0,26rem)_1fr] lg:gap-24">
           <Reveal>
-            <p className="text-eyebrow uppercase text-graphite">Capabilities</p>
+            <p className="text-eyebrow uppercase text-silver">Capabilities</p>
             <h2
               id="capabilities-heading"
               className="mt-5 text-h2 text-ivory"

@@ -1,12 +1,12 @@
-"use client";
+﻿"use client";
 
 import { useEffect } from "react";
 
 /**
- * Route error boundary (prompt §56).
+ * Route error boundary (prompt Â§56).
  *
- * The visitor gets a safe, brand-consistent message and a retry — never a stack
- * trace, a digest, or internal detail (prompt §44: safe error messages).
+ * The visitor gets a safe, brand-consistent message and a retry â€” never a stack
+ * trace, a digest, or internal detail (prompt Â§44: safe error messages).
  */
 export default function Error({
   error,
@@ -23,7 +23,7 @@ export default function Error({
   return (
     <div className="flex min-h-[80vh] items-center">
       <div className="container-content">
-        <p className="text-eyebrow uppercase text-graphite">Something went wrong</p>
+        <p className="text-eyebrow uppercase text-silver">Something went wrong</p>
         <h1 className="mt-6 text-display text-ivory">That didn&apos;t load.</h1>
         <p className="mt-6 max-w-md text-body-lg text-silver">
           An unexpected error interrupted this page. Trying again usually resolves it.

@@ -1,4 +1,4 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import Image from "next/image";
 import { site } from "@/config/site";
 import type { PanelDef } from "@/lib/hero/timeline";
@@ -17,10 +17,10 @@ const FALLBACK: PanelDef[] = [
  * Reduced-motion hero.
  *
  * Serves two cases: the visitor prefers reduced motion, or the generated hero
- * timeline failed to load. Either way the content is complete — the same
+ * timeline failed to load. Either way the content is complete â€” the same
  * opening line, the same six services with the same routing, the same brand
  * resolution and closing proposition. Nothing is lost, only the scrubbing
- * (prompt §46; DOC5 §5.34).
+ * (prompt Â§46; DOC5 Â§5.34).
  */
 export function HeroStatic({ panels }: { panels?: PanelDef[] }) {
   const items = panels?.length ? panels : FALLBACK;
@@ -65,7 +65,7 @@ export function HeroStatic({ panels }: { panels?: PanelDef[] }) {
             {site.proposition.lead}{" "}
             <span className="text-mint">{site.proposition.follow}</span>
           </p>
-          <p className="mt-4 text-eyebrow uppercase tracking-[0.3em] text-graphite">
+          <p className="mt-4 text-eyebrow uppercase tracking-[0.3em] text-silver">
             {site.tagline}
           </p>
         </div>

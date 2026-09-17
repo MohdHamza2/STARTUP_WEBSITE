@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
@@ -11,29 +11,29 @@ export const metadata: Metadata = {
 /**
  * /terms
  *
- * ACCURACY CONSTRAINT (prompt §53, §77; DOC1 §43):
+ * ACCURACY CONSTRAINT (prompt Â§53, Â§77; DOC1 Â§43):
  * No legal entity name, jurisdiction, governing law or company registration is
- * stated, because none is on record (DOC1 §50 Q24 unanswered).
- * TODO(business-facts) — add those once the owner supplies them.
+ * stated, because none is on record (DOC1 Â§50 Q24 unanswered).
+ * TODO(business-facts) â€” add those once the owner supplies them.
  *
- * Per prompt §27 the recruiting outcome boundary lives here and in the
+ * Per prompt Â§27 the recruiting outcome boundary lives here and in the
  * recruiting process copy, rather than in a defensive "What We Don't Promise"
  * section on the marketing page.
  *
- * Not legal advice; should be reviewed before production launch (DOC1 §38).
+ * Not legal advice; should be reviewed before production launch (DOC1 Â§38).
  */
 export default function TermsPage() {
   return (
     <div className="bg-obsidian">
       <div className="container-content pb-32 pt-40">
-        <p className="text-eyebrow uppercase text-graphite">Legal</p>
+        <p className="text-eyebrow uppercase text-silver">Legal</p>
         <h1 className="mt-6 text-display text-ivory">Terms</h1>
 
         <div className="mt-16 space-y-14">
           <Section title="Using this site">
             <p>
               This website describes what GENRA does and lets you send an
-              enquiry. Submitting a form starts a conversation — it does not
+              enquiry. Submitting a form starts a conversation â€” it does not
               create a contract, and no work begins until it is agreed
               separately in writing.
             </p>

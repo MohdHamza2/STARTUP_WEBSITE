@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useId, useRef, useState } from "react";
 import { Upload, FileText, X } from "lucide-react";
@@ -9,14 +9,14 @@ import {
 import { cn } from "@/lib/utils";
 
 /**
- * Resume upload (DOC5 §5.12).
+ * Resume upload (DOC5 Â§5.12).
  *
  * PDF only, 10 MB, per owner decision D6.
  *
- * The checks here are for the visitor's benefit — immediate feedback instead of
+ * The checks here are for the visitor's benefit â€” immediate feedback instead of
  * a round trip. They are NOT security. The server re-validates type, size and
  * the actual leading bytes of the file, because everything below can be
- * bypassed (prompt §32, §41).
+ * bypassed (prompt Â§32, Â§41).
  *
  * Drag-and-drop is an enhancement layered over a real `<input type="file">`, so
  * keyboard and assistive-technology users get the native picker unchanged.
@@ -68,10 +68,10 @@ export function ResumeUpload({ error }: { error?: string }) {
     <div>
       <label htmlFor={id} className="block text-caption font-medium text-silver">
         Resume
-        <span className="ml-2 font-normal text-graphite">Optional</span>
+        <span className="ml-2 font-normal text-silver">Optional</span>
       </label>
-      <p id={`${id}-hint`} className="mt-1.5 text-caption text-graphite">
-        PDF, up to 10 MB. Stored privately — never made public.
+      <p id={`${id}-hint`} className="mt-1.5 text-caption text-silver">
+        PDF, up to 10 MB. Stored privately â€” never made public.
       </p>
 
       {!file ? (
@@ -96,7 +96,7 @@ export function ResumeUpload({ error }: { error?: string }) {
         >
           <Upload
             aria-hidden="true"
-            className="mx-auto size-5 text-graphite"
+            className="mx-auto size-5 text-silver"
           />
           <p className="mt-4 text-body text-silver">
             Drop your resume here, or{" "}
@@ -108,7 +108,7 @@ export function ResumeUpload({ error }: { error?: string }) {
               browse files
             </button>
           </p>
-          <p className="mt-2 text-caption text-graphite">PDF · Max 10 MB</p>
+          <p className="mt-2 text-caption text-silver">PDF Â· Max 10 MB</p>
         </div>
       ) : (
         <div className="mt-3 flex items-center justify-between gap-4 rounded-md border border-line-dark bg-card-dark px-5 py-4">
@@ -118,7 +118,7 @@ export function ResumeUpload({ error }: { error?: string }) {
               <span className="block truncate text-body text-ivory">
                 {file.name}
               </span>
-              <span className="block text-caption text-graphite">
+              <span className="block text-caption text-silver">
                 {(file.size / 1024 / 1024).toFixed(1)} MB
               </span>
             </span>

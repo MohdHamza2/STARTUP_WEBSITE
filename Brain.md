@@ -339,6 +339,20 @@ Source of truth: `assets/brand/GENRA_Brand_Kit_DOC.docx` and
 Balance ratio: ~50% Obsidian · 35% Ivory · 10% Graphite/Silver · 5% Mint.
 Mint behaves as a signal, never a wash.
 
+## Graphite is NOT a text colour on dark surfaces
+
+The brand kit lists Graphite for "secondary text, UI, icons, borders". That holds
+on Ivory, where `#374151` reaches about 8.6:1. On Obsidian it measures roughly
+**1.9:1 against a 4.5:1 requirement** — an automated WCAG audit flagged it as a
+serious violation on every single route.
+
+Rule: on dark surfaces, secondary and tertiary TEXT uses **Silver** (`#D1D5DB`,
+about 12.9:1). Graphite is reserved for borders, dividers, icons and disabled
+backgrounds, none of which carry a text-contrast requirement.
+
+Hierarchy between body copy and eyebrow labels comes from size, casing and
+letter-spacing rather than from a colour that cannot be read.
+
 ## Typography
 
 Sora for display and headings (SemiBold 600). Inter for body (400), UI/nav (500),

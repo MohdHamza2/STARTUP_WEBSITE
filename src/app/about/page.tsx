@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import { PageHero } from "@/components/sections/PageHero";
 import { Reveal } from "@/components/ui/Reveal";
 import { FinalCTA } from "@/components/sections/FinalCTA";
@@ -14,12 +14,12 @@ export const metadata: Metadata = {
 /**
  * /about
  *
- * Kept concise per prompt §35.
+ * Kept concise per prompt Â§35.
  *
  * Nothing here claims a corporate history, a team, a founder, a registration, a
  * headquarters or a founding date, because none of those are on record in the
- * repository (§35, §53; DOC1 §50 Q24 unanswered). The page explains what GENRA
- * is and why it exists, which is what §35 actually asks for.
+ * repository (Â§35, Â§53; DOC1 Â§50 Q24 unanswered). The page explains what GENRA
+ * is and why it exists, which is what Â§35 actually asks for.
  */
 export default function AboutPage() {
   return (
@@ -38,7 +38,7 @@ export default function AboutPage() {
         <div className="container-wide py-32 sm:py-40">
           <div className="grid gap-16 lg:grid-cols-[minmax(0,22rem)_1fr] lg:gap-24">
             <Reveal>
-              <p className="text-eyebrow uppercase text-graphite">Why we exist</p>
+              <p className="text-eyebrow uppercase text-silver">Why we exist</p>
               <h2 id="what-heading" className="mt-5 text-h2 text-ivory">
                 Two problems, one shape.
               </h2>
@@ -55,7 +55,7 @@ export default function AboutPage() {
                 <p>
                   GENRA builds software for the first, and takes on the
                   application workload for the second. In both cases the work is
-                  the same in kind — doing the part that stands between an
+                  the same in kind â€” doing the part that stands between an
                   intention and a result.
                 </p>
                 <p>
@@ -71,7 +71,7 @@ export default function AboutPage() {
       <section aria-labelledby="how-we-work" className="bg-obsidian">
         <div className="container-wide py-32 sm:py-40">
           <Reveal>
-            <p className="text-eyebrow uppercase text-graphite">How we work</p>
+            <p className="text-eyebrow uppercase text-silver">How we work</p>
             <h2 id="how-we-work" className="mt-5 max-w-2xl text-h2 uppercase text-ivory">
               Build. Automate. <span className="text-mint">Advance.</span>
             </h2>
@@ -86,7 +86,7 @@ export default function AboutPage() {
                 className="bg-obsidian"
               >
                 <div className="h-full px-0 py-7 sm:px-6">
-                  <p className="font-display text-caption text-graphite">
+                  <p className="font-display text-caption text-silver">
                     {step.number}
                   </p>
                   <h3 className="mt-3 font-display text-h3 uppercase text-ivory">

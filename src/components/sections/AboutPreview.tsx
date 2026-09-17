@@ -1,12 +1,12 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import { Reveal } from "@/components/ui/Reveal";
 
 /**
- * About, on the homepage (prompt §6, item 11).
+ * About, on the homepage (prompt Â§6, item 11).
  *
- * Short by design — the full page is at /about, and §35 asks for that to stay
+ * Short by design â€” the full page is at /about, and Â§35 asks for that to stay
  * concise too. Nothing here claims a company history, a team, a founder or a
- * registration, because none of those are on record (prompt §35, §53).
+ * registration, because none of those are on record (prompt Â§35, Â§53).
  */
 export function AboutPreview() {
   return (
@@ -14,7 +14,7 @@ export function AboutPreview() {
       <div className="container-wide py-32 sm:py-40">
         <div className="rule-dark grid gap-12 pt-16 lg:grid-cols-[minmax(0,20rem)_1fr] lg:gap-24">
           <Reveal>
-            <p className="text-eyebrow uppercase text-graphite">About</p>
+            <p className="text-eyebrow uppercase text-silver">About</p>
             <h2 id="about-heading" className="mt-5 font-display text-h3 text-ivory">
               We build what moves ideas forward.
             </h2>
@@ -28,7 +28,7 @@ export function AboutPreview() {
               the US.
             </p>
             <p className="mt-6 max-w-2xl text-body text-silver">
-              Both come down to the same thing — doing the work that stands
+              Both come down to the same thing â€” doing the work that stands
               between an intention and a result.
             </p>
 
