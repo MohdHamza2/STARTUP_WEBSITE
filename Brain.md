@@ -73,20 +73,22 @@ admin dashboard, CRM, client portal, payments, booking or CMS in this version.
 
 # 3. CURRENT DEVELOPMENT STATUS
 
-Current phase: PLAN COMPLETE — awaiting owner decisions
+Current phase: BUILD — Phases 0–4 complete of 17
 
-Current feature: None in progress
+Current feature: Next up is Phase 5 (homepage sections 2–13)
 
-Current sprint: Pre-implementation
+Current sprint: Frontend foundation
 
-Overall completion: 0% of application code. Audit and implementation plan complete.
+Overall completion: roughly 25% of the planned build.
 
-**No application code exists yet.** There is no source tree, no `package.json`, no schema
-applied, no components, no tests. See `Reports/Implementation_Plan.md` for the full audit
-and the phased build order.
+Done: scaffold and design system, layout shell (header/overlay menu/footer/404/error),
+hero asset pipeline, hero sequence with clickable service panels.
 
-Work is blocked on six owner decisions (D1–D6) recorded in
-`Reports/Implementation_Plan.md` §9.
+Not started: homepage sections beyond the brand statement, `/software`, `/recruiting`,
+`/about`, `/contact`, legal pages, database, backend, storage, email, all three forms,
+SEO, performance pass, automated tests.
+
+All six owner decisions D1–D6 are resolved — see `Reports/Implementation_Plan.md` §9.
 
 ---
 
@@ -207,17 +209,17 @@ prompt §29 marks recruiting email optional. Unresolved — decision D1.
 - [x] Repository audit
 - [x] Hero asset audit and panel-timeline mapping
 - [x] Implementation plan (`Reports/Implementation_Plan.md`)
+- [x] Phase 0 scaffold and design tokens
+- [x] Layout shell, header, hamburger, footer, error pages
+- [x] Hero asset pipeline and timeline generation
+- [x] Hero sequence, brand resolution, clickable panels
 
 ## In Progress
 
-- [ ] None — blocked on owner decisions D1–D6
+- [ ] None
 
 ## Pending
 
-- [ ] Phase 0 scaffold and design tokens
-- [ ] Layout shell, header, hamburger, footer, error pages
-- [ ] Hero asset pipeline and timeline generation
-- [ ] Hero sequence, brand resolution, clickable panels
 - [ ] Homepage sections
 - [ ] `/software`, `/recruiting`, `/about`, `/contact`, `/privacy`, `/terms`
 - [ ] Database migrations, RLS, storage policies
@@ -465,30 +467,36 @@ Shared files must be coordinated, not silently claimed.
 
 ## Last Agent
 
-Planning/audit session
+FRONTEND
 
 ## Last Completed Task
 
-Full repository audit and implementation plan. Hero asset inspection including the
-frame-by-frame panel timeline for `clip2fr.zip`.
+Phases 0–4: scaffold and design system, layout shell, hero asset pipeline, hero sequence
+with clickable service panels. Three commits on `arsh`, all browser-verified.
 
 ## Current State
 
-Repository contains documentation, brand assets and hero source frames only. No application
-code. `Reports/Implementation_Plan.md` records the audit, ten resolved conflicts, the
-database plan, the hero implementation approach, a seventeen-phase build order and the
-test plan.
+The site builds, lints and typechecks clean. Homepage renders the full hero story and the
+brand statement. Header, overlay menu, footer, 404 and error boundary all work. The hero
+asset pipeline derives panel geometry from the frames and is idempotent.
+
+Routes `/software`, `/recruiting`, `/about`, `/contact`, `/privacy`, `/terms` **do not exist
+yet** — hero panels and nav links currently resolve to the 404 page. That is expected at
+this phase, not a defect, and Phases 6–8 create them.
 
 ## Exact Next Action
 
-Obtain owner decisions D1–D6. Then begin Phase 0 (scaffold + design tokens). Phases 0–7 can
-proceed for everything not gated by D2/D3; Phase 9 onward requires D1 and D4.
+Phase 5 — homepage sections 2–13 per prompt §6, starting with the Software/Recruiting
+editorial split (§13), then What We Build (§14), Process (§19), capabilities (§21),
+recruiting intro (§24) and the final CTA (§30).
 
 ## Important Warning
 
-Do not begin Phase 9 (database) before D1 is answered — `leads.email` nullability changes
-the migration, the duplicate-detection strategy and whether candidate confirmation email is
-possible. Do not invent any business fact listed under D2/D3.
+- Phases 9–12 can be written but **cannot be verified end-to-end** until service credentials
+  exist (D4). Do not report those phases as passing integration.
+- Never invent a contact detail, social account, domain, legal entity or retention period.
+  Those are tracked as `TODO(business-facts)` and must stay omitted until supplied.
+- Pushes require the owner's GitHub sign-in; commit locally and let them push. Never `main`.
 
 ---
 
