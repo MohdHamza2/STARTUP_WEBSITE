@@ -2,7 +2,8 @@
 
 import { useActionState, useEffect, useState } from "react";
 import Link from "next/link";
-import { submitContact, IDLE } from "@/lib/actions/submitLead";
+import { submitContact } from "@/lib/actions/submitLead";
+import { IDLE } from "@/lib/actions/formState";
 import { CONTACT_TOPICS, type ContactTopic } from "@/lib/validation/schemas";
 import { TextField, TextArea, Checkbox } from "./Field";
 import { Turnstile } from "./Turnstile";

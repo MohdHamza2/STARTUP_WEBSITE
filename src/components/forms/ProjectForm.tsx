@@ -2,7 +2,8 @@
 
 import { useActionState, useEffect, useState } from "react";
 import Link from "next/link";
-import { submitProject, IDLE } from "@/lib/actions/submitLead";
+import { submitProject } from "@/lib/actions/submitLead";
+import { IDLE } from "@/lib/actions/formState";
 import { projectTypeOptions, OTHER_PROJECT_TYPE } from "@/content/services";
 import { TextField, TextArea, SelectField, Checkbox } from "./Field";
 import { Turnstile } from "./Turnstile";

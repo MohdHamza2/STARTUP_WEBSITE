@@ -2,7 +2,8 @@
 
 import { useActionState, useEffect, useState } from "react";
 import Link from "next/link";
-import { submitRecruiting, IDLE } from "@/lib/actions/submitLead";
+import { submitRecruiting } from "@/lib/actions/submitLead";
+import { IDLE } from "@/lib/actions/formState";
 import { visaStatusOptions, educationOptions } from "@/content/recruiting";
 import { TextField, TextArea, SelectField, Checkbox } from "./Field";
 import { ResumeUpload } from "./ResumeUpload";

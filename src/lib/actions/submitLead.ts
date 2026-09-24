@@ -14,6 +14,7 @@ import {
   PDF_MAGIC,
   sanitiseFilename,
 } from "@/lib/validation/schemas";
+import type { FormState } from "./formState";
 
 /**
  * Submission handling for all three public forms.
@@ -27,17 +28,7 @@ import {
  * uploaded file is checked by magic bytes rather than by its declared type.
  */
 
-export interface FormState {
-  status: "idle" | "success" | "error";
-  /** Safe to display. Never contains database detail or internal identifiers. */
-  message?: string;
-  /** Field-level errors, keyed by field name. */
-  errors?: Record<string, string>;
-  /** True when the failure is worth retrying (network, upstream outage). */
-  retryable?: boolean;
-}
-
-export const IDLE: FormState = { status: "idle" };
+export type { FormState } from "./formState";
 
 /** Generic messages — prompt §33/§44: never leak internals to the visitor. */
 const MESSAGES = {
