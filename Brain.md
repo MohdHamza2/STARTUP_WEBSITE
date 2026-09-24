@@ -216,6 +216,8 @@ prompt §29 marks recruiting email optional. Unresolved — decision D1.
 - [x] Layout shell, header, hamburger, footer, error pages
 - [x] Hero asset pipeline and timeline generation
 - [x] Hero sequence, brand resolution, clickable panels
+- [x] B1 fix (2026-09-24): `FormState`/`IDLE` moved to `src/lib/actions/formState.ts`;
+  `submitLead.ts` exports only async Server Actions again
 
 ## In Progress
 
@@ -426,6 +428,7 @@ None recorded. No code exists yet.
 
 | Date | Agent | Commit | Description |
 |------|-------|--------|-------------|
+| 2026-09-24 | FRONTEND+BACKEND | 73dfc0e | fix(forms): move shared form state out of server action module (B1) |
 | 2026-09-17 | PLANNING | (pending) | docs: add repository audit and implementation plan |
 
 ---

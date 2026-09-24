@@ -83,6 +83,61 @@ Known issues: `leads.email` nullability unresolved (D1)
 
 # CHANGE LOG
 
+## 2026-09-24 (9)
+
+### Agent
+
+FRONTEND + BACKEND
+
+### Feature
+
+B1 fix: shared form state moved out of the Server Action module
+
+### Context
+
+The static codebase audit classified B1 as confirmed broken: `src/lib/actions/submitLead.ts`
+begins with `"use server"` yet exported the runtime value `IDLE`, violating Next.js
+`invalid-use-server-value` (a `"use server"` file may only export async functions, plus
+types). All three lead forms import `IDLE`, so every Server Action in the module failed at
+runtime — a dev-server `POST /contact` returned 500 naming `IDLE` in the actions loader.
+
+### Work Completed
+
+1. **New module `src/lib/actions/formState.ts`** holding the exact existing `FormState`
+   interface and `IDLE` value. No directive, zero imports — importable from both sides
+   with no boundary or cycle risk.
+2. **`submitLead.ts`** now imports `FormState` as a type and re-exports it as
+   `export type` (type-erased, allowed). Its only runtime exports are
+   `submitRecruiting`, `submitProject`, `submitContact`. `"use server"` intact.
+3. **ContactForm, RecruitingForm, ProjectForm** import `IDLE` from `formState`;
+   action imports unchanged. No validation, database, storage, email or Turnstile
+   logic touched.
+
+### Verification
+
+- [x] `git diff --check` clean; diff is 4 modified files + 1 new file, all B1-scoped
+- [x] `npm run typecheck` PASS
+- [x] `npm run lint` PASS
+- [x] `npm run build` PASS (15/15 static routes; only the pre-existing
+      metadataBase warning, which needs the production domain)
+- [x] `npm test` PASS (30/30 unit tests)
+- [x] Regression: ContactForm → submitContact, RecruitingForm → submitRecruiting,
+      ProjectForm → submitProject — imports resolve, signatures unchanged
+- [x] Runtime: production server serves `/contact`, `/recruiting`, `/software`
+      as 200 with forms rendered
+- [ ] API / database — still NOT verified (no credentials, D4). No submission was
+      posted; no live Supabase/Resend/Turnstile verification is claimed.
+
+### Commit
+
+`73dfc0e` — `fix(forms): move shared form state out of server action module`
+
+### Remaining Work
+
+D4 credentials, production domain, legal/business facts, P1 hardening — unchanged.
+
+---
+
 ## 2026-09-18 (8)
 
 ### Agent
