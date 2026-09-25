@@ -14,15 +14,15 @@ Never delete historical progress unless explicitly instructed.
 
 ## Current Phase
 
-PLAN — audit complete, implementation plan produced, awaiting owner decisions
+D4 audit — staging service verification
 
 ## Current Feature
 
-None in progress
+D4 staging verification (audit pass)
 
 ## Current Agent
 
-Planning/audit session
+BACKEND + DATABASE (audit pass)
 
 ## Current Status
 
@@ -30,58 +30,162 @@ BLOCKED
 
 ## Last Commit
 
-(pending — this entry's commit)
+`a190e48` — `docs: record B1 form-state fix and verification`
 
 ## Last Verified
 
-2026-09-17
+2026-09-25
 
 ## Current Blocker
 
-Six owner decisions D1–D6, recorded in `Reports/Implementation_Plan.md` §9 and
-`Brain.md` §18. D1 (recruiting email nullability) and D4 (service credentials) gate the
-backend. D2 (verified business facts) and D3 (retention period) gate `/contact`,
-`/privacy` and SEO canonical/sitemap.
+D4 cannot complete without a database connection string (Postgres host/port/
+db/user/password) or a Supabase Management API personal access token. The
+gateway exposes REST + Storage only — no SQL execution endpoint. With the
+schema unapplied, the submit path cannot be traced end to end against staging.
+
+Additional D4 finding: `RESEND_FROM` is set to a `gmail.com` address, which
+Resend will not deliver from (gmail.com is not a verified Resend domain). Email
+delivery therefore fails with `validation_error` even though the API key is
+valid. Lead persistence is unaffected — `submitLead.ts` correctly catches and
+logs email failure without losing the lead, per prompt §42.
 
 ## Next Action
 
-Obtain D1–D6. Then Phase 0 — Next.js scaffold, Tailwind, shadcn/ui, design tokens derived
-from the brand kit.
+Owner provides a Supabase DB connection string OR a Management API PAT, plus a
+verified Resend sender domain. Then D4 resumes with `psql` migration deploy +
+full lead-submission E2E.
 
 ---
 
 # ACTIVE WORK
 
-## Frontend
-
-Status: Not started
-Owner: Frontend Agent
-Current task: —
-Last completed: Hero asset audit (panel timeline mapped from `clip2fr.zip`)
-Next task: Phase 0 scaffold + design tokens
-Known issues: `clips/clip3fr.zip` deviates from the brand type/colour system (decision D5)
-
 ## Backend
 
-Status: Not started
+Status: D4 audit complete; submit-path E2E blocked on schema deploy
 Owner: Backend Agent
-Current task: —
-Last completed: —
-Next task: Phase 10, after D1 and D4
-Known issues: —
+Current task: D4 staging verification (audit pass complete)
+Last completed: B1 form-state fix + verification (`a190e48`)
+Next task: complete D4 once DB schema is deployed
+Known issues: Resend sender is `gmail.com` — not a verified Resend domain
 
 ## Database
 
-Status: Not started — schema specified in DOC4 §4.31 but not applied
+Status: Schema not applied — no connection string provided
 Owner: Database Agent
-Current task: —
-Last completed: —
-Next task: Phase 9, after D1
-Known issues: `leads.email` nullability unresolved (D1)
+Current task: D4 migration deploy
+Last completed: `supabase/migrations/0001_init.sql` written (commit `21c6c8b`)
+Next task: deploy 0001_init.sql to staging once DB credentials supplied
+Known issues: —
 
 ---
 
 # CHANGE LOG
+
+## 2026-09-25 (10)
+
+### Agent
+
+BACKEND + DATABASE (audit pass)
+
+### Feature
+
+D4 staging verification — partial
+
+### Context
+
+Owner provisioned Supabase (URL + anon + service-role keys), Turnstile (site +
+secret), Resend (API key), and `LEADS_NOTIFICATION_EMAIL` / `RESEND_FROM`
+values. No direct DB connection string or Management API PAT was provided.
+Audit pass was requested to verify each service against staging without
+expanding scope.
+
+### Work Completed
+
+1. Verified Supabase project reachable. Confirmed service-role key length and
+   anon key length, project URL host, that REST + Storage APIs respond.
+2. Probed SQL-execution endpoints on the gateway (`/pg/query`,
+   `/pg-meta/{default,v0,v1}/query`, `/database/v1/query`, `/_/query`,
+   `/pg-meta/v0`, `/pg-meta/v1/{tables,columns}`, `/realtime/v1`,
+   `/functions/v1`) — all returned 404 or 401. The gateway exposes no SQL
+   execution endpoint, so the migration cannot be applied without owner action.
+3. Confirmed tables `leads`, `recruiting_leads`, `software_leads`,
+   `resume_files`, `lead_events`, `lead_notes`, `admin_users` do NOT exist in
+   the staging database — every read returned `Could not find the table in
+   the schema cache`.
+4. Confirmed storage bucket `resumes` does NOT exist — `GET /storage/v1/bucket`
+   returns `[]`.
+5. Verified anon reads denied (schema-cache miss is the only signal without
+   tables; RLS deny-by-default is structurally correct in the migration file).
+6. Verified Resend API key is valid (`/domains` list responds, no error). Test
+   send from `contactgenra@gmail.com` → `contactgenra@gmail.com` FAILED with
+   `validation_error`: `The gmail.com domain is not verified`. This is the
+   documented behaviour of Resend when the From address is not on a verified
+   domain.
+7. Verified Turnstile `siteverify` endpoint reachable. With the configured
+   secret, malformed/empty tokens return the expected `invalid-input-response`
+   / `missing-input-response` error codes (server correctly fails closed per
+   prompt §43). End-to-end real-token verification requires a browser against
+   the configured site key — not attempted in this audit pass because the
+   submit flow is blocked at the DB layer.
+8. Ran `npm run typecheck` (clean), `npm run lint` (clean), `npm test`
+   (30/30 unit tests), `npm run build` (clean — 15/15 static routes, only the
+   pre-existing metadataBase warning).
+9. Ran the Playwright suite: desktop 41/41, tablet 41/41, mobile 37 pass + 4
+   skipped (touch-only assertions not applicable without WebKit). The submit
+   path was NOT exercised in E2E — it cannot succeed without schema.
+10. Scanned `src/` and `e2e/` for hardcoded `re_`, `sb_publishable_`,
+    `sb_secret_`, or `0x4A…` patterns — zero hits. `.env` is gitignored.
+    `package-lock.json` shows an uncommitted peer-dependency lockfile diff
+    generated by `npm install`; left untouched (out of D4 scope).
+
+### Verification
+
+- [x] Typecheck clean
+- [x] Lint clean
+- [x] 30/30 unit tests
+- [x] 119 E2E tests across desktop, tablet, mobile (no submit flow exercised)
+- [x] Build clean
+- [x] Resend API key structurally valid; sender domain unverified → email disabled
+- [x] Turnstile secret structurally valid, endpoint reachable, fail-closed
+- [x] Storage + REST endpoints reachable on Supabase project
+- [ ] Migration NOT applied — staging database is empty
+- [ ] Storage bucket `resumes` NOT created
+- [ ] Submit path E2E BLOCKED — cannot create lead rows against empty schema
+- [ ] Real Resend email delivery BLOCKED — `gmail.com` sender not verified
+- [ ] Real Turnstile widget flow BLOCKED — submit path blocked at DB layer
+
+### D4 status
+
+**BLOCKED.** Migration deployment requires owner action (DB connection string
+or Supabase Management API PAT). Once the schema is applied, the same audit
+can run the full lead-submission E2E. Until then, no claim of full D4
+verification is made.
+
+### Bugs Found
+
+None new. All defects from previous entries remain as documented.
+
+### Commit
+
+No D4 commit. The audit produced no implementation change, only verification
+evidence. A commit would be meaningless per Phase 16 guidance: "If there are
+no tracked changes because the task only required environment configuration
+and verification, DO NOT create a meaningless commit." The scratch `.verify/`
+helper directory created for probe scripts is deleted after the audit.
+
+### Remaining Work
+
+- Owner: apply `supabase/migrations/0001_init.sql` to staging via SQL editor
+  OR supply DB connection string / Management API PAT so this session can
+  deploy.
+- Owner: replace `RESEND_FROM=contactgenra@gmail.com` with a From address on a
+  domain verified in the Resend dashboard, OR add and verify a chosen sender
+  domain in Resend.
+- Resume D4 from Phase 2 onward: schema verification, RLS verification,
+  bucket creation verification, full E2E submission flow, duplicate detection,
+  rate limiting, failure-path coverage.
+
+---
 
 ## 2026-09-24 (9)
 

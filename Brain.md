@@ -77,10 +77,13 @@ Current phase: BUILD COMPLETE — all 17 phases implemented
 
 Current feature: none in progress
 
-Current sprint: awaiting credentials for end-to-end verification
+Current sprint: D4 staging verification — BLOCKED at schema deploy
 
-Overall completion: the build is feature-complete. The only outstanding
-implementation work is whatever the owner decides after reviewing it.
+Overall completion: the build is feature-complete; service credentials exist but the
+staging database is empty (migration not applied), so the submit path remains
+untraced end to end. Resend API key is valid but `RESEND_FROM` is set to a
+`gmail.com` address, which Resend will not deliver from — email delivery therefore
+fails with `validation_error` until a verified sender domain is configured.
 
 Done: scaffold and design system; layout shell; hero asset pipeline; hero sequence with
 clickable panels; all homepage sections; every route including legal pages; database
@@ -218,6 +221,10 @@ prompt §29 marks recruiting email optional. Unresolved — decision D1.
 - [x] Hero sequence, brand resolution, clickable panels
 - [x] B1 fix (2026-09-24): `FormState`/`IDLE` moved to `src/lib/actions/formState.ts`;
   `submitLead.ts` exports only async Server Actions again
+- [x] D4 audit (2026-09-25): Supabase + Turnstile + Resend reachability confirmed
+  and `npm` checks all pass; staging schema not deployed (BLOCKED on owner input);
+  Resend sender is `gmail.com` (unverified) — email delivery disabled until a
+  verified sender domain is configured
 
 ## In Progress
 
@@ -448,9 +455,28 @@ All six owner decisions resolved 2026-09-18. Full reasoning in
 
 ## Remaining blocker
 
-**Service credentials (D4).** Phases 9–12 can be written and unit-tested but cannot be
-verified against live Supabase, Storage, Resend or Turnstile. Any completion claim for
-those phases must state this explicitly rather than report a passing integration.
+**Service credentials (D4) — partial.**
+
+Status as of 2026-09-25:
+
+- **Supabase** — URL, anon key, service-role key, bucket name all configured
+  and reach the project. Migration `supabase/migrations/0001_init.sql` is
+  written but NOT applied — the gateway exposes REST + Storage only, not SQL
+  execution. Owner must apply the migration via the SQL editor OR supply a
+  direct DB connection string / Supabase Management API PAT.
+- **Resend** — API key valid; `LEADS_NOTIFICATION_EMAIL` and `RESEND_FROM`
+  set. However `RESEND_FROM=contactgenra@gmail.com` — Resend rejects sends
+  from unverified domains with `validation_error`. A verified sender domain
+  must be added in the Resend dashboard, and `RESEND_FROM` updated to a
+  matching address. `submitLead.ts` already catches this failure and continues
+  without losing the lead (prompt §42).
+- **Turnstile** — site key + secret configured; `siteverify` endpoint
+  reachable; fail-closed behaviour structurally correct. Real-widget
+  end-to-end verification runs once the submit path is unblocked.
+
+Until the schema is applied and the sender domain is verified, the submit
+path can be characterised as structurally correct but not actually verified
+end to end.
 
 ## Repository access
 
