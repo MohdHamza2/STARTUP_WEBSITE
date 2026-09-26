@@ -6,6 +6,7 @@ import { BrandStatement } from "@/components/sections/BrandStatement";
 import { Capabilities } from "@/components/sections/Capabilities";
 import { SelectedWork } from "@/components/sections/SelectedWork";
 import { WorkThatMoves } from "@/components/sections/WorkThatMoves";
+import { Testimonials } from "@/components/sections/Testimonials";
 import { RecruitingIntro } from "@/components/sections/RecruitingIntro";
 import { AboutPreview } from "@/components/sections/AboutPreview";
 import { FinalCTA } from "@/components/sections/FinalCTA";
@@ -42,6 +43,7 @@ export default function HomePage() {
       <Capabilities />
       <SelectedWork />
       <WorkThatMoves />
+      <Testimonials />
       <RecruitingIntro />
       <AboutPreview />
       <FinalCTA />
