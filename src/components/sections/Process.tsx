@@ -1,13 +1,13 @@
-﻿import { processSteps } from "@/content/services";
+import { processSteps } from "@/content/services";
 import { Reveal } from "@/components/ui/Reveal";
 
 /**
- * GENRA process (prompt Â§19).
+ * GENRA process (prompt §19).
  *
  * "Do not turn this into five giant icon cards. Use typography, movement and
  * whitespace. The process should feel like a journey."
  *
- * So: a single continuous rule with the five steps marked along it â€” horizontal
+ * So: a single continuous rule with the five steps marked along it — horizontal
  * on desktop, vertical on mobile. The line IS the journey; the steps sit on it.
  * No cards, no icons, no boxes.
  */

@@ -1,13 +1,13 @@
-﻿import Link from "next/link";
+import Link from "next/link";
 import { Reveal } from "@/components/ui/Reveal";
 
 /**
  * Interior-page hero.
  *
- * Related to the homepage hero but deliberately not a copy of it (prompt Â§16,
- * Â§25): no frame sequence, no workstation. Depth comes from a wide mint
- * hairline, a large type block and a lot of empty field â€” the brand board's own
- * device â€” rather than from generated imagery, which Â§18 and Â§50 warn against.
+ * Related to the homepage hero but deliberately not a copy of it (prompt §16,
+ * §25): no frame sequence, no workstation. Depth comes from a wide mint
+ * hairline, a large type block and a lot of empty field — the brand board's own
+ * device — rather than from generated imagery, which §18 and §50 warn against.
  */
 export function PageHero({
   eyebrow,

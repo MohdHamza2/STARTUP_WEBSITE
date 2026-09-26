@@ -1,4 +1,4 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
 import { PageHero } from "@/components/sections/PageHero";
 import { Reveal } from "@/components/ui/Reveal";
 import { RecruitingForm } from "@/components/forms/RecruitingForm";
@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     "GENRA handles the job-application workflow for international students, recent graduates and early-career professionals targeting US employment.",
   alternates: { canonical: "/recruiting" },
   openGraph: {
-    title: "GENRA â€” Career & Recruiting",
+    title: "GENRA — Career & Recruiting",
     description:
       "You find the opportunity. GENRA handles the applications.",
     url: "/recruiting",
@@ -26,15 +26,15 @@ export const metadata: Metadata = {
  * /recruiting
  *
  * Its own identity within the GENRA system, not a duplicate of the software
- * hero (prompt Â§25).
+ * hero (prompt §25).
  *
  * TRUTHFULNESS: no promise of a job, interview, offer, placement or outcome
- * appears anywhere, and there are no statistics (Â§25; DOC1 Â§43). Per Â§27 there
- * is no "What We Don't Promise" section â€” step 04 of the process states who owns
+ * appears anywhere, and there are no statistics (§25; DOC1 §43). Per §27 there
+ * is no "What We Don't Promise" section — step 04 of the process states who owns
  * hiring decisions, which carries the same information without the defensive
  * framing.
  *
- * The CTA is "Get Started", never "Start a Project" (Â§28).
+ * The CTA is "Get Started", never "Start a Project" (§28).
  */
 export default function RecruitingPage() {
   return (
@@ -154,7 +154,7 @@ export default function RecruitingPage() {
         </div>
       </section>
 
-      {/* Form â€” the conversion point, inline rather than behind another click */}
+      {/* Form — the conversion point, inline rather than behind another click */}
       <section
         id="apply"
         aria-labelledby="recruiting-cta-heading"

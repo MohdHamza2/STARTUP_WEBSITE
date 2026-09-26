@@ -1,4 +1,4 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
 import { PageHero } from "@/components/sections/PageHero";
 import { Reveal } from "@/components/ui/Reveal";
 import { FinalCTA } from "@/components/sections/FinalCTA";
@@ -14,12 +14,12 @@ export const metadata: Metadata = {
 /**
  * /about
  *
- * Kept concise per prompt Â§35.
+ * Kept concise per prompt §35.
  *
  * Nothing here claims a corporate history, a team, a founder, a registration, a
  * headquarters or a founding date, because none of those are on record in the
- * repository (Â§35, Â§53; DOC1 Â§50 Q24 unanswered). The page explains what GENRA
- * is and why it exists, which is what Â§35 actually asks for.
+ * repository (§35, §53; DOC1 §50 Q24 unanswered). The page explains what GENRA
+ * is and why it exists, which is what §35 actually asks for.
  */
 export default function AboutPage() {
   return (
@@ -55,7 +55,7 @@ export default function AboutPage() {
                 <p>
                   GENRA builds software for the first, and takes on the
                   application workload for the second. In both cases the work is
-                  the same in kind â€” doing the part that stands between an
+                  the same in kind — doing the part that stands between an
                   intention and a result.
                 </p>
                 <p>

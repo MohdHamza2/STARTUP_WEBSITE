@@ -1,14 +1,14 @@
-﻿import Link from "next/link";
+import Link from "next/link";
 import { Logo } from "@/components/brand/Logo";
 import { site, primaryNav, secondaryNav, legalNav } from "@/config/site";
 
 /**
  * Global footer.
  *
- * Prompt Â§36 and Â§76: social links and contact details appear ONLY when they
+ * Prompt §36 and §76: social links and contact details appear ONLY when they
  * are real. `site.social` is empty and `site.contact.*` are null because no
  * verified GENRA account, address or phone number exists in the repository
- * (DOC1 Â§50 Q22â€“23 were never answered). Those blocks are therefore omitted
+ * (DOC1 §50 Q22–23 were never answered). Those blocks are therefore omitted
  * rather than filled with plausible-looking placeholders.
  *
  * TODO(business-facts): populate site.social and site.contact, and these
@@ -94,9 +94,9 @@ export function Footer() {
 
         <div className="rule-dark mt-20 flex flex-col gap-3 pt-8 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-caption text-silver">
-            {/* Brand attribution only â€” claims no corporate registration, because
+            {/* Brand attribution only — claims no corporate registration, because
                 no legal entity name is on record. TODO(business-facts). */}
-            Â© {year} {site.legalEntity ?? site.name}
+            © {year} {site.legalEntity ?? site.name}
           </p>
           <p className="text-eyebrow uppercase tracking-[0.18em] text-silver">
             {site.tagline}

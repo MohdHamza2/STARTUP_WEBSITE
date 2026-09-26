@@ -1,20 +1,20 @@
-﻿import Link from "next/link";
+import Link from "next/link";
 import { softwareServices, services } from "@/content/services";
 import { Reveal } from "@/components/ui/Reveal";
 
 /**
- * The nine-service catalog for /software (prompt Â§15, Â§17).
+ * The nine-service catalog for /software (prompt §15, §17).
  *
- * Â§17 rules out nine identical cards and asks for an editorial system with
+ * §17 rules out nine identical cards and asks for an editorial system with
  * variation. The structure here is deliberately uneven:
  *
  *   01  a single large featured service, given a full band of its own
- *   02â€“08  alternating editorial rows, the number set large and the alignment
+ *   02–08  alternating editorial rows, the number set large and the alignment
  *          flipping side to side so the eye travels down the page
  *   09  a distinct cross-link band, because Career & Recruiting is a separate
- *       service line and must not be presented as software development (Â§15)
+ *       service line and must not be presented as software development (§15)
  *
- * No service gets an icon (Â§52). The numbering carries the hierarchy.
+ * No service gets an icon (§52). The numbering carries the hierarchy.
  */
 export function ServiceCatalog() {
   const [featured, ...rest] = softwareServices;
@@ -30,7 +30,7 @@ export function ServiceCatalog() {
           </h2>
         </Reveal>
 
-        {/* 01 â€” featured */}
+        {/* 01 — featured */}
         <Reveal delay={0.08}>
           <article className="rule-dark mt-24 grid gap-8 pt-14 lg:grid-cols-[minmax(0,10rem)_1fr] lg:gap-16">
             <p className="font-display text-[clamp(3rem,7vw,5rem)] leading-none text-mint">
@@ -47,7 +47,7 @@ export function ServiceCatalog() {
           </article>
         </Reveal>
 
-        {/* 02â€“08 â€” alternating rows */}
+        {/* 02–08 — alternating rows */}
         <div className="mt-8">
           {rest.map((service, i) => {
             const flipped = i % 2 === 1;
@@ -85,7 +85,7 @@ export function ServiceCatalog() {
           })}
         </div>
 
-        {/* 09 â€” separate service line, deliberately set apart */}
+        {/* 09 — separate service line, deliberately set apart */}
         <Reveal delay={0.1}>
           <article className="mt-20 border border-line-dark bg-card-dark px-8 py-12 sm:px-12">
             <div className="flex items-baseline gap-5">
@@ -102,7 +102,7 @@ export function ServiceCatalog() {
             </h3>
             <p className="mt-6 max-w-xl text-body-lg text-silver">
               {recruiting.description} This is career support, not software
-              development â€” it has its own page and its own process.
+              development — it has its own page and its own process.
             </p>
 
             <Link

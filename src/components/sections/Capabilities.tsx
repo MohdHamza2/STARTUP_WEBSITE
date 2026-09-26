@@ -1,10 +1,10 @@
-﻿import { capabilities } from "@/content/services";
+import { capabilities } from "@/content/services";
 import { Reveal } from "@/components/ui/Reveal";
 
 /**
- * "Built with modern technology." (prompt Â§21)
+ * "Built with modern technology." (prompt §21)
  *
- * Explicitly NOT a technology logo wall â€” Â§21 rules that out, and Â§50 rules out
+ * Explicitly NOT a technology logo wall — §21 rules that out, and §50 rules out
  * the generic logo-collage look generally. Six capability categories, set as
  * text, with only a hairline between them.
  *

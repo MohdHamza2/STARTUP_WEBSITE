@@ -1,20 +1,20 @@
-﻿import Image from "next/image";
+import Image from "next/image";
 import { projects } from "@/content/projects";
 import { Reveal } from "@/components/ui/Reveal";
 
 /**
- * "Ideas we've brought to life." (prompt Â§22)
+ * "Ideas we've brought to life." (prompt §22)
  *
  * Renders nothing while no verified project exists.
  *
- * Â§22 offers two options: omit the section, or ship an empty structural one that
+ * §22 offers two options: omit the section, or ship an empty structural one that
  * can be populated later. Taken literally, an empty-but-visible section reads as
- * broken to a visitor, so this takes the spirit of both â€” the component and its
+ * broken to a visitor, so this takes the spirit of both — the component and its
  * layout exist and are wired to `projects`, but output nothing until there is
  * something true to show. Adding one verified entry makes the section appear.
  *
  * The layout is large-format visual storytelling rather than a case-study card
- * grid, which Â§22 rules out.
+ * grid, which §22 rules out.
  */
 export function SelectedWork() {
   if (projects.length === 0) return null;

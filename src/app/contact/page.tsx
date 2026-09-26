@@ -1,4 +1,4 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
 import { ContactForm } from "@/components/forms/ContactForm";
 import { site } from "@/config/site";
 
@@ -13,11 +13,11 @@ export const metadata: Metadata = {
  * /contact
  *
  * Remains fully functional even though Contact is not in the primary desktop
- * navigation (prompt Â§34) â€” it is reachable from the overlay menu, the footer,
+ * navigation (prompt §34) — it is reachable from the overlay menu, the footer,
  * and every CTA on the site.
  *
  * NO address, phone number or response-time commitment appears here. None is on
- * record, and Â§34 forbids inventing them. The block below renders only if
+ * record, and §34 forbids inventing them. The block below renders only if
  * `site.contact` is populated. TODO(business-facts).
  */
 export default function ContactPage() {

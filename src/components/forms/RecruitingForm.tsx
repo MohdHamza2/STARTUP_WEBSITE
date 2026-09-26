@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useActionState, useEffect, useState } from "react";
 import Link from "next/link";
@@ -16,18 +16,18 @@ const toOptions = (values: readonly string[]) =>
   values.map((value) => ({ value, label: value }));
 
 /**
- * Recruiting enquiry form (prompt Â§29; DOC5 Â§5.8â€“Â§5.15).
+ * Recruiting enquiry form (prompt §29; DOC5 §5.8–§5.15).
  *
- * Required: name and email. Everything else â€” phone, education, university,
+ * Required: name and email. Everything else — phone, education, university,
  * graduation year, work authorisation, target role, industry, location,
- * LinkedIn, resume â€” is optional, per DOC5 and owner decision D1.
+ * LinkedIn, resume — is optional, per DOC5 and owner decision D1.
  *
- * Grouped into sections rather than split across steps, which is what DOC5 Â§5.7
+ * Grouped into sections rather than split across steps, which is what DOC5 §5.7
  * asks for: "a single logical form with sections rather than overcomplicating
  * it with multiple pages".
  *
  * The consent line states plainly that submitting does not guarantee employment
- * or placement (DOC5 Â§5.14), which is also where Â§27's outcome boundary lands
+ * or placement (DOC5 §5.14), which is also where §27's outcome boundary lands
  * instead of a defensive marketing section.
  */
 export function RecruitingForm() {
@@ -171,7 +171,7 @@ export function RecruitingForm() {
           label="LinkedIn profile"
           type="url"
           optional
-          placeholder="https://linkedin.com/in/â€¦"
+          placeholder="https://linkedin.com/in/…"
           error={state.errors?.linkedinUrl}
         />
       </Section>
@@ -231,7 +231,7 @@ export function RecruitingForm() {
               : "bg-mint text-obsidian hover:bg-mint-deep",
           )}
         >
-          {pending ? "Submittingâ€¦" : "Submit profile"}
+          {pending ? "Submitting…" : "Submit profile"}
         </button>
       </div>
     </form>

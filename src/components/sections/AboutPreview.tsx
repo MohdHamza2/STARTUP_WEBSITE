@@ -1,12 +1,12 @@
-﻿import Link from "next/link";
+import Link from "next/link";
 import { Reveal } from "@/components/ui/Reveal";
 
 /**
- * About, on the homepage (prompt Â§6, item 11).
+ * About, on the homepage (prompt §6, item 11).
  *
- * Short by design â€” the full page is at /about, and Â§35 asks for that to stay
+ * Short by design — the full page is at /about, and §35 asks for that to stay
  * concise too. Nothing here claims a company history, a team, a founder or a
- * registration, because none of those are on record (prompt Â§35, Â§53).
+ * registration, because none of those are on record (prompt §35, §53).
  */
 export function AboutPreview() {
   return (
@@ -28,7 +28,7 @@ export function AboutPreview() {
               the US.
             </p>
             <p className="mt-6 max-w-2xl text-body text-silver">
-              Both come down to the same thing â€” doing the work that stands
+              Both come down to the same thing — doing the work that stands
               between an intention and a result.
             </p>
 

@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useId } from "react";
 import type { ReactNode } from "react";
@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 /**
  * Form field primitives.
  *
- * Accessibility contract, applied consistently (prompt Â§32, Â§46; DOC5 Â§5.31):
+ * Accessibility contract, applied consistently (prompt §32, §46; DOC5 §5.31):
  *  - every control has a real <label>, associated by id
  *  - errors are linked with aria-describedby and announced via role="alert"
  *  - aria-invalid marks the control itself, so a screen reader announces the
@@ -152,7 +152,7 @@ export function SelectField({
   optional,
   hint,
   error,
-  placeholder = "Selectâ€¦",
+  placeholder = "Select…",
   value,
   onChange,
 }: {

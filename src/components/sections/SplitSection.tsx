@@ -1,8 +1,8 @@
-﻿import Link from "next/link";
+import Link from "next/link";
 import { Reveal } from "@/components/ui/Reveal";
 
 /**
- * "One company. Two directions." (prompt Â§13)
+ * "One company. Two directions." (prompt §13)
  *
  * Explicitly NOT a two-card grid. The two paths are expressed as a full-bleed
  * editorial split divided by a single hairline: typography, negative space and

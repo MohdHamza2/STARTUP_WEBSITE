@@ -1,12 +1,12 @@
-﻿"use client";
+"use client";
 
 import { useEffect } from "react";
 
 /**
- * Route error boundary (prompt Â§56).
+ * Route error boundary (prompt §56).
  *
- * The visitor gets a safe, brand-consistent message and a retry â€” never a stack
- * trace, a digest, or internal detail (prompt Â§44: safe error messages).
+ * The visitor gets a safe, brand-consistent message and a retry — never a stack
+ * trace, a digest, or internal detail (prompt §44: safe error messages).
  */
 export default function Error({
   error,

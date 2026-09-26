@@ -1,12 +1,12 @@
-﻿import Link from "next/link";
+import Link from "next/link";
 import { services } from "@/content/services";
 import { Reveal } from "@/components/ui/Reveal";
 
 /**
- * "What we build" (prompt Â§14).
+ * "What we build" (prompt §14).
  *
- * A refined index, not nine repetitive cards and not a giant icon grid â€” Â§14
- * and Â§52 both rule those out. Each service is one row: number, title,
+ * A refined index, not nine repetitive cards and not a giant icon grid — §14
+ * and §52 both rule those out. Each service is one row: number, title,
  * supporting line. The number column carries the rhythm that icons would
  * otherwise have to.
  *
