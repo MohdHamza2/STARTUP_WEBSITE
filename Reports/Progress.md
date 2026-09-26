@@ -14,72 +14,160 @@ Never delete historical progress unless explicitly instructed.
 
 ## Current Phase
 
-D4 audit — staging service verification
+Build feature-complete. Blocked on owner input for end-to-end verification.
 
 ## Current Feature
 
-D4 staging verification (audit pass)
+None in progress. Handoff to a new account — see `Brain.md` §0 and §20.
 
 ## Current Agent
 
-BACKEND + DATABASE (audit pass)
+FRONTEND + BACKEND (review and handoff pass)
 
 ## Current Status
 
-BLOCKED
+BLOCKED (owner input)
 
 ## Last Commit
 
-`a190e48` — `docs: record B1 form-state fix and verification`
+`ef53837` — encoding repair (bug 10), followed by the docs commit that rewrote
+`Brain.md` and this file. See change-log entry (11).
 
 ## Last Verified
 
-2026-09-25
+2026-09-27 — typecheck, lint and build clean; 33 unit tests; E2E 119 passed /
+4 skipped (123) across desktop, tablet and mobile.
 
 ## Current Blocker
 
-D4 cannot complete without a database connection string (Postgres host/port/
-db/user/password) or a Supabase Management API personal access token. The
-gateway exposes REST + Storage only — no SQL execution endpoint. With the
-schema unapplied, the submit path cannot be traced end to end against staging.
-
-Additional D4 finding: `RESEND_FROM` is set to a `gmail.com` address, which
-Resend will not deliver from (gmail.com is not a verified Resend domain). Email
-delivery therefore fails with `validation_error` even though the API key is
-valid. Lead persistence is unaffected — `submitLead.ts` correctly catches and
-logs email failure without losing the lead, per prompt §42.
+1. Migration `supabase/migrations/0001_init.sql` is not applied — Supabase REST cannot
+   run SQL; the owner must use the SQL editor or supply a connection string
+   (`Brain.md` §18 A).
+2. `RESEND_FROM` is a gmail.com address, which Resend cannot send from (§18 B).
+3. The Testimonials section added in `f8e1f65` publishes fabricated testimonials —
+   owner decision needed (§18 C).
+4. Business facts are still missing (§18 D).
 
 ## Next Action
 
-Owner provides a Supabase DB connection string OR a Management API PAT, plus a
-verified Resend sender domain. Then D4 resumes with `psql` migration deploy +
-full lead-submission E2E.
+The owner resolves 1–3; the agent then traces a real submission end to end for all
+three forms, including the duplicate path, and adds submit-path E2E.
 
 ---
 
 # ACTIVE WORK
 
+## Frontend
+
+Status: Complete. Open owner question on the Testimonials section.
+Last completed: encoding repair of 22 files + `src/lib/encoding.test.ts`.
+
 ## Backend
 
-Status: D4 audit complete; submit-path E2E blocked on schema deploy
-Owner: Backend Agent
-Current task: D4 staging verification (audit pass complete)
-Last completed: B1 form-state fix + verification (`a190e48`)
-Next task: complete D4 once DB schema is deployed
-Known issues: Resend sender is `gmail.com` — not a verified Resend domain
+Status: Code complete; never executed against real services.
+Next task: submit-path verification once the schema exists and a sender works.
+Known issues: `RESEND_FROM` unusable; the rate limiter is per-instance.
 
 ## Database
 
-Status: Schema not applied — no connection string provided
-Owner: Database Agent
-Current task: D4 migration deploy
-Last completed: `supabase/migrations/0001_init.sql` written (commit `21c6c8b`)
-Next task: deploy 0001_init.sql to staging once DB credentials supplied
-Known issues: —
+Status: Migration written, NOT applied (verified 2026-09-25: tables and bucket missing).
+Next task: apply it; verify the tables, the private bucket, and anon denial.
 
 ---
 
 # CHANGE LOG
+
+## 2026-09-27 (11)
+
+### Agent
+
+FRONTEND + BACKEND (review, repair, handoff)
+
+### Feature
+
+Review of incoming work; encoding repair; full Brain.md rewrite for handoff
+
+### Context
+
+The owner merged `main` into `arsh` (PR #3), asked for a review of everything since
+`24ec769`, then asked for Brain.md to be brought fully up to date so the work can
+continue from a different account with no access to the chat.
+
+### Work Completed
+
+1. **Reviewed the 6 incoming commits.** Local `arsh` was 6 behind the remote even
+   though the owner believed it had been pulled; fast-forwarded (clean tree).
+   - `73dfc0e` B1 fix (MohdHamza2) — correct; it fixed a real bug from `21c6c8b`
+     (`IDLE` exported from a `"use server"` module broke every Server Action).
+   - `df73e65` D4 audit (other agent) — thorough, and honestly recorded as BLOCKED.
+   - `f8e1f65` Testimonials (MohdHamza2) — publishes three invented people and quotes
+     under "A selection of feedback from clients who have worked with us." Conflicts
+     with brief §53, DOC1 §14, DOC2 §37 and DOC3.1 Risk 4. **Not changed** — flagged
+     for the owner in `Brain.md` §18 C.
+   - Baseline on the merged state: E2E 119 passed / 4 skipped, exit 0.
+
+2. **Found and fixed bug 10 — encoding corruption shipped in `ffa4fc4`.**
+   Expected: UTF-8 source with correct punctuation. Actual: 124 double-encoded
+   sequences across 22 files (em dash, section sign, ellipsis, en dash, copyright,
+   middle dot) plus a UTF-8 BOM on each file. Visible to users: About and Terms body
+   copy, the `/recruiting` tab and Open Graph titles, the "Select…" and "Submitting…"
+   placeholders, and the header's screen-reader label.
+   Root cause: the 2026-09-18 Graphite→Silver bulk replace ran through Windows
+   PowerShell 5.1 `Get-Content -Raw` (reads BOM-less UTF-8 as Windows-1252) and
+   `Set-Content -Encoding utf8` (writes UTF-8 with a BOM). The 22 files are exactly
+   the ones that replace touched.
+   Fix: stripped the BOMs; inverted only non-ASCII runs whose Windows-1252 bytes
+   decode as valid UTF-8, so correctly-encoded characters added later were left
+   untouched; excluded the PNG that `git grep` matched. 124 repaired, equal to the
+   enumerated total.
+   Verification: zero sequences and zero BOMs remain; for files untouched since, the
+   diff against pre-corruption `713e2ac` contains ONLY the intended Graphite→Silver
+   change; a browser check on the production build shows correct characters in body
+   copy, titles, placeholders and the aria-label.
+   Regression guard: `src/lib/encoding.test.ts` (pure ASCII) fails on the corruption
+   signatures and on BOMs; confirmed that it catches the committed corrupt files.
+
+3. **Rewrote `Brain.md` completely.** The previous version contradicted itself: it
+   listed finished work as pending, said "nothing tested" and "no code exists", called
+   D1 unresolved, documented `/api` routes that were never built, and omitted the
+   testimonials issue. New sections: §0 resume guide, §15 full bug history with
+   lessons, §22 environment gotchas, §23 session history, §24 hero internals, and §25
+   a summary of the owner's build brief — which previously existed only in the chat,
+   leaving every "prompt §N" reference in the code unresolvable for a new session.
+
+### Files Changed
+
+- 22 source files under `src/app` and `src/components` (encoding only — no logic change)
+- Added: `src/lib/encoding.test.ts`
+- Commits: `ef53837` (encoding fix + guard), then a separate docs commit
+- Rewritten: `Brain.md`
+- Updated: `Reports/Progress.md` (status, this entry, handoff notes)
+
+### Verification
+
+- [x] Code reviewed — diff proven equal to the intended change for untouched files
+- [x] Build passed
+- [x] Tests passed — 33 unit; E2E 119 passed / 4 skipped (123), exit 0
+- [x] Browser tested — `/about` and `/recruiting` on the production build
+- [x] Responsive tested — via the three-viewport E2E run
+- [ ] API tested — not possible (schema not applied)
+- [ ] Database verified — not possible (schema not applied)
+- [x] Regression tested — identical E2E result before and after the repair
+
+### Bugs Found
+
+- Bug 10 (above). My first draft of the guard test also had an invalid regex range
+  (the euro sign is U+20AC, above U+00FF); it was rewritten with escapes.
+
+### Bugs Fixed
+
+- Bug 10.
+
+### Remaining Work
+
+See `Brain.md` §18 and §20.
+
+---
 
 ## 2026-09-25 (10)
 
@@ -1030,33 +1118,26 @@ Everything. Seventeen build phases are enumerated in `Reports/Implementation_Pla
 
 ## Current Task
 
-Awaiting owner decisions D1–D6.
+None in progress. The project is ready to hand off to a new account.
 
 ## What Has Been Completed
 
-The mandatory audit and plan phase required by `.claude/Claude.md` §1 and DOC6 §6.35
-Rule 4. Nothing else.
+Every build phase, plus the fixes and reviews logged above. `Brain.md` is the
+authoritative and fully current summary as of 2026-09-27.
 
 ## What Remains
 
-The entire application: scaffold, design system, layout shell, hero sequence and clickable
-panels, homepage, `/software`, `/recruiting`, `/about`, `/contact`, legal pages, database,
-backend, storage, email, forms, SEO, performance, testing and final visual QA.
+Owner: apply the migration, provide a usable email sender and the `.env.local`
+values, decide the Testimonials section, supply the business facts.
+Agent: trace a real submission end to end once the owner items are done.
 
 ## Important Context
 
-- This is a greenfield build. No existing architecture had to be preserved or integrated
-  with, because none was implemented — but all work must conform to the architecture
-  already *specified* in DOC2, DOC3.1 and DOC4.
-- The hero animation is supplied as JPEG frame sequences, not video. Panel bounding boxes
-  drift between frames, so hotspot geometry must be derived from the frames at build time
-  rather than hardcoded. OCR is not required and will not be used.
-- No GENRA brand-resolution frames were supplied; that beat must be built in DOM.
-- Nothing in the repository establishes any verified client, project, testimonial, metric,
-  contact detail or social account. None may be invented.
+- Read `Brain.md` §0 first. §25 decodes the "prompt §N" references in the code.
+- Branch `arsh` only. Another developer commits too — always fetch first.
+- Review on the production build; E2E uses port 3100.
+- Never rewrite source files with PowerShell 5.1 `Get-Content` / `Set-Content`.
 
 ## Exact Next Step
 
-On receipt of D1–D6, begin Phase 0: `create-next-app` with TypeScript and Tailwind,
-configure shadcn/ui, define design tokens from the brand kit values recorded in
-`Brain.md` §12, wire Vitest and Playwright. Gate: clean `build` and `typecheck`.
+The owner applies `supabase/migrations/0001_init.sql` in the Supabase SQL editor.
