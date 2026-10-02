@@ -14,44 +14,44 @@ Never delete historical progress unless explicitly instructed.
 
 ## Current Phase
 
-Build feature-complete. Blocked on owner input for end-to-end verification.
+Major visual revision complete (light theme, Molten Ring hero, image-led page
+heroes). Backend still blocked on owner input for end-to-end verification.
 
 ## Current Feature
 
-None in progress. Handoff to a new account — see `Brain.md` §0 and §20.
+None in progress. Revision of 2026-10-03 committed — see change-log entry (12) and
+`Brain.md` §26.
 
 ## Current Agent
 
-FRONTEND + BACKEND (review and handoff pass)
+FRONTEND (lead) + BACKEND + DATABASE (coordinated recruiting-contact change)
 
 ## Current Status
 
-BLOCKED (owner input)
+COMPLETE (revision) / BLOCKED (backend verification — owner input)
 
 ## Last Commit
 
-`ef53837` — encoding repair (bug 10), followed by the docs commit that rewrote
-`Brain.md` and this file. See change-log entry (11).
+`3fb0d11` — the 2026-10-03 site revision (with `d9a59ad` skill setup / design records,
+`19329a7` recruiting phone-required, and the docs commit that follows). See entry 12.
 
 ## Last Verified
 
-2026-09-27 — typecheck, lint and build clean; 33 unit tests; E2E 119 passed /
-4 skipped (123) across desktop, tablet and mobile.
+2026-10-03 — typecheck and lint clean; production build clean; 34 unit tests; E2E
+124 passed / 2 skipped (126) across desktop, tablet and mobile.
 
 ## Current Blocker
 
-1. Migration `supabase/migrations/0001_init.sql` is not applied — Supabase REST cannot
-   run SQL; the owner must use the SQL editor or supply a connection string
-   (`Brain.md` §18 A).
+1. Migration `supabase/migrations/0001_init.sql` is not applied (`Brain.md` §18 A).
+   Apply the CURRENT file — it now makes `leads.email` nullable with a contact CHECK.
 2. `RESEND_FROM` is a gmail.com address, which Resend cannot send from (§18 B).
-3. The Testimonials section added in `f8e1f65` publishes fabricated testimonials —
-   owner decision needed (§18 C).
-4. Business facts are still missing (§18 D).
+3. Business facts are still missing (§18 D).
 
 ## Next Action
 
-The owner resolves 1–3; the agent then traces a real submission end to end for all
-three forms, including the duplicate path, and adds submit-path E2E.
+The owner resolves 1–2; the agent then traces a real submission for all three forms
+(including a phone-only recruiting lead and the duplicate path) and adds submit-path
+E2E. Separately: check the hero on a real phone and tablet.
 
 ---
 
@@ -59,23 +59,106 @@ three forms, including the duplicate path, and adds submit-path E2E.
 
 ## Frontend
 
-Status: Complete. Open owner question on the Testimonials section.
-Last completed: encoding repair of 22 files + `src/lib/encoding.test.ts`.
+Status: Complete. Light theme, Molten Ring hero, /software and /recruiting heroes.
+Last completed: 2026-10-03 revision (entry 12).
+Known gap: touch feel and low-end GPU frame rate untested on physical devices.
 
 ## Backend
 
 Status: Code complete; never executed against real services.
-Next task: submit-path verification once the schema exists and a sender works.
+Changed 2026-10-03: recruiting phone required / email optional; duplicate detection
+by email or phone; confirmation email only when an email exists.
 Known issues: `RESEND_FROM` unusable; the rate limiter is per-instance.
 
 ## Database
 
-Status: Migration written, NOT applied (verified 2026-09-25: tables and bucket missing).
+Status: Migration written, NOT applied. Amended 2026-10-03 (nullable email +
+`leads_contact_check`).
 Next task: apply it; verify the tables, the private bucket, and anon denial.
 
 ---
 
 # CHANGE LOG
+
+## 2026-10-03 (12)
+
+### Agent
+
+FRONTEND (lead), with coordinated BACKEND and DATABASE changes.
+
+### Task
+
+Owner's major visual revision: replace the homepage hero with the supplied
+MoltenRingCarousel as a nine-service scroll narrative; light theme site-wide;
+distinct image-led /software and /recruiting heroes followed by CTA and form;
+recruiting form with optional email. Then install and apply the Impeccable, Vercel
+Agent Skills, Taste Skill and Emil Kowalski skill sets.
+
+### Owner decisions (this session)
+
+Recruiting: phone required, email optional (supersedes D1 for that form). Images:
+Unsplash, downloaded, committed. Skills: not committed, `skills-lock.json` is.
+Positioning "Build + careers, one team"; software-first homepage. Testimonials:
+render nothing until real. Design: "The Working Drawing", sentence case, sharp
+corners + pill buttons.
+
+### Files Changed (summary)
+
+- New: `PRODUCT.md`, `DESIGN.md`, `.impeccable/design.json`, `skills-lock.json`,
+  `assets/images/SOURCES.md`, `public/images/{services,pages}/*.webp` (11),
+  `src/components/ui/molten-ring-carousel.tsx`, `src/components/hero/ServiceHero.tsx`,
+  `src/components/hero/ServiceHeroStatic.tsx`, `src/components/sections/SoftwareHero.tsx`,
+  `src/components/sections/RecruitingHero.tsx`, `src/lib/scroll.ts`,
+  `src/lib/utils.test.ts`, `e2e/hero.spec.ts` (rewritten).
+- Removed: `src/components/hero/Hero.tsx`, `HeroStatic.tsx`, `src/lib/hero/*`,
+  `scripts/build-hero-assets.mjs`, `src/content/testimonials.ts`,
+  `src/components/sections/WhatWeBuild.tsx`; packages `gsap`, `motion`; the
+  `prebuild` / `hero:build` scripts.
+- Modified: `globals.css` (light role tokens, `side`/`short` variants, browser
+  surfaces, `text-accent`, `text-action`, scroll padding), every page and section
+  component (theme, sentence case, no eyebrows, 4px radii), `Header`, `Footer`,
+  `Logo`, forms, `Reveal` (CSS fade, hydration-safe), `SmoothScroll` (Lenis autoRaf,
+  registered for `scrollToY`), `FinalCTA` (props), `services.ts` (image data,
+  `serviceHref`), `schemas.ts`, `submitLead.ts`, `notify.ts`, `0001_init.sql`,
+  `content/recruiting.ts`, privacy copy, `lib/utils.ts`, `playwright.config.ts`
+  (SwiftShader), `eslint.config.mjs`, `.gitignore`, `Brain.md`, this file.
+
+### Verification
+
+- [x] Typecheck clean · [x] Lint clean · [x] Production build clean
+- [x] Unit: 34 passed
+- [x] E2E: 124 passed, 2 skipped (126), desktop + tablet + mobile
+- [x] Hero visually checked headless (SwiftShader) at 1920×1080, 1366×768,
+      1024×768, 768×1024, 390×844, 844×390 — no horizontal overflow, correct
+      progression, release after 09
+- [x] Reduced-motion and WebGL-disabled fallbacks: all nine services, images and
+      links; no console errors
+- [x] /software and /recruiting at 1366×768 and 390×844: one h1, no broken images,
+      no overflow
+- [x] Impeccable detector: 0 errors; 19 advisories fixed (`text-action` token),
+      8 accepted (email inline styles)
+- [ ] Physical touch devices — not available to the agent
+- [ ] Real submissions — blocked (§18 A, B)
+
+### Bugs Found / Fixed
+
+- `Reveal` hydration mismatch under reduced motion (pre-existing) — fixed.
+- `cn()` dropped custom type tokens next to colour classes — fixed + unit test.
+- Hero easing was frame-rate dependent (twice as fast at 120Hz, seconds behind at
+  low fps) — time-normalised.
+
+### Commits
+
+`d9a59ad` chore(design): agent-skill setup, PRODUCT.md, DESIGN.md
+`19329a7` feat(recruiting): require phone, make email optional
+`3fb0d11` feat(site): light theme, Molten Ring hero, image-led page heroes
+plus a docs commit for Brain.md and this file.
+
+### Remaining Work
+
+Owner: apply migration, usable sender, business facts. Agent: submit-path trace and
+E2E; physical-device hero check. Future: the hero's right-side character (out of
+scope this session).
 
 ## 2026-09-27 (11)
 
@@ -1118,7 +1201,7 @@ Everything. Seventeen build phases are enumerated in `Reports/Implementation_Pla
 
 ## Current Task
 
-None in progress. The project is ready to hand off to a new account.
+None in progress. The 2026-10-03 visual revision is committed on `arsh`.
 
 ## What Has Been Completed
 
@@ -1140,4 +1223,6 @@ Agent: trace a real submission end to end once the owner items are done.
 
 ## Exact Next Step
 
-The owner applies `supabase/migrations/0001_init.sql` in the Supabase SQL editor.
+The owner applies the CURRENT `supabase/migrations/0001_init.sql` (nullable email +
+contact CHECK) in the Supabase SQL editor. Agent skills: reinstall per `Brain.md` §27
+before design work.

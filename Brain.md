@@ -8,8 +8,10 @@ changes. It is written so that someone with **no access to the original chat** c
 continue immediately.
 
 **Last fully rewritten: 2026-09-27**, against commit history up to and including the
-encoding fix recorded in §15. Every number in this file was re-measured on that date,
-not copied from an earlier version.
+encoding fix recorded in §15. **Updated 2026-10-03** for the major visual revision
+(light theme, Molten Ring hero, image-led /software and /recruiting, recruiting
+phone-required) and the agent-skill setup — see §26 for the full record of that
+session; sections below were edited in place where the facts changed.
 
 ---
 
@@ -23,9 +25,13 @@ not copied from an earlier version.
    `MohdHamza2`) also works on this repo and merges `main` into `arsh`. On 2026-09-27
    the local clone was **6 commits behind** even though the owner believed it had been
    pulled — always check, never assume.
-4. `npm install`, then `npm run build` (the first build regenerates the hero assets —
-   several minutes, see §24), then serve with `npm run start`. **Review the site on the
-   production build, not `npm run dev`** — see §22.
+4. `npm install`, then `npm run build`, then serve with `npm run start`. **Review the
+   site on the production build, not `npm run dev`** — see §22. (The old frame-hero
+   `prebuild` step is gone; builds no longer regenerate anything.)
+4a. Agent skills (§27) are NOT in git. Reinstall them in the project before design
+   work: `npx skills experimental_install` (restores the six skills pinned in
+   `skills-lock.json`) and `npx impeccable install --providers=claude --scope=project`.
+   Then read `PRODUCT.md` and `DESIGN.md` at the repo root.
 5. Verify the gate before touching anything: `npm run typecheck && npm run lint &&
    npm test && npm run e2e`. Expected results are in §14.
 6. `.env.local` is NOT in git and NOT in this clone. The owner holds the real values.
@@ -74,9 +80,9 @@ branch `arsh`. Nothing personal or secret may ever be written into tracked files
 
 | Route | Contents |
 |---|---|
-| `/` | Hero sequence + 11 sections, in the order the brief specifies (§25, prompt §6) |
-| `/software` | Page hero, nine-service catalog, process, capabilities, project form |
-| `/recruiting` | Page hero, who it's for, 4-step process, what we ask for, recruiting form at `#apply` |
+| `/` | Molten Ring service hero (§24) + the sections below |
+| `/software` | Image-led hero → project form (`#start`) → nine-service catalog (`#services`) → process → capabilities |
+| `/recruiting` | Image-led hero → recruiting form (`#apply`) → who it's for → 4-step process → what we ask for |
 | `/about` | Concise; no invented history, team or founder |
 | `/contact` | Contact form with a software/recruiting topic switch |
 | `/privacy`, `/terms` | State only what the implementation actually does |
@@ -85,11 +91,12 @@ branch `arsh`. Nothing personal or secret may ever be written into tracked files
 
 ## Homepage section order (`src/app/page.tsx`)
 
-Hero (includes the GENRA brand resolution) → SplitSection ("One company / Two
-directions") → WhatWeBuild (9-service index) → Process → BrandStatement
-("Build. Automate. Advance.") → Capabilities → SelectedWork (renders nothing while
-empty) → WorkThatMoves → **Testimonials (added by another developer — OPEN ISSUE,
-see §18 C)** → RecruitingIntro → AboutPreview → FinalCTA (contains the project form).
+ServiceHero (the nine services as a scroll-driven Molten Ring, §24) → SplitSection
+("Two directions") → Process → BrandStatement ("Build. Automate. Advance.") →
+Capabilities → SelectedWork (renders nothing while empty) → WorkThatMoves →
+Testimonials (renders nothing until verified feedback exists, §18 C) →
+RecruitingIntro → AboutPreview → FinalCTA (contains the project form).
+WhatWeBuild was retired 2026-10-03: the hero is now the nine-service index.
 
 ## Official service catalog — `src/content/services.ts`
 
@@ -115,15 +122,15 @@ booking, CMS, or **public user accounts**.
 
 | Area | State |
 |---|---|
-| Frontend (all routes, hero, forms, a11y, SEO) | Done and verified |
+| Frontend (all routes, light theme, Molten Ring hero, forms, a11y, SEO) | Done and verified (2026-10-03) |
 | Backend code (server actions, validation, Turnstile, rate limit, email, storage) | Written, typechecked, unit-tested — **never executed against real services** |
-| Database | Migration written — **NOT applied**; staging tables do not exist |
+| Database | Migration written (amended 2026-10-03: `leads.email` nullable) — **NOT applied**; staging tables do not exist |
 | Email | API key valid — **sender address unusable** (gmail.com, see §18 B) |
 | Business facts (domain, contact, socials, legal entity, retention) | **Not supplied** — omitted, never invented |
-| Testimonials section | **Contains fabricated testimonials — owner decision pending** (§18 C) |
+| Testimonials section | Fabricated entries removed; renders nothing until verified (owner, 2026-10-03) |
 
-**Verified on 2026-09-27:** typecheck clean · lint clean · production build clean ·
-**33 unit tests pass** · **E2E: 119 passed, 4 skipped (123 total), exit 0** across
+**Verified on 2026-10-03:** typecheck clean · lint clean · production build clean ·
+**34 unit tests pass** · **E2E: see §14 for the latest full-suite result** across
 desktop, tablet and mobile.
 
 **The submit path has never run end to end.** Do not describe the forms as "working"
@@ -138,7 +145,7 @@ the private bucket → `lead_events` row → notification email.
 |---|---|
 | Framework | Next.js **16.3.5** (App Router, Turbopack), React **19.2.8**, TypeScript |
 | Styling | Tailwind CSS **v4** — tokens via `@theme` in `src/app/globals.css` (there is no tailwind.config) |
-| Animation | Motion 12 (UI), GSAP 3 + ScrollTrigger (hero), Lenis 1 (smooth scroll) |
+| Animation | Lenis 1 (smooth scroll), a hand-written WebGL2 shader for the hero (no library), CSS transitions elsewhere. **GSAP and Motion were removed 2026-10-03** — their only consumers (the frame hero, the Reveal component) were replaced |
 | Forms / validation | `useActionState` + Server Actions; Zod 3 schemas shared by client and server. React Hook Form is installed but NOT used |
 | Database | Supabase Postgres via `@supabase/supabase-js` (service role, server-only) |
 | Storage | Supabase Storage, private bucket `resumes` |
@@ -146,7 +153,8 @@ the private bucket → `lead_events` row → notification email.
 | Spam protection | Cloudflare Turnstile (explicit render; no wrapper library) |
 | Icons | Lucide React (used sparingly) |
 | Tests | Vitest 2 (unit, jsdom) · Playwright (E2E) · `@axe-core/playwright` (a11y) |
-| Image tooling | `sharp` (hero and brand-icon generation scripts) |
+| Image tooling | `sharp` (brand-icon script; also used by the hero E2E pixel check) |
+| Photography | Unsplash (Unsplash License), WebP in `public/images/`, credited in `assets/images/SOURCES.md` |
 | Hosting (planned) | Vercel + Cloudflare. **Docker is forbidden** (CLAUDE.md §7) |
 | Node | v24.19.0 on the development machine |
 
@@ -265,7 +273,10 @@ File: `supabase/migrations/0001_init.sql` — implements DOC4 §4.31 / §4.32 ve
   `lead_events`, `lead_notes`, `admin_users`
 - UUID keys; CHECK constraints on `lead_type`, `status`, `consent_status`;
   13 indexes; `updated_at` trigger
-- `leads.email` is **NOT NULL** (decision D1)
+- `leads.email` is **nullable** since 2026-10-03 (recruiting may give phone only), with
+  `leads_contact_check: email is not null or phone is not null`. The migration was
+  amended in place because it had never been applied anywhere. Project and contact
+  enquiries still require email in the application schemas.
 - RLS enabled on every table with **no policy**, plus `revoke all` from `anon` and
   `authenticated` as a second layer. **Do not add a permissive policy** — it would
   expose resumes, visa status and contact details to anyone holding the anon key
@@ -325,8 +336,8 @@ interface FormState {
 
 Fields (schemas in `src/lib/validation/schemas.ts`, covered by 30 unit tests):
 
-- **Recruiting** — required: `name`, `email`, `consent`, `turnstileToken`. Optional:
-  `phone`, `education`, `university`, `graduationYear`, `visaStatus`, `targetRole`,
+- **Recruiting** — required: `name`, `phone` (at least 7 digits), `consent`,
+  `turnstileToken`. Optional: `email`, `education`, `university`, `graduationYear`, `visaStatus`, `targetRole`,
   `preferredIndustry`, `location`, `linkedinUrl`, `additionalInformation`, `resume`
   (file, PDF, max 10 MB).
 - **Project** — required: `name`, `email`, `projectType` (one of the 9 services or
@@ -347,7 +358,7 @@ Owner decisions D1–D6 were escalated and answered on 2026-09-18
 
 | # | Question | Outcome |
 |---|---|---|
-| D1 | Is recruiting email required? (DOC4 said NOT NULL; the brief said optional) | **Required.** Schema unchanged |
+| D1 | Is recruiting email required? (DOC4 said NOT NULL; the brief said optional) | **Required** (2026-09-18). **Superseded 2026-10-03 for the recruiting form only: phone required, email optional** (owner) |
 | D2 | Business facts (contact, socials, domain, legal entity) | **Not available — omit, never invent** |
 | D3 | Data-retention period | **Not set — privacy page states the basis, not a period** |
 | D4 | Service credentials | Build first, verify later. **Partially supplied since — see §18** |
@@ -379,21 +390,27 @@ Other decisions:
 
 # 12. DESIGN SYSTEM
 
+**Since 2026-10-03 the site is LIGHT-ONLY** (owner revision). The authoritative,
+detailed system is **`DESIGN.md`** at the repo root (North Star "The Working
+Drawing"), with product truth in **`PRODUCT.md`**. Summary:
+
 Sources: `assets/brand/GENRA_Brand_Kit_DOC.docx`, `assets/brand/brand_kit_img_main.png`.
-Tokens live only in `src/app/globals.css` (`@theme`). Never hardcode colours.
+Tokens live only in `src/app/globals.css` (`@theme`). Components use the semantic
+role tokens, never raw hex.
 
-| Token | Hex | Use |
+| Role token | Value | Use |
 |---|---|---|
-| Obsidian | `#0B0B0B` | Primary background (the site is dark-first) |
-| Ivory | `#F5F4EF` | Primary text on dark |
-| Mint | `#34D399` | Signal accent — CTAs, rules, active states. Never a wash |
-| Deep Mint | `#10B981` | Hover |
-| Graphite | `#374151` | **Borders, dividers, icons, disabled backgrounds ONLY** |
-| Silver | `#D1D5DB` | Secondary and tertiary **text** on dark |
-| Card dark / line dark | `#111615` / `#1F2926` | Surfaces, hairlines |
+| `paper` | Ivory `#F5F4EF` | Every page background |
+| `surface` | `#FFFFFF` | Inputs, the form success panel |
+| `ink` | Obsidian `#0B0B0B` | Text, primary buttons (Ivory label), focus ring |
+| `muted` | Graphite `#374151` | Secondary text (~9.4:1 on paper), button hover |
+| `line` | Silver `#D1D5DB` | Hairlines, dividers, input borders |
+| `mint` | `#34D399` | Rules, dots, the `text-accent` underline bar, active tick. **Never text** (~1.7:1 on Ivory) |
 
-**Graphite on Obsidian is about 1.9:1 against a 4.5:1 requirement.** An axe audit
-flagged it on every route. All text that used it now uses Silver (about 12.9:1).
+Rules: sentence-case headings; no eyebrow labels above headings; 4px corners on
+everything except pill buttons; no shadows; mint is a mark, never a fill;
+`text-action` (15px) for buttons/links. `cn()` (lib/utils) is taught the custom
+type tokens so tailwind-merge does not drop them as "colours".
 
 Typography: Sora 600 for display and headings, Inter for body and UI (via `next/font`).
 Scale tokens: `text-display`, `text-h2`, `text-h3`, `text-body-lg`, `text-body`,
@@ -425,12 +442,13 @@ address into this file or any tracked file.** The repository is public.
 
 # 14. TESTING STATUS
 
-| Suite | Command | Result 2026-09-27 |
+| Suite | Command | Result 2026-10-03 |
 |---|---|---|
 | Typecheck | `npm run typecheck` | clean |
 | Lint | `npm run lint` | clean |
-| Unit (Vitest) | `npm test` | **33 pass** — 30 validation + 3 encoding guard |
-| E2E (Playwright) | `npm run e2e` | **119 passed, 4 skipped (123 total), exit 0** |
+| Unit (Vitest) | `npm test` | **34 pass** — 29 validation + 3 encoding guard + 2 `cn()` merge |
+| E2E (Playwright) | `npm run e2e` | **124 passed, 2 skipped (126 total), exit 0** |
+| Build | `npm run build` | clean (run by the E2E web server) |
 
 E2E runs on **desktop, tablet (Chromium at an iPad viewport) and mobile (Pixel 7)**, and
 builds and serves production on **port 3100** (never 3000 — see §22). Specs:
@@ -438,16 +456,18 @@ builds and serves production on **port 3100** (never 3000 — see §22). Specs:
 - `navigation.spec.ts` — the header-contents rule, overlay menu, Escape and focus
   return, every route returns 200 with exactly one `h1`, branded 404, no horizontal
   overflow
-- `hero.spec.ts` — the opening frame paints with **no scroll** (checked in pixels), six
-  panels with correct routing, exactly one active at a time, click navigates, hover is
-  inert, Enter activates, reduced motion gets the static hero
+- `hero.spec.ts` (rewritten 2026-10-03) — nine services in order, the ring paints
+  with **no scroll** (screenshot pixels via sharp), scrolling advances 01→09, the page
+  releases into the next section after 09 without looping, prev/next buttons, Explore
+  link follows the service, the front-card link exists over the canvas, reduced
+  motion gets nine plain links. Chromium runs SwiftShader so WebGL2 is real.
 - `forms.spec.ts` — exact dropdown catalog, Other field appears and its value is
   removed on deselect, required vs optional fields, PDF-only, oversize rejected,
   attribution captured and surviving cross-page navigation, contact topic switch, labels
 - `accessibility.spec.ts` — axe WCAG 2.0/2.1 A+AA on every route and the 404, plus
   keyboard reachability of the recruiting form
 
-The 4 skips are desktop-only interactions (hover, keyboard) correctly skipped on mobile.
+The 2 skips are desktop-only interactions correctly skipped on mobile.
 
 **What is NOT tested, and why:** any successful submission, database write, upload or
 email. There is no schema and no usable sender, so such a test would either fail or
@@ -528,6 +548,10 @@ Lessons that generalise:
 | `41e9cce` | 09-27 | owner | PR #3 (main → arsh) |
 | `ef53837` | 09-27 | agent | **Bug 10** encoding repair + `encoding.test.ts` guard |
 | (docs commit after `ef53837`) | 09-27 | agent | This complete Brain.md rewrite + Progress.md update |
+| `d9a59ad` | 10-03 | agent | Agent-skill setup (not committed: skills); PRODUCT.md, DESIGN.md |
+| `19329a7` | 10-03 | agent | Recruiting: phone required, email optional (schema, action, migration) |
+| `3fb0d11` | 10-03 | agent | Light theme, Molten Ring hero, image-led /software and /recruiting |
+| (docs commit after `3fb0d11`) | 10-03 | agent | Brain.md §24/§26/§27 + Progress.md entry 12 |
 
 ---
 
@@ -557,7 +581,14 @@ in the account, and gmail.com cannot be verified, so sends fail with
 - For **staging only**, Resend's shared onboarding sender can typically send to the
   Resend account owner's own address. Check the current Resend docs before relying on it.
 
-## C. Testimonials section contains fabricated testimonials — OWNER DECISION NEEDED
+## C. Testimonials — RESOLVED 2026-10-03
+
+Owner decision: render nothing until real, verified feedback exists. The invented
+entries and `content/testimonials.ts` were deleted; the component now reads the
+single `testimonials` array in `content/projects.ts` and shows only
+`status: "published"` + `verified: true` entries. History of the issue follows.
+
+### (history) Testimonials section contained fabricated testimonials
 
 Added in `f8e1f65`. Three invented people ("Alex Morgan", "Jordan Patel",
 "Daniel Reed") with invented quotes, live on the homepage under the subheading
@@ -600,23 +631,26 @@ Other contributors also commit to this repo — check `git log` before assuming 
 
 # 20. CURRENT HANDOFF
 
-## Last completed (2026-09-27)
+## Last completed (2026-10-03) — major visual revision, see §26
 
-1. Reviewed the 6 commits from the other developer (B1 fix, D4 audit, testimonials,
-   two merges) and fast-forwarded local `arsh`, which was behind.
-2. Found and repaired bug 10 (encoding corruption) across 22 files, added a
-   regression test, and verified the fix in the browser on the production build.
-3. Rewrote this file completely and updated `Reports/Progress.md`.
+Light theme; Molten Ring hero replacing the frame hero; image-led /software and
+/recruiting heroes with their forms directly beneath; recruiting form phone-required
+/ email-optional (schema, server action, migration, copy, tests); fabricated
+testimonials removed; agent skills installed and PRODUCT.md / DESIGN.md written.
 
 ## Exact next actions
 
-1. **Owner:** apply the migration (§18 A).
-2. **Owner:** decide the Testimonials section (§18 C).
-3. **Owner:** provide the `.env.local` values and a usable email sender (§18 B, E).
-4. **Agent, once 1 and 3 are done:** submit each form for real and trace every row,
-   object and email; submit twice to exercise duplicate detection; add submit-path
-   E2E; record the results here.
+1. **Owner:** apply the migration (§18 A) — it now includes the nullable email and
+   `leads_contact_check`, so apply the CURRENT file.
+2. **Owner:** provide the `.env.local` values and a usable email sender (§18 B, E).
+3. **Agent, once 1 and 2 are done:** submit each form for real and trace every row,
+   object and email; submit a phone-only recruiting lead and a duplicate of it; add
+   submit-path E2E; record the results here.
+4. **Owner/agent:** test the hero on a real phone and tablet (touch scroll, frame
+   rate) — headless emulation cannot prove gesture feel.
 5. **Owner, any time:** business facts (§18 D) → fill in `src/config/site.ts`.
+6. Future task (out of scope so far): the cursor-following character on the hero's
+   right side. The right third of the side-by-side hero is deliberately empty for it.
 
 ## Warnings
 
@@ -625,6 +659,71 @@ Other contributors also commit to this repo — check `git log` before assuming 
 - Never edit source files with PowerShell 5.1 `Get-Content` / `Set-Content` (§22).
 
 ---
+
+# 26. SESSION 2026-10-03 — MAJOR VISUAL REVISION (record)
+
+Owner brief: replace the homepage hero with the supplied MoltenRingCarousel as a
+nine-service scroll narrative; switch the site to a light theme; give /software and
+/recruiting distinct image-led heroes followed immediately by a CTA and the form;
+no robot yet; no placeholder images; no invented facts. Then: install and use the
+Impeccable, Vercel, Taste and Emil Kowalski agent skills.
+
+Owner decisions taken this session (via structured questions):
+- Recruiting form: **phone required, email optional** (supersedes D1 for that form).
+- Images: **Unsplash, downloaded and committed** as optimised WebP (11 files).
+- Skills: **not committed** to git; `skills-lock.json` is (§27).
+- Positioning: **"Build + careers, one team"**; homepage priority **software first**.
+- Testimonials: **render nothing until real**.
+- Design: North Star **"The Working Drawing"**, **sentence-case** headings,
+  **sharp corners + pill buttons**.
+
+What changed, by area:
+- **Theme:** semantic role tokens (§12), every component converted, black logo
+  default, light `themeColor`/manifest, themed selection/caret/scrollbar, 4px radii,
+  eyebrow labels removed site-wide (Impeccable craft floor bans them), uppercase
+  display headings → sentence case, `text-action` token.
+- **Hero:** §24. **Pages:** `SoftwareHero`, `RecruitingHero` (new), `FinalCTA` now
+  takes `heading`/`lead`/`placement` so the same form section serves the homepage
+  close and the /software lead; `PageHero` remains for /about only.
+- **Motion (Emil review):** `Reveal` is now a CSS opacity fade only (no rise; the hero
+  is the one authored motion moment) and no longer branches on reduced motion in
+  render — that branch caused a **hydration mismatch** under reduced motion
+  (pre-existing bug, fixed). Width-based hover animations converted to transforms;
+  press feedback (`active:scale-[0.98]`) on primary buttons; caption swap 280ms.
+- **Dependencies:** removed `gsap` and `motion` (no remaining consumers).
+- **Backend/DB (coordinated cross-boundary change):** `recruitingSchema` (phone
+  required, ≥7 digits; email optional), `submitRecruiting` (null email, duplicate
+  detection by email or else phone, confirmation only when an email exists),
+  `notify.ts` (nullable email, conditional reply-to), migration (nullable email +
+  CHECK). Project and contact forms unchanged.
+- **Bug found:** `cn()` (tailwind-merge) treated custom type tokens (`text-caption`,
+  `text-action`, …) as colours and could silently drop them next to a colour class.
+  Fixed with `extendTailwindMerge`; covered by `src/lib/utils.test.ts`.
+- **Tests:** `e2e/hero.spec.ts` rewritten for the ring (order, painted pixels,
+  progression, release after 09, buttons, links, reduced-motion fallback);
+  recruiting required-fields test updated; Playwright Chromium runs SwiftShader so
+  WebGL2 is exercised.
+
+# 27. AGENT SKILLS (installed 2026-10-03, project scope, NOT in git)
+
+| Source | Skills | Used for |
+|---|---|---|
+| pbakaus/impeccable (Apache-2.0) | `impeccable` (+4 helper agents, hooks in `.claude/settings.local.json`) | init → PRODUCT.md, document → DESIGN.md, craft floor, detector (`.claude/skills/impeccable/scripts/impeccable detect src`), audit/polish |
+| vercel-labs/agent-skills (no licence published) | `vercel-react-best-practices`, `web-design-guidelines` | performance and interface-guideline review |
+| Leonxlnx/taste-skill (MIT) | `design-taste-frontend`, `redesign-existing-projects` | anti-template audit before visual changes |
+| emilkowalski/skills (MIT) | `emil-design-eng`, `animate`, `review-animations`, `improve-animations`, `find-animation-opportunities`, `apple-design` | motion decisions and review |
+
+Restore: `npx skills experimental_install` (reads `skills-lock.json`) and
+`npx impeccable install --providers=claude --scope=project`. `.claude/skills/`,
+`.claude/agents/impeccable-*.md`, `.claude/settings.local.json` and the 17MB
+Impeccable engine binary are gitignored; ESLint ignores `.claude/` and `.impeccable/`.
+
+Skill conflicts resolved in favour of the brand/repo: Taste discourages Inter
+(brand kit mandates Inter body — kept); Taste prefers Motion for scroll values (the
+hero reads scroll once per frame without React state — same principle, no library);
+Taste mandates dark mode (owner brief is light-only — kept light). Detector advisories
+on `notify.ts` (inline email styles) are an accepted exception (documented in
+DESIGN.md).
 
 # 21. CRITICAL RULES
 
@@ -673,6 +772,16 @@ Other contributors also commit to this repo — check `git log` before assuming 
 - npm prints `allow-scripts` warnings for sharp / esbuild / unrs-resolver; installs still work.
 - Commit identity is set in the clone's local git config, not globally — set
   `user.name` / `user.email` in a fresh clone before committing.
+- **Agent Bash heredocs collapse `\\` to `\`.** A regex written through a heredoc
+  lost its backslashes (`\d` became `d`) and broke silently. Write files with an
+  editor/Write tool, or avoid backslashes in shell-generated code.
+- **Git Bash rewrites `/path` arguments** to `C:/Program Files/Git/path` when
+  calling Windows programs; use `MSYS_NO_PATHCONV=1` and Windows-style script paths.
+- **The desktop app's Browser pane pauses `requestAnimationFrame` while hidden.**
+  The hero then looks frozen. For visual checks use headless Playwright with
+  `--use-angle=swiftshader --enable-unsafe-swiftshader` (as the E2E config does).
+- `src/lib/actions/submitLead.ts` and some other files use CRLF line endings;
+  scripted find/replace must normalise line endings first.
 
 ---
 
@@ -699,35 +808,49 @@ Other contributors also commit to this repo — check `git log` before assuming 
 
 # 24. HERO — HOW IT WORKS
 
-Source: `clips/clip1fr.zip` (120 frames), `clip2fr.zip` (300), `clip3fr.zip` (120) —
-1920x1080 JPEG sequences supplied by the owner. **Never modify these.**
+**Since 2026-10-03 the homepage hero is the Molten Ring** (owner-supplied
+MoltenRingCarousel, crafterui, adapted). The old frame-sequence hero (clips,
+`scripts/build-hero-assets.mjs`, `components/hero/Hero.tsx`, `lib/hero/*`, GSAP) was
+removed entirely. `clips/*.zip` stay in the repo untouched as owner source assets.
 
-`scripts/build-hero-assets.mjs` (runs as `prebuild`, idempotent; `--force` to rebuild):
+Files:
+- `src/components/ui/molten-ring-carousel.tsx` — the WebGL2 renderer. Shader and
+  physics are the original's (rounded-box SDF cards fused by a smooth minimum,
+  strands, cursor influence, glass band at the stage edges). Adapted: the ring is
+  driven by `getTarget()` (read every frame) instead of its own wheel handler; it
+  does **not wrap**; geometry is sized from stage height (card 0.58 of the stage,
+  0.62 when stacked; centre-to-centre 1.12 card heights; radius max(1.5H, 3.2
+  cards)); strands also appear in proportion to turn speed plus a fine resting
+  thread; easing is time-normalised (`ease(rate)`, dt capped at 0.25s); the arrival
+  runs on wall-clock time (2.2s); the loop stops when idle, off screen or in a hidden
+  tab; backing store capped at 4.2M device px; atlas cell sized to the device and
+  to MAX_TEXTURE_SIZE (3 columns). A real `<Link>` is positioned over the front card
+  every frame (pointer hit target, `aria-hidden`, `tabIndex -1`). Mouse-only cursor
+  effects and drag; touch is left to native page scroll (`touch-action: pan-y`).
+- `src/components/hero/ServiceHero.tsx` — the page integration. The section is
+  `100svh + 8 × 70svh + 35svh` tall with a sticky stage; **each service owns 70svh of
+  page scroll** and the last holds 35svh before release. After scroll stops inside the
+  sequence it eases (Lenis, 0.6s) onto a service, direction-aware (12% commit), so one
+  wheel notch advances. Past service 09 nothing snaps and the page continues into
+  SplitSection. Caption (number, mint rule, line, title, description, Explore link,
+  up/down buttons, nine ticks) is `aria-live`; an sr-only `<ol>` lists all nine.
+  Layouts: **side by side** at ≥1024px or landscape phones (`side` variant), stacked
+  otherwise; `short` variant tightens landscape phones.
+- `src/components/hero/ServiceHeroStatic.tsx` — reduced motion, no WebGL2 (via
+  `onUnsupported`) and no-JS (`<noscript>`) all get this: h1 "You name it. We build
+  it." and the nine services as linked rows with images.
+- `src/lib/scroll.ts` — `scrollToY()` goes through the registered Lenis instance
+  (SmoothScroll registers it), falling back to native smooth scroll.
+- Data: the nine entries in `src/content/services.ts` (now with `image`, `imageAlt`;
+  `serviceHref()` → `/software` or `/recruiting`). Images: `public/images/services/*.webp`
+  (768×1024, 3:4), credited in `assets/images/SOURCES.md`.
 
-- Keeps every 2nd frame → seq1 60, seq2 150, seq3 60 frames
-- WebP at three widths: `sm` 828 / `md` 1280 / `lg` 1920 → about 1.6 / 3.1 / 5.3 MB
-- Output: `public/hero/` (gitignored) + `timeline.json`
-- Derives panel geometry **from the pixels**: luminance at least 28, the workstation
-  region (x ≥ 268, y ≥ 148 at 480x270 analysis scale) excluded, runs split where the
-  bbox height drops below 30, runs shorter than 10 frames discarded, clickable only at
-  80% or more of peak height. **The build fails loudly** if it does not find exactly
-  six panels.
-
-Verified panel order (clip2 source frames): 1 MVP 10–46 · 2 SaaS 50–90 ·
-3 Web Applications 92–135 · 4 AI-Powered 137–181 · 5 Automation 184–223 ·
-6 Career & Recruiting 226–273. Panels 1–5 → `/software`; 6 → `/recruiting`.
-
-Two measured facts the code depends on: **the camera pushes in** during clip2 (so
-there is no static background plate), and **panels collapse to a thin streak between
-cycles** rather than vanishing (so runs split on height, not presence).
-
-Runtime (`src/components/hero/Hero.tsx`): a 600vh sticky container; ScrollTrigger only
-reports progress (CSS sticky does the pinning). Progress bands: seq1 0–0.14 · seq2
-0.14–0.62 · lift to brand 0.62–0.70 · GENRA brand beat 0.70–0.80 (built in DOM — no
-frames were supplied) · lift 0.80–0.86 · seq3 closing card 0.86–1.0. Frames load
-coarse-to-fine and each arrival triggers a repaint. Hotspots are `<Link>`s positioned
-against the canvas's cover rect, with `pointer-events` and `tabIndex` enabled only
-while a panel is settled. Reduced motion, or a failed timeline fetch → `HeroStatic`.
+Verified 2026-10-03 (headless Chromium + SwiftShader, Playwright): 1920×1080,
+1366×768, 1280×720-class, 1024×768, 768×1024, 390×844, 844×390 — no horizontal
+overflow, correct caption at every step, release into the next section after 09,
+static fallback under reduced motion and with WebGL disabled (all nine links and
+images, no errors). **Not verified:** real touch gestures on a physical phone/tablet,
+and frame rate on a real low-end GPU — do this on devices before launch.
 
 ---
 
