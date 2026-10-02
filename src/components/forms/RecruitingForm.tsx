@@ -18,9 +18,10 @@ const toOptions = (values: readonly string[]) =>
 /**
  * Recruiting enquiry form (prompt §29; DOC5 §5.8–§5.15).
  *
- * Required: name and email. Everything else — phone, education, university,
- * graduation year, work authorisation, target role, industry, location,
- * LinkedIn, resume — is optional, per DOC5 and owner decision D1.
+ * Required: name and phone (owner decision 2026-10-03, superseding D1 for this
+ * form). Everything else — email, resume, education, university, graduation
+ * year, work authorisation, target role, industry, location, LinkedIn — is
+ * optional.
  *
  * Grouped into sections rather than split across steps, which is what DOC5 §5.7
  * asks for: "a single logical form with sections rather than overcomplicating
@@ -52,18 +53,18 @@ export function RecruitingForm() {
       <div
         role="status"
         aria-live="polite"
-        className="border border-line-dark bg-card-dark px-8 py-14 text-center sm:px-14"
+        className="border border-line bg-surface px-8 py-14 text-center sm:px-14"
       >
         <span aria-hidden="true" className="mx-auto block h-px w-16 bg-mint" />
-        <h3 className="mt-10 font-display text-h2 text-ivory">Received.</h3>
-        <p className="mx-auto mt-5 max-w-md text-body text-silver">
+        <h3 className="mt-10 font-display text-h2 text-ink">Received.</h3>
+        <p className="mx-auto mt-5 max-w-md text-body text-muted">
           {state.message && state.message !== "Received."
             ? state.message
             : "Your profile is with GENRA. The team reviews every profile that comes in."}
         </p>
         <Link
           href="/"
-          className="mt-10 inline-flex items-center gap-4 text-[0.9375rem] font-medium text-ivory transition-colors hover:text-mint"
+          className="mt-10 inline-flex items-center gap-4 text-action font-medium text-ink transition-colors hover:text-muted"
         >
           Back to home
           <span aria-hidden="true" className="block h-px w-8 bg-mint" />
@@ -81,31 +82,34 @@ export function RecruitingForm() {
     >
       <Attribution />
 
+      {/* The essentials first: everything required, plus the resume, sits
+          above the fold of the form. The sections after it are all optional. */}
       <Section title="About you">
+        <TextField
+          name="name"
+          label="Full name"
+          autoComplete="name"
+          error={state.errors?.name}
+        />
         <div className="grid gap-8 sm:grid-cols-2">
           <TextField
-            name="name"
-            label="Full name"
-            autoComplete="name"
-            error={state.errors?.name}
+            name="phone"
+            label="Phone"
+            type="tel"
+            autoComplete="tel"
+            hint="Include your country code if you're outside the US."
+            error={state.errors?.phone}
           />
           <TextField
             name="email"
             label="Email"
             type="email"
+            optional
             autoComplete="email"
             error={state.errors?.email}
           />
         </div>
-        <TextField
-          name="phone"
-          label="Phone"
-          type="tel"
-          optional
-          autoComplete="tel"
-          hint="Include your country code if you're outside the US."
-          error={state.errors?.phone}
-        />
+        <ResumeUpload error={state.errors?.resume} />
       </Section>
 
       <Section title="Education">
@@ -176,8 +180,7 @@ export function RecruitingForm() {
         />
       </Section>
 
-      <Section title="Your resume">
-        <ResumeUpload error={state.errors?.resume} />
+      <Section title="Anything else">
         <TextArea
           name="additionalInformation"
           label="Anything else"
@@ -197,7 +200,7 @@ export function RecruitingForm() {
               I agree to be contacted about my enquiry and I&apos;ve read the{" "}
               <Link
                 href="/privacy"
-                className="text-mint underline underline-offset-4"
+                className="text-ink underline decoration-mint decoration-2 underline-offset-4"
               >
                 privacy notice
               </Link>
@@ -213,7 +216,7 @@ export function RecruitingForm() {
           <p
             role="alert"
             aria-live="assertive"
-            className="border border-red-500/40 bg-red-500/5 px-5 py-4 text-caption text-red-300"
+            className="border border-red-700/30 bg-red-50 px-5 py-4 text-caption text-red-800"
           >
             {state.message}
             {state.retryable && " You can try again."}
@@ -224,11 +227,11 @@ export function RecruitingForm() {
           type="submit"
           disabled={pending}
           className={cn(
-            "inline-flex items-center rounded-pill px-8 py-4 text-[0.9375rem] font-semibold",
-            "transition-colors duration-[var(--duration-fast)]",
+            "inline-flex items-center rounded-pill px-8 py-4 text-action font-semibold",
+            "transition-[background-color,transform] duration-[var(--duration-fast)] ease-[var(--ease-genra)]",
             pending
-              ? "cursor-not-allowed bg-graphite text-silver"
-              : "bg-mint text-obsidian hover:bg-mint-deep",
+              ? "cursor-not-allowed bg-silver text-graphite"
+              : "bg-ink text-paper hover:bg-graphite active:scale-[0.98]",
           )}
         >
           {pending ? "Submitting…" : "Submit profile"}
@@ -246,9 +249,9 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <fieldset className="rule-dark pt-10">
+    <fieldset className="rule pt-10">
       <legend className="sr-only">{title}</legend>
-      <p aria-hidden="true" className="text-eyebrow uppercase text-silver">
+      <p aria-hidden="true" className="text-eyebrow uppercase text-muted">
         {title}
       </p>
       <div className="mt-8 space-y-8">{children}</div>

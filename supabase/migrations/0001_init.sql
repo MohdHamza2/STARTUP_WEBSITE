@@ -25,10 +25,14 @@ create table if not exists public.leads (
     lead_type varchar(30) not null,
 
     name varchar(150) not null,
-    -- NOT NULL per DOC4 §4.24 and §4.31, and owner decision D1. The build brief
-    -- suggested making recruiting email optional; the approved database
-    -- architecture takes precedence and was confirmed by the owner.
-    email varchar(320) not null,
+    -- Nullable since owner decision 2026-10-03: the recruiting form takes a
+    -- phone number as its required contact and email is optional. (DOC4 §4.31
+    -- and decision D1 had it NOT NULL; this migration had never been applied
+    -- anywhere, so it is amended in place rather than with a follow-up.)
+    -- Project and contact enquiries still require email, enforced in the
+    -- application schemas. leads_contact_check below guarantees every lead
+    -- can be reached by at least one channel.
+    email varchar(320),
     phone varchar(50),
 
     -- VARCHAR rather than an enum, per DOC4 §4.8: new lead sources must not
@@ -45,6 +49,8 @@ create table if not exists public.leads (
     -- as CHECK constraints so invalid data cannot be written by any path.
     constraint leads_lead_type_check
         check (lead_type in ('RECRUITING', 'SOFTWARE')),
+    constraint leads_contact_check
+        check (email is not null or phone is not null),
     constraint leads_status_check
         check (status in (
             'NEW', 'CONTACTED', 'RESPONDED', 'INTERESTED', 'QUALIFIED',

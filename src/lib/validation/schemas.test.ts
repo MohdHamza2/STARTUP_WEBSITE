@@ -15,7 +15,7 @@ import {
 
 const validRecruiting = {
   name: "Alex Chen",
-  email: "alex@example.com",
+  phone: "+1 415 555 0132",
   consent: true as const,
   turnstileToken: "token",
 };
@@ -39,25 +39,33 @@ describe("recruiting schema", () => {
     expect(r.success).toBe(false);
   });
 
-  // Owner decision D1: email is REQUIRED, resolving the conflict between
-  // DOC4 §4.31 (NOT NULL) and build prompt §29 (optional).
-  it("requires an email address", () => {
-    const r = recruitingSchema.safeParse({ ...validRecruiting, email: "" });
-    expect(r.success).toBe(false);
+  // Owner decision 2026-10-03 (supersedes D1 for this form): phone is the
+  // required contact, email is optional.
+  it("treats email as optional but validates it when given", () => {
+    expect(recruitingSchema.safeParse(validRecruiting).success).toBe(true);
+    expect(
+      recruitingSchema.safeParse({ ...validRecruiting, email: "" }).success,
+    ).toBe(true);
+    expect(
+      recruitingSchema.safeParse({
+        ...validRecruiting,
+        email: "alex@example.com",
+      }).success,
+    ).toBe(true);
+    expect(
+      recruitingSchema.safeParse({ ...validRecruiting, email: "alex@" })
+        .success,
+    ).toBe(false);
   });
 
-  it("rejects a malformed email address", () => {
-    const r = recruitingSchema.safeParse({
-      ...validRecruiting,
-      email: "alex@",
-    });
-    expect(r.success).toBe(false);
-  });
-
-  it("treats phone as optional but validates its shape", () => {
+  it("requires a phone number and validates its shape", () => {
     expect(
       recruitingSchema.safeParse({ ...validRecruiting, phone: "" }).success,
-    ).toBe(true);
+    ).toBe(false);
+    expect(
+      recruitingSchema.safeParse({ ...validRecruiting, phone: undefined })
+        .success,
+    ).toBe(false);
     // International formats must pass — DOC5 §5.8.
     expect(
       recruitingSchema.safeParse({ ...validRecruiting, phone: "+44 20 7946 0958" })
@@ -65,6 +73,11 @@ describe("recruiting schema", () => {
     ).toBe(true);
     expect(
       recruitingSchema.safeParse({ ...validRecruiting, phone: "drop table" })
+        .success,
+    ).toBe(false);
+    // Phone-shaped but too short to be a real number.
+    expect(
+      recruitingSchema.safeParse({ ...validRecruiting, phone: "12-34" })
         .success,
     ).toBe(false);
   });

@@ -21,10 +21,9 @@ const name = z
   .max(150, "That name is too long.");
 
 /**
- * DOC4 §4.31 — `leads.email VARCHAR(320) NOT NULL`.
- * Required, per owner decision D1. The build prompt §29 marked recruiting email
- * optional, but the approved database architecture declares it NOT NULL and
- * sits higher in the §81 source-of-truth order.
+ * DOC4 §4.31 — `leads.email VARCHAR(320)`.
+ * Required on the project and contact forms (owner decision D1). The recruiting
+ * form makes it optional — see the recruiting section below.
  */
 const email = z
   .string()
@@ -93,10 +92,38 @@ const attribution = {
  * Recruiting
  * ---------------------------------------------------------------------- */
 
+/**
+ * Recruiting contact fields — owner decision 2026-10-03, superseding D1 for
+ * this form only: a phone number is the required way to reach the candidate
+ * and email is optional. `leads.email` became nullable to match, with a
+ * database CHECK that at least one of email or phone is present.
+ *
+ * Seven digits is the floor for any real number in any country; the character
+ * whitelist above still rejects anything that is not phone-shaped.
+ */
+const requiredPhone = z
+  .string()
+  .trim()
+  .min(1, "Please enter a phone number.")
+  .max(50, "That phone number is too long.")
+  .regex(/^[+()\d\s.-]*$/, "Please enter a valid phone number.")
+  .refine(
+    (value) => (value.match(/\d/g)?.length ?? 0) >= 7,
+    "Please enter a valid phone number.",
+  );
+
+const optionalEmail = z
+  .string()
+  .trim()
+  .max(320, "That email address is too long.")
+  .email("Please enter a valid email address.")
+  .optional()
+  .or(z.literal(""));
+
 export const recruitingSchema = z.object({
   name,
-  email,
-  phone,
+  email: optionalEmail,
+  phone: requiredPhone,
   education: optionalText(150, "That entry"),
   university: optionalText(250, "That university name"),
   /**

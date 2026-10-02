@@ -104,7 +104,8 @@ async function guard(scope: string, token: string): Promise<FormState | null> {
 interface LeadCore {
   leadType: "RECRUITING" | "SOFTWARE";
   name: string;
-  email: string;
+  /** Null only for recruiting leads, which may give a phone number alone. */
+  email: string | null;
   phone?: string;
   source?: string;
   consent: boolean;
@@ -139,18 +140,25 @@ interface LeadCore {
 const DUPLICATE_WINDOW_MS = 30 * 60 * 1000;
 
 async function findRecentDuplicate(
-  email: string,
+  contact: { email?: string | null; phone?: string | null },
   leadType: "RECRUITING" | "SOFTWARE",
 ): Promise<string | null> {
   const db = getServiceClient();
   if (!db) return null;
+
+  // Matched on email when there is one; a recruiting lead without an email is
+  // matched on its phone number instead (exact string, as submitted).
+  const [column, value] = contact.email
+    ? (["email", contact.email] as const)
+    : (["phone", contact.phone] as const);
+  if (!value) return null;
 
   const since = new Date(Date.now() - DUPLICATE_WINDOW_MS).toISOString();
 
   const { data, error } = await db
     .from("leads")
     .select("id")
-    .eq("email", email)
+    .eq(column, value)
     .eq("lead_type", leadType)
     .gte("created_at", since)
     .limit(1)
@@ -305,8 +313,12 @@ export async function submitRecruiting(
   if (blocked) return blocked;
 
   const d = parsed.data;
+  const email = d.email || null;
 
-  const duplicate = await findRecentDuplicate(d.email, "RECRUITING");
+  const duplicate = await findRecentDuplicate(
+    { email, phone: d.phone },
+    "RECRUITING",
+  );
   if (duplicate) {
     await recordEvent(duplicate, "DUPLICATE_SUBMISSION", {
       lead_type: "RECRUITING",
@@ -320,7 +332,7 @@ export async function submitRecruiting(
     {
       leadType: "RECRUITING",
       name: d.name,
-      email: d.email,
+      email,
       phone: d.phone,
       source: d.source,
       consent: d.consent,
@@ -361,7 +373,7 @@ export async function submitRecruiting(
   await sendTeamNotification({
     leadType: "RECRUITING",
     name: d.name,
-    email: d.email,
+    email,
     phone: d.phone,
     details: {
       Education: d.education,
@@ -377,7 +389,8 @@ export async function submitRecruiting(
     resumeAttached: resumeStored,
     source: d.source,
   });
-  await sendConfirmation(d.email, d.name, "RECRUITING");
+  // No email given, nothing to confirm to: the team uses the phone number.
+  if (email) await sendConfirmation(email, d.name, "RECRUITING");
 
   // Partial success is reported honestly rather than as a clean success.
   if (resume instanceof File && resume.size > 0 && !resumeStored) {
@@ -421,7 +434,7 @@ export async function submitProject(
   const isRecruiting = d.projectType === "CAREER_AND_RECRUITING";
 
   const duplicate = await findRecentDuplicate(
-    d.email,
+    { email: d.email },
     isRecruiting ? "RECRUITING" : "SOFTWARE",
   );
   if (duplicate) {
@@ -523,7 +536,7 @@ export async function submitContact(
   const isRecruiting = d.topic === "recruiting";
   const leadType = isRecruiting ? "RECRUITING" : "SOFTWARE";
 
-  const duplicate = await findRecentDuplicate(d.email, leadType);
+  const duplicate = await findRecentDuplicate({ email: d.email }, leadType);
   if (duplicate) {
     await recordEvent(duplicate, "DUPLICATE_SUBMISSION", {
       lead_type: leadType,

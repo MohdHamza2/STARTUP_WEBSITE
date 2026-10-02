@@ -52,14 +52,15 @@ export const recruitingProcess = [
 /**
  * What the recruiting form asks for.
  *
- * Mirrors DOC5 §5.8–§5.13 and the resolved decisions: name and email are
- * required (D1), everything else optional, resume is PDF only (D6).
+ * Mirrors DOC5 §5.8–§5.13 and the resolved decisions: name and phone are
+ * required (owner decision 2026-10-03), everything else optional, resume is
+ * PDF only (D6).
  * Shown on the page so a candidate knows what is involved before starting.
  */
 export const recruitingInputs = [
   {
     title: "Contact details",
-    description: "Your name and email, so the team can reach you. Phone optional.",
+    description: "Your name and a phone number, so the team can reach you. Email optional.",
   },
   {
     title: "Education",

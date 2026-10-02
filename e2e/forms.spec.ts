@@ -85,17 +85,16 @@ test.describe("project form", () => {
 });
 
 test.describe("recruiting form", () => {
-  test("only name and email are required", async ({ page }) => {
+  // Owner decision 2026-10-03: name and phone are required; email is optional
+  // (supersedes D1 for this form only).
+  test("only name and phone are required", async ({ page }) => {
     await page.goto("/recruiting#apply");
 
     await expect(page.getByLabel("Full name")).toHaveAttribute("required", "");
-    await expect(page.getByLabel("Email", { exact: true })).toHaveAttribute(
-      "required",
-      "",
-    );
+    await expect(page.getByLabel("Phone")).toHaveAttribute("required", "");
 
     for (const label of [
-      "Phone",
+      "Email",
       "University",
       "Target role",
       "Preferred location",

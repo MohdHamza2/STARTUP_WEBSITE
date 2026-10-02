@@ -38,7 +38,8 @@ function esc(value: string | number | null | undefined): string {
 export interface LeadNotification {
   leadType: "RECRUITING" | "SOFTWARE";
   name: string;
-  email: string;
+  /** Recruiting leads may arrive with a phone number and no email. */
+  email: string | null;
   phone?: string;
   /** Field label → value. Rendered as a table. Never include resume contents. */
   details: Record<string, string | number | null | undefined>;
@@ -70,7 +71,7 @@ export async function sendTeamNotification(
     const { error } = await client.resend.emails.send({
       from: client.from,
       to,
-      replyTo: lead.email,
+      ...(lead.email ? { replyTo: lead.email } : {}),
       subject: `${title} — ${lead.name}`,
       html: `
         <div style="font-family:ui-sans-serif,system-ui,sans-serif;max-width:640px;">
