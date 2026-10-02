@@ -14,35 +14,34 @@ import { Reveal } from "@/components/ui/Reveal";
  */
 export function Capabilities() {
   return (
-    <section aria-labelledby="capabilities-heading" className="bg-obsidian">
+    <section aria-labelledby="capabilities-heading" className="bg-paper">
       <div className="container-wide py-32 sm:py-40">
         <div className="grid gap-16 lg:grid-cols-[minmax(0,26rem)_1fr] lg:gap-24">
           <Reveal>
-            <p className="text-eyebrow uppercase text-silver">Capabilities</p>
             <h2
               id="capabilities-heading"
-              className="mt-5 text-h2 text-ivory"
+              className="text-h2 text-ink"
             >
               Built with modern technology.
             </h2>
-            <p className="mt-6 text-body-lg text-silver">
+            <p className="mt-6 text-body-lg text-muted">
               Technology should serve the outcome.
             </p>
           </Reveal>
 
-          <ul className="grid gap-px bg-line-dark sm:grid-cols-2">
+          <ul className="grid gap-px bg-line sm:grid-cols-2">
             {capabilities.map((capability, i) => (
               <Reveal
                 as="li"
                 key={capability.title}
                 delay={Math.min(i * 0.05, 0.3)}
-                className="bg-obsidian"
+                className="bg-paper"
               >
                 <div className="h-full px-0 py-7 sm:px-7">
-                  <h3 className="font-display text-h3 text-ivory">
+                  <h3 className="font-display text-h3 text-ink">
                     {capability.title}
                   </h3>
-                  <p className="mt-3 text-body text-silver">
+                  <p className="mt-3 text-body text-muted">
                     {capability.description}
                   </p>
                 </div>

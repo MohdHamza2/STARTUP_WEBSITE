@@ -1,6 +1,5 @@
-import { Hero } from "@/components/hero/Hero";
+import { ServiceHero } from "@/components/hero/ServiceHero";
 import { SplitSection } from "@/components/sections/SplitSection";
-import { WhatWeBuild } from "@/components/sections/WhatWeBuild";
 import { Process } from "@/components/sections/Process";
 import { BrandStatement } from "@/components/sections/BrandStatement";
 import { Capabilities } from "@/components/sections/Capabilities";
@@ -15,10 +14,11 @@ import { FinalCTA } from "@/components/sections/FinalCTA";
  * Homepage.
  *
  * Section order is exactly prompt §6:
- *   1. Hero animation            ─┐
- *   2. GENRA brand resolution    ─┘ both inside <Hero>
+ *   1. Hero — the nine services as a scroll-driven Molten Ring
+ *      (replaced the frame-sequence hero and its brand beat, 2026-10-03)
  *   3. Software / Recruiting split
- *   4. What We Build
+ *   4. What We Build — retired 2026-10-03: the hero now IS the nine-service
+ *      index, so a second list straight after it only repeated it
  *   5. Process
  *   6. Build. Automate. Advance.
  *   7. Modern technology / capabilities
@@ -35,9 +35,8 @@ import { FinalCTA } from "@/components/sections/FinalCTA";
 export default function HomePage() {
   return (
     <>
-      <Hero />
+      <ServiceHero />
       <SplitSection />
-      <WhatWeBuild />
       <Process />
       <BrandStatement />
       <Capabilities />

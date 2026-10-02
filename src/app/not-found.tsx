@@ -15,14 +15,13 @@ export default function NotFound() {
   return (
     <div className="flex min-h-[80vh] items-center">
       <div className="container-content">
-        <p className="text-eyebrow uppercase text-silver">404</p>
-        <h1 className="mt-6 text-display text-ivory">Lost the path?</h1>
-        <p className="mt-6 max-w-md text-body-lg text-silver">
+        <h1 className="text-display text-ink">Lost the path?</h1>
+        <p className="mt-6 max-w-md text-body-lg text-muted">
           This page doesn&apos;t exist. Everything else is still where you left it.
         </p>
         <Link
           href="/"
-          className="mt-10 inline-flex items-center rounded-pill bg-mint px-7 py-3.5 text-[0.9375rem] font-semibold text-obsidian transition-colors duration-[var(--duration-fast)] hover:bg-mint-deep"
+          className="mt-10 inline-flex items-center rounded-pill bg-ink px-7 py-3.5 text-action font-semibold text-paper transition-[background-color,transform] duration-[var(--duration-fast)] ease-[var(--ease-genra)] hover:bg-graphite active:scale-[0.98]"
         >
           Return Home
         </Link>

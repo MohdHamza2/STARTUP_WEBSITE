@@ -17,10 +17,10 @@ import { cn } from "@/lib/utils";
  */
 
 const controlClass =
-  "w-full rounded-md border border-line-dark bg-card-dark px-4 py-3.5 text-body " +
-  "text-ivory placeholder:text-silver transition-colors duration-[var(--duration-fast)] " +
-  "hover:border-graphite focus:border-mint focus:outline-none " +
-  "aria-[invalid=true]:border-red-500/70";
+  "w-full rounded-sm border border-line bg-surface px-4 py-3.5 text-body " +
+  "text-ink placeholder:text-graphite/55 transition-colors duration-[var(--duration-fast)] " +
+  "hover:border-graphite focus:border-ink focus:outline-none " +
+  "aria-[invalid=true]:border-red-700";
 
 function Shell({
   id,
@@ -39,14 +39,14 @@ function Shell({
 }) {
   return (
     <div>
-      <label htmlFor={id} className="block text-caption font-medium text-silver">
+      <label htmlFor={id} className="block text-caption font-medium text-muted">
         {label}
         {optional && (
-          <span className="ml-2 font-normal text-silver">Optional</span>
+          <span className="ml-2 font-normal text-muted">Optional</span>
         )}
       </label>
       {hint && (
-        <p id={`${id}-hint`} className="mt-1.5 text-caption text-silver">
+        <p id={`${id}-hint`} className="mt-1.5 text-caption text-muted">
           {hint}
         </p>
       )}
@@ -55,7 +55,7 @@ function Shell({
         <p
           id={`${id}-error`}
           role="alert"
-          className="mt-2 text-caption text-red-400"
+          className="mt-2 text-caption text-red-700"
         >
           {error}
         </p>
@@ -102,6 +102,7 @@ export function TextField({
         defaultValue={defaultValue}
         placeholder={placeholder}
         autoComplete={autoComplete}
+        spellCheck={type === "email" || type === "url" ? false : undefined}
         required={!optional}
         aria-invalid={error ? true : undefined}
         aria-describedby={describedBy(id, hint, error)}
@@ -210,14 +211,14 @@ export function Checkbox({
           required
           aria-invalid={error ? true : undefined}
           aria-describedby={error ? `${id}-error` : undefined}
-          className="mt-1 size-4 shrink-0 accent-[var(--color-mint)]"
+          className="mt-1 size-4 shrink-0 accent-[var(--color-ink)]"
         />
-        <label htmlFor={id} className="text-caption text-silver">
+        <label htmlFor={id} className="text-caption text-muted">
           {label}
         </label>
       </div>
       {error && (
-        <p id={`${id}-error`} role="alert" className="mt-2 text-caption text-red-400">
+        <p id={`${id}-error`} role="alert" className="mt-2 text-caption text-red-700">
           {error}
         </p>
       )}

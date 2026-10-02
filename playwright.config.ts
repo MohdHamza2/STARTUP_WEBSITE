@@ -24,6 +24,15 @@ export default defineConfig({
 
   use: {
     baseURL,
+    /**
+     * The homepage hero is WebGL2. Headless Chromium on a machine without a
+     * GPU (CI, most dev boxes) may refuse WebGL, which would route every run
+     * to the static fallback and leave the ring untested. SwiftShader is
+     * Chromium's software rasteriser: slow, but correct.
+     */
+    launchOptions: {
+      args: ["--use-angle=swiftshader", "--enable-unsafe-swiftshader"],
+    },
     trace: "on-first-retry",
     screenshot: "only-on-failure",
   },

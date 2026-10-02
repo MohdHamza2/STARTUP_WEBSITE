@@ -20,11 +20,10 @@ export function SelectedWork() {
   if (projects.length === 0) return null;
 
   return (
-    <section aria-labelledby="work-heading" className="bg-obsidian">
+    <section aria-labelledby="work-heading" className="bg-paper">
       <div className="container-wide py-32 sm:py-40">
         <Reveal>
-          <p className="text-eyebrow uppercase text-silver">Selected work</p>
-          <h2 id="work-heading" className="mt-5 max-w-3xl text-h2 uppercase text-ivory">
+          <h2 id="work-heading" className="max-w-3xl text-h2 text-ink">
             Ideas we&apos;ve brought to life.
           </h2>
         </Reveal>
@@ -34,7 +33,7 @@ export function SelectedWork() {
             <Reveal key={project.slug} delay={Math.min(i * 0.06, 0.24)}>
               <article className="grid gap-10 lg:grid-cols-[1fr_minmax(0,24rem)] lg:items-end lg:gap-20">
                 {project.image && (
-                  <div className="relative aspect-[16/10] overflow-hidden rounded-xl bg-card-dark">
+                  <div className="relative aspect-[16/10] overflow-hidden rounded-sm bg-surface">
                     <Image
                       src={project.image}
                       alt=""
@@ -46,14 +45,14 @@ export function SelectedWork() {
                 )}
                 <div>
                   {project.year && (
-                    <p className="font-display text-caption text-silver">
+                    <p className="font-display text-caption text-muted">
                       {project.year}
                     </p>
                   )}
-                  <h3 className="mt-3 font-display text-h3 text-ivory">
+                  <h3 className="mt-3 font-display text-h3 text-ink">
                     {project.title}
                   </h3>
-                  <p className="mt-4 text-body text-silver">{project.summary}</p>
+                  <p className="mt-4 text-body text-muted">{project.summary}</p>
                 </div>
               </article>
             </Reveal>

@@ -1,39 +1,39 @@
 "use client";
 
-import { motion, useReducedMotion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
+import { cn } from "@/lib/utils";
 
 /**
  * Scroll reveal.
  *
- * Deliberately restrained: a short rise and a fade, once. The brand kit asks for
- * interfaces that feel "spacious, precise and quiet", so there is no stagger
- * bounce, no scale, no blur.
+ * Quiet on purpose: a short opacity fade, once, and nothing else. The homepage
+ * hero is the site's one authored motion moment; every other section should
+ * simply arrive, so there is no rise, scale, blur or stagger bounce (DESIGN.md
+ * "The Working Drawing"; motion review 2026-10-03).
+ *
+ * A CSS transition rather than an animation library: it is the cheapest tool
+ * that does the job, runs off the main thread, and needs no reduced-motion
+ * branch in render — the global `prefers-reduced-motion` rule in globals.css
+ * collapses the transition, so the content is simply shown. (Branching on the
+ * preference during render made the server and client HTML disagree.)
  *
  * WHY THIS USES A POSITION CHECK RATHER THAN IntersectionObserver:
- * IntersectionObserver — and therefore Motion's `whileInView` — only fires when
- * the intersection STATE changes. A visitor who jumps past a section (scroll
- * restoration on reload, a back navigation, an anchor link) moves it from below
- * the viewport to above it between two frames. Both of those states are
- * "not intersecting", so no callback fires at all and the section stays at
- * opacity 0 permanently.
- *
- * This was reproduced twice in testing: first with `whileInView`, then again
- * with a hand-rolled observer that checked position only in its callback — which
- * never ran a second time. The condition below is evaluated on scroll instead,
- * so it cannot be skipped regardless of how the visitor arrived.
+ * IntersectionObserver only fires when the intersection STATE changes. A
+ * visitor who jumps past a section (scroll restoration on reload, a back
+ * navigation, an anchor link) moves it from below the viewport to above it
+ * between two frames. Both of those states are "not intersecting", so no
+ * callback fires and the section would stay invisible permanently. The
+ * condition below is evaluated on scroll instead, so it cannot be skipped.
  *
  * Content that is invisible because an animation never fired is a correctness
- * bug, not a visual one (DOC5 §5.34).
- *
- * Under `prefers-reduced-motion` the content renders immediately with no
- * transform — never hidden, never delayed (prompt §46).
+ * bug, not a visual one (DOC5 §5.34). Without JavaScript a <noscript> rule in
+ * the root layout forces every [data-reveal] visible.
  */
 export function Reveal({
   children,
   delay = 0,
-  as = "div",
+  as: Tag = "div",
   className,
 }: {
   children: ReactNode;
@@ -41,7 +41,6 @@ export function Reveal({
   as?: "div" | "li" | "section";
   className?: string;
 }) {
-  const reduced = useReducedMotion();
   const ref = useRef<HTMLElement | null>(null);
   const [visible, setVisible] = useState(false);
 
@@ -52,9 +51,6 @@ export function Reveal({
     let frame = 0;
     let done = false;
 
-    // True once the element's top has entered the lower edge of the viewport —
-    // and it stays true after it scrolls past, which is what makes a jump
-    // impossible to miss.
     const reached = () =>
       el.getBoundingClientRect().top < window.innerHeight * 0.92;
 
@@ -73,8 +69,6 @@ export function Reveal({
       }
     };
 
-    // rAF-throttled: one measurement per frame at most, and only while this
-    // element is still hidden. Revealed elements detach immediately.
     function schedule() {
       cancelAnimationFrame(frame);
       frame = requestAnimationFrame(check);
@@ -87,25 +81,18 @@ export function Reveal({
     return cleanup;
   }, []);
 
-  if (reduced) {
-    const Plain = as;
-    return <Plain className={className}>{children}</Plain>;
-  }
-
-  const Component = motion[as];
-
   return (
-    <Component
-      // Lets the <noscript> rule in the layout force these visible when
-      // JavaScript is unavailable, so content never depends on the animation.
+    <Tag
       data-reveal=""
       ref={ref as never}
-      className={className}
-      initial={{ opacity: 0, y: 24 }}
-      animate={visible ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 }}
-      transition={{ duration: 0.7, delay, ease: [0.22, 1, 0.36, 1] }}
+      className={cn(
+        "transition-opacity duration-[480ms] ease-[var(--ease-genra)]",
+        visible ? "opacity-100" : "opacity-0",
+        className,
+      )}
+      style={delay ? { transitionDelay: `${Math.round(delay * 1000)}ms` } : undefined}
     >
       {children}
-    </Component>
+    </Tag>
   );
 }

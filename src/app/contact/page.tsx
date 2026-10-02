@@ -26,12 +26,11 @@ export default function ContactPage() {
   );
 
   return (
-    <div className="bg-obsidian">
+    <div className="bg-paper">
       <div className="container-content pb-32 pt-40">
         <span aria-hidden="true" className="block h-px w-24 bg-mint" />
-        <p className="mt-10 text-eyebrow uppercase text-silver">Contact</p>
-        <h1 className="mt-6 text-display uppercase text-ivory">Get in touch</h1>
-        <p className="mt-10 max-w-xl text-body-lg text-silver">
+        <h1 className="text-display text-ink">Get in touch</h1>
+        <p className="mt-10 max-w-xl text-body-lg text-muted">
           Tell us whether this is about something you want built or about your
           job search, and the right person will pick it up.
         </p>
@@ -42,17 +41,17 @@ export default function ContactPage() {
               <li>
                 <a
                   href={`mailto:${site.contact.email}`}
-                  className="text-body text-silver transition-colors hover:text-ivory"
+                  className="text-body text-muted transition-colors hover:text-ink"
                 >
                   {site.contact.email}
                 </a>
               </li>
             )}
             {site.contact.phone && (
-              <li className="text-body text-silver">{site.contact.phone}</li>
+              <li className="text-body text-muted">{site.contact.phone}</li>
             )}
             {site.contact.address && (
-              <li className="text-body text-silver">{site.contact.address}</li>
+              <li className="text-body text-muted">{site.contact.address}</li>
             )}
           </ul>
         )}

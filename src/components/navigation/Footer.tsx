@@ -21,12 +21,12 @@ export function Footer() {
   );
 
   return (
-    <footer className="rule-dark bg-obsidian">
+    <footer className="rule bg-paper">
       <div className="container-wide py-20">
         <div className="flex flex-col gap-16 md:flex-row md:justify-between">
           <div className="max-w-xs">
             <Logo size={32} />
-            <p className="mt-6 text-caption uppercase tracking-[0.18em] text-silver">
+            <p className="mt-6 text-caption uppercase tracking-[0.18em] text-muted">
               {site.descriptor}
             </p>
           </div>
@@ -41,13 +41,13 @@ export function Footer() {
 
             {hasContact && (
               <div>
-                <h2 className="text-eyebrow uppercase text-silver">Contact</h2>
+                <h2 className="text-eyebrow uppercase text-muted">Contact</h2>
                 <ul className="mt-5 flex flex-col gap-3">
                   {site.contact.email && (
                     <li>
                       <a
                         href={`mailto:${site.contact.email}`}
-                        className="text-body text-silver transition-colors hover:text-ivory"
+                        className="text-body text-muted transition-colors hover:text-ink"
                       >
                         {site.contact.email}
                       </a>
@@ -57,14 +57,14 @@ export function Footer() {
                     <li>
                       <a
                         href={`tel:${site.contact.phone.replace(/\s+/g, "")}`}
-                        className="text-body text-silver transition-colors hover:text-ivory"
+                        className="text-body text-muted transition-colors hover:text-ink"
                       >
                         {site.contact.phone}
                       </a>
                     </li>
                   )}
                   {site.contact.address && (
-                    <li className="text-body text-silver">{site.contact.address}</li>
+                    <li className="text-body text-muted">{site.contact.address}</li>
                   )}
                 </ul>
               </div>
@@ -72,7 +72,7 @@ export function Footer() {
 
             {site.social.length > 0 && (
               <div>
-                <h2 className="text-eyebrow uppercase text-silver">Follow</h2>
+                <h2 className="text-eyebrow uppercase text-muted">Follow</h2>
                 <ul className="mt-5 flex flex-col gap-3">
                   {site.social.map((s) => (
                     <li key={s.href}>
@@ -80,7 +80,7 @@ export function Footer() {
                         href={s.href}
                         rel="noopener noreferrer"
                         target="_blank"
-                        className="text-body text-silver transition-colors hover:text-ivory"
+                        className="text-body text-muted transition-colors hover:text-ink"
                       >
                         {s.label}
                       </a>
@@ -92,13 +92,13 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="rule-dark mt-20 flex flex-col gap-3 pt-8 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-caption text-silver">
+        <div className="rule mt-20 flex flex-col gap-3 pt-8 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-caption text-muted">
             {/* Brand attribution only — claims no corporate registration, because
                 no legal entity name is on record. TODO(business-facts). */}
             © {year} {site.legalEntity ?? site.name}
           </p>
-          <p className="text-eyebrow uppercase tracking-[0.18em] text-silver">
+          <p className="text-eyebrow uppercase tracking-[0.18em] text-muted">
             {site.tagline}
           </p>
         </div>
@@ -116,13 +116,13 @@ function FooterColumn({
 }) {
   return (
     <div>
-      <h2 className="text-eyebrow uppercase text-silver">{heading}</h2>
+      <h2 className="text-eyebrow uppercase text-muted">{heading}</h2>
       <ul className="mt-5 flex flex-col gap-3">
         {links.map((link) => (
           <li key={link.href}>
             <Link
               href={link.href}
-              className="text-body text-silver transition-colors hover:text-ivory"
+              className="text-body text-muted transition-colors hover:text-ink"
             >
               {link.label}
             </Link>

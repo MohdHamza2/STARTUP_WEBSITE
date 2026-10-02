@@ -13,11 +13,10 @@ import { Reveal } from "@/components/ui/Reveal";
  */
 export function Process() {
   return (
-    <section aria-labelledby="process-heading" className="bg-obsidian">
+    <section aria-labelledby="process-heading" className="bg-paper">
       <div className="container-wide py-32 sm:py-40">
         <Reveal>
-          <p className="text-eyebrow uppercase text-silver">Process</p>
-          <h2 id="process-heading" className="mt-5 max-w-2xl text-h2 text-ivory">
+          <h2 id="process-heading" className="max-w-2xl text-h2 text-ink">
             How the work moves.
           </h2>
         </Reveal>
@@ -32,7 +31,7 @@ export function Process() {
       <div className="relative mt-24">
         <span
           aria-hidden="true"
-          className="absolute left-[3px] top-2 h-full w-px bg-line-dark lg:left-0 lg:top-[3px] lg:h-px lg:w-full"
+          className="absolute left-[3px] top-2 h-full w-px bg-line lg:left-0 lg:top-[3px] lg:h-px lg:w-full"
         />
 
         <ol className="relative grid gap-14 lg:grid-cols-5 lg:gap-8">
@@ -47,13 +46,13 @@ export function Process() {
                 aria-hidden="true"
                 className="absolute left-0 top-1.5 block size-[7px] rounded-full bg-mint lg:top-0"
               />
-              <p className="font-display text-caption text-silver">
+              <p className="font-display text-caption text-muted">
                 {step.number}
               </p>
-              <h3 className="mt-3 font-display text-h3 uppercase text-ivory">
+              <h3 className="mt-3 font-display text-h3 text-ink">
                 {step.title}
               </h3>
-              <p className="mt-3 max-w-xs text-body text-silver">
+              <p className="mt-3 max-w-xs text-body text-muted">
                 {step.description}
               </p>
             </Reveal>

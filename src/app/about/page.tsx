@@ -25,7 +25,6 @@ export default function AboutPage() {
   return (
     <>
       <PageHero
-        eyebrow="About"
         title="About GENRA"
         lead={{
           first: "We build what moves",
@@ -34,18 +33,17 @@ export default function AboutPage() {
         body="GENRA is a technology company working across two lines: software, and career support."
       />
 
-      <section aria-labelledby="what-heading" className="bg-obsidian">
+      <section aria-labelledby="what-heading" className="bg-paper">
         <div className="container-wide py-32 sm:py-40">
           <div className="grid gap-16 lg:grid-cols-[minmax(0,22rem)_1fr] lg:gap-24">
             <Reveal>
-              <p className="text-eyebrow uppercase text-silver">Why we exist</p>
-              <h2 id="what-heading" className="mt-5 text-h2 text-ivory">
+              <h2 id="what-heading" className="text-h2 text-ink">
                 Two problems, one shape.
               </h2>
             </Reveal>
 
             <Reveal delay={0.1}>
-              <div className="max-w-2xl space-y-6 text-body-lg text-silver">
+              <div className="max-w-2xl space-y-6 text-body-lg text-muted">
                 <p>
                   A founder with an idea and no engineering team, and a graduate
                   with a target role and a hundred applications to file, are
@@ -68,31 +66,30 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section aria-labelledby="how-we-work" className="bg-obsidian">
+      <section aria-labelledby="how-we-work" className="bg-paper">
         <div className="container-wide py-32 sm:py-40">
           <Reveal>
-            <p className="text-eyebrow uppercase text-silver">How we work</p>
-            <h2 id="how-we-work" className="mt-5 max-w-2xl text-h2 uppercase text-ivory">
-              Build. Automate. <span className="text-mint">Advance.</span>
+            <h2 id="how-we-work" className="max-w-2xl text-h2 text-ink">
+              Build. Automate. <span className="text-accent">Advance.</span>
             </h2>
           </Reveal>
 
-          <ul className="mt-20 grid gap-px bg-line-dark sm:grid-cols-2 lg:grid-cols-5">
+          <ul className="mt-20 grid gap-px bg-line sm:grid-cols-2 lg:grid-cols-5">
             {processSteps.map((step, i) => (
               <Reveal
                 as="li"
                 key={step.number}
                 delay={Math.min(i * 0.06, 0.3)}
-                className="bg-obsidian"
+                className="bg-paper"
               >
                 <div className="h-full px-0 py-7 sm:px-6">
-                  <p className="font-display text-caption text-silver">
+                  <p className="font-display text-caption text-muted">
                     {step.number}
                   </p>
-                  <h3 className="mt-3 font-display text-h3 uppercase text-ivory">
+                  <h3 className="mt-3 font-display text-h3 text-ink">
                     {step.title}
                   </h3>
-                  <p className="mt-3 text-body text-silver">{step.description}</p>
+                  <p className="mt-3 text-body text-muted">{step.description}</p>
                 </div>
               </Reveal>
             ))}

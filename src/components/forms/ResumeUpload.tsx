@@ -69,12 +69,12 @@ export function ResumeUpload({ error }: { error?: string }) {
 
   return (
     <div>
-      <label htmlFor={id} className="block text-caption font-medium text-silver">
+      <label htmlFor={id} className="block text-caption font-medium text-muted">
         Resume
-        <span className="ml-2 font-normal text-silver">Optional</span>
+        <span className="ml-2 font-normal text-muted">Optional</span>
       </label>
-      <p id={`${id}-hint`} className="mt-1.5 text-caption text-silver">
-        PDF, up to 10 MB. Stored privately — never made public.
+      <p id={`${id}-hint`} className="mt-1.5 text-caption text-muted">
+        PDF, up to 10&nbsp;MB. Stored privately — never made public.
       </p>
 
       {!file ? (
@@ -90,38 +90,38 @@ export function ResumeUpload({ error }: { error?: string }) {
             accept_(e.dataTransfer.files?.[0]);
           }}
           className={cn(
-            "mt-3 rounded-md border border-dashed px-6 py-10 text-center transition-colors",
+            "mt-3 rounded-sm border border-dashed px-6 py-10 text-center transition-colors",
             "duration-[var(--duration-fast)]",
             dragging
-              ? "border-mint bg-card-dark"
-              : "border-line-dark bg-card-dark/40 hover:border-graphite",
+              ? "border-ink bg-surface"
+              : "border-line bg-surface/60 hover:border-graphite",
           )}
         >
           <Upload
             aria-hidden="true"
-            className="mx-auto size-5 text-silver"
+            className="mx-auto size-5 text-muted"
           />
-          <p className="mt-4 text-body text-silver">
+          <p className="mt-4 text-body text-muted">
             Drop your resume here, or{" "}
             <button
               type="button"
               onClick={() => inputRef.current?.click()}
-              className="text-mint underline underline-offset-4"
+              className="text-ink underline decoration-mint decoration-2 underline-offset-4"
             >
               browse files
             </button>
           </p>
-          <p className="mt-2 text-caption text-silver">PDF · Max 10 MB</p>
+          <p className="mt-2 text-caption text-muted">PDF · Max 10&nbsp;MB</p>
         </div>
       ) : (
-        <div className="mt-3 flex items-center justify-between gap-4 rounded-md border border-line-dark bg-card-dark px-5 py-4">
+        <div className="mt-3 flex items-center justify-between gap-4 rounded-sm border border-line bg-surface px-5 py-4">
           <span className="flex min-w-0 items-center gap-3">
-            <FileText aria-hidden="true" className="size-4 shrink-0 text-mint" />
+            <FileText aria-hidden="true" className="size-4 shrink-0 text-ink" />
             <span className="min-w-0">
-              <span className="block truncate text-body text-ivory">
+              <span className="block truncate text-body text-ink">
                 {file.name}
               </span>
-              <span className="block text-caption text-silver">
+              <span className="block text-caption text-muted">
                 {(file.size / 1024 / 1024).toFixed(1)} MB
               </span>
             </span>
@@ -129,7 +129,7 @@ export function ResumeUpload({ error }: { error?: string }) {
           <button
             type="button"
             onClick={clear}
-            className="flex shrink-0 items-center gap-1.5 text-caption text-silver transition-colors hover:text-ivory"
+            className="flex shrink-0 items-center gap-1.5 text-caption text-muted transition-colors hover:text-ink"
           >
             Remove
             <X aria-hidden="true" className="size-3.5" />
@@ -158,7 +158,7 @@ export function ResumeUpload({ error }: { error?: string }) {
       />
 
       {shownError && (
-        <p id={`${id}-error`} role="alert" className="mt-2 text-caption text-red-400">
+        <p id={`${id}-error`} role="alert" className="mt-2 text-caption text-red-700">
           {shownError}
         </p>
       )}

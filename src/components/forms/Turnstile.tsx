@@ -46,7 +46,7 @@ export function Turnstile({ onToken }: { onToken?: (token: string) => void }) {
 
     widgetId.current = window.turnstile.render(containerRef.current, {
       sitekey: siteKey,
-      theme: "dark",
+      theme: "light",
       callback: (value) => {
         setToken(value);
         onToken?.(value);
@@ -79,11 +79,11 @@ export function Turnstile({ onToken }: { onToken?: (token: string) => void }) {
     return (
       <p
         role="status"
-        className="rounded-md border border-line-dark bg-card-dark px-5 py-4 text-caption text-silver"
+        className="rounded-sm border border-line bg-surface px-5 py-4 text-caption text-muted"
       >
         Spam protection is not configured, so this form cannot accept
-        submissions yet. Set <code className="text-mint">NEXT_PUBLIC_TURNSTILE_SITE_KEY</code>{" "}
-        and <code className="text-mint">TURNSTILE_SECRET_KEY</code> to enable it.
+        submissions yet. Set <code className="text-ink">NEXT_PUBLIC_TURNSTILE_SITE_KEY</code>{" "}
+        and <code className="text-ink">TURNSTILE_SECRET_KEY</code> to enable it.
       </p>
     );
   }

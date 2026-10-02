@@ -48,16 +48,16 @@ export function ProjectForm() {
       <div
         role="status"
         aria-live="polite"
-        className="border border-line-dark bg-card-dark px-8 py-14 text-center sm:px-14"
+        className="border border-line bg-surface px-8 py-14 text-center sm:px-14"
       >
         <span aria-hidden="true" className="mx-auto block h-px w-16 bg-mint" />
-        <h3 className="mt-10 font-display text-h2 text-ivory">Received.</h3>
-        <p className="mx-auto mt-5 max-w-sm text-body text-silver">
+        <h3 className="mt-10 font-display text-h2 text-ink">Received.</h3>
+        <p className="mx-auto mt-5 max-w-sm text-body text-muted">
           Your details are on their way to GENRA.
         </p>
         <Link
           href="/"
-          className="mt-10 inline-flex items-center gap-4 text-[0.9375rem] font-medium text-ivory transition-colors hover:text-mint"
+          className="mt-10 inline-flex items-center gap-4 text-action font-medium text-ink transition-colors hover:text-muted"
         >
           Back to home
           <span aria-hidden="true" className="block h-px w-8 bg-mint" />
@@ -155,7 +155,7 @@ export function ProjectForm() {
         label={
           <>
             I agree to be contacted about this enquiry and I&apos;ve read the{" "}
-            <Link href="/privacy" className="text-mint underline underline-offset-4">
+            <Link href="/privacy" className="text-ink underline decoration-mint decoration-2 underline-offset-4">
               privacy notice
             </Link>
             .
@@ -169,7 +169,7 @@ export function ProjectForm() {
         <p
           role="alert"
           aria-live="assertive"
-          className="border border-red-500/40 bg-red-500/5 px-5 py-4 text-caption text-red-300"
+          className="border border-red-700/30 bg-red-50 px-5 py-4 text-caption text-red-800"
         >
           {state.message}
           {state.retryable && " You can try again."}
@@ -180,11 +180,11 @@ export function ProjectForm() {
         type="submit"
         disabled={pending}
         className={cn(
-          "inline-flex items-center rounded-pill px-8 py-4 text-[0.9375rem] font-semibold",
-          "transition-colors duration-[var(--duration-fast)]",
+          "inline-flex items-center rounded-pill px-8 py-4 text-action font-semibold",
+          "transition-[background-color,transform] duration-[var(--duration-fast)] ease-[var(--ease-genra)]",
           pending
-            ? "cursor-not-allowed bg-graphite text-silver"
-            : "bg-mint text-obsidian hover:bg-mint-deep",
+            ? "cursor-not-allowed bg-silver text-graphite"
+            : "bg-ink text-paper hover:bg-graphite active:scale-[0.98]",
         )}
       >
         {pending ? "Sending…" : "Start a Project"}

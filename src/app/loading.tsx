@@ -11,7 +11,7 @@
  */
 export default function Loading() {
   return (
-    <div className="flex min-h-[70vh] items-center justify-center bg-obsidian">
+    <div className="flex min-h-[70vh] items-center justify-center bg-paper">
       <div role="status" aria-live="polite" className="text-center">
         <span
           aria-hidden="true"

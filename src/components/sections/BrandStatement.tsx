@@ -11,26 +11,26 @@ export function BrandStatement() {
   return (
     <section
       aria-labelledby="brand-statement"
-      className="relative flex min-h-screen items-center bg-obsidian"
+      className="relative flex min-h-screen items-center bg-paper"
     >
       <div className="container-wide py-32">
         {/* h2, not h1 — the hero owns the page's single h1. */}
         <h2
           id="brand-statement"
-          className="max-w-4xl text-display uppercase text-ivory"
+          className="max-w-4xl text-display text-ink"
         >
           Build.{" "}
           <span className="block sm:inline">Automate.</span>{" "}
-          <span className="text-mint">Advance.</span>
+          <span className="text-accent">Advance.</span>
         </h2>
 
-        <div className="mt-16 max-w-xl rule-dark pt-10">
-          <p className="text-h3 font-display text-ivory">
+        <div className="mt-16 max-w-xl rule pt-10">
+          <p className="text-h3 font-display text-ink">
             You bring the idea.
             <br />
             We build what comes next.
           </p>
-          <p className="mt-6 text-body-lg text-silver">{site.description}</p>
+          <p className="mt-6 text-body-lg text-muted">{site.description}</p>
         </div>
       </div>
     </section>

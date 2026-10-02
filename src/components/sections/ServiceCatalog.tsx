@@ -21,26 +21,25 @@ export function ServiceCatalog() {
   const recruiting = services.find((s) => s.line === "recruiting")!;
 
   return (
-    <section aria-labelledby="catalog-heading" className="bg-obsidian">
+    <section id="services" aria-labelledby="catalog-heading" className="rule bg-paper">
       <div className="container-wide py-32 sm:py-40">
         <Reveal>
-          <p className="text-eyebrow uppercase text-silver">What we build</p>
-          <h2 id="catalog-heading" className="mt-5 max-w-2xl text-h2 text-ivory">
+          <h2 id="catalog-heading" className="max-w-2xl text-h2 text-ink">
             Nine ways an idea becomes a system.
           </h2>
         </Reveal>
 
         {/* 01 — featured */}
         <Reveal delay={0.08}>
-          <article className="rule-dark mt-24 grid gap-8 pt-14 lg:grid-cols-[minmax(0,10rem)_1fr] lg:gap-16">
-            <p className="font-display text-[clamp(3rem,7vw,5rem)] leading-none text-mint">
+          <article className="rule mt-24 grid gap-8 pt-14 lg:grid-cols-[minmax(0,10rem)_1fr] lg:gap-16">
+            <p className="font-display text-[clamp(3rem,7vw,5rem)] leading-none text-ink">
               {featured.number}
             </p>
             <div>
-              <h3 className="font-display text-h2 text-ivory">
+              <h3 className="mt-8 font-display text-h2 text-ink">
                 {featured.title}
               </h3>
-              <p className="mt-6 max-w-xl text-body-lg text-silver">
+              <p className="mt-6 max-w-xl text-body-lg text-muted">
                 {featured.description}
               </p>
             </div>
@@ -55,7 +54,7 @@ export function ServiceCatalog() {
               <Reveal key={service.value} delay={Math.min(i * 0.05, 0.25)}>
                 <article
                   className={[
-                    "rule-dark grid gap-4 py-12 lg:gap-16",
+                    "rule grid gap-4 py-12 lg:gap-16",
                     flipped
                       ? "lg:grid-cols-[1fr_minmax(0,28rem)]"
                       : "lg:grid-cols-[minmax(0,28rem)_1fr]",
@@ -63,17 +62,17 @@ export function ServiceCatalog() {
                 >
                   <div className={flipped ? "lg:order-2" : undefined}>
                     <div className="flex items-baseline gap-5">
-                      <span className="font-display text-caption text-silver">
+                      <span className="font-display text-caption text-muted">
                         {service.number}
                       </span>
-                      <h3 className="font-display text-h3 text-ivory">
+                      <h3 className="font-display text-h3 text-ink">
                         {service.title}
                       </h3>
                     </div>
                   </div>
                   <p
                     className={[
-                      "max-w-xl text-body text-silver",
+                      "max-w-xl text-body text-muted",
                       flipped ? "lg:order-1 lg:text-right" : "",
                     ].join(" ")}
                   >
@@ -87,32 +86,29 @@ export function ServiceCatalog() {
 
         {/* 09 — separate service line, deliberately set apart */}
         <Reveal delay={0.1}>
-          <article className="mt-20 border border-line-dark bg-card-dark px-8 py-12 sm:px-12">
+          <article className="mt-20 border border-line bg-surface px-8 py-12 sm:px-12">
             <div className="flex items-baseline gap-5">
-              <span className="font-display text-caption text-mint">
+              <span className="font-display text-caption text-muted">
                 {recruiting.number}
               </span>
-              <p className="text-eyebrow uppercase text-silver">
-                A separate service line
-              </p>
             </div>
 
-            <h3 className="mt-8 font-display text-h2 text-ivory">
+            <h3 className="mt-8 font-display text-h2 text-ink">
               {recruiting.title}
             </h3>
-            <p className="mt-6 max-w-xl text-body-lg text-silver">
+            <p className="mt-6 max-w-xl text-body-lg text-muted">
               {recruiting.description} This is career support, not software
               development — it has its own page and its own process.
             </p>
 
             <Link
               href="/recruiting"
-              className="group mt-10 inline-flex items-center gap-4 text-[0.9375rem] font-medium text-ivory transition-colors duration-[var(--duration-fast)] hover:text-mint"
+              className="group mt-10 inline-flex items-center gap-4 text-action font-medium text-ink transition-colors duration-[var(--duration-fast)] hover:text-muted"
             >
               Explore Recruiting
               <span
                 aria-hidden="true"
-                className="block h-px w-10 bg-mint transition-[width] duration-[var(--duration-normal)] ease-[var(--ease-genra)] group-hover:w-16"
+                className="block h-px w-16 origin-left scale-x-[0.625] bg-mint transition-transform duration-[var(--duration-normal)] ease-[var(--ease-genra)] group-hover:scale-x-100"
               />
             </Link>
           </article>

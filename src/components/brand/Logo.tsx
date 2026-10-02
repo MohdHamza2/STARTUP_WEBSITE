@@ -29,7 +29,7 @@ interface LogoProps {
  * The mint underline follows the brand board's primary and dark-mode lockups.
  */
 export function Logo({
-  tone = "dark",
+  tone = "light",
   markOnly = false,
   size = 28,
   className,
@@ -50,6 +50,7 @@ export function Logo({
       {!markOnly && (
         <span className="inline-flex flex-col items-start gap-1">
           <span
+            translate="no"
             className={cn(
               "font-display font-semibold leading-none",
               tone === "dark" ? "text-ivory" : "text-obsidian",

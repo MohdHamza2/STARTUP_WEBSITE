@@ -19,13 +19,21 @@
   --color-graphite: #374151;
   --color-silver: #d1d5db;
 
-  /* --- UI surfaces (brand kit §5 "Digital & UI Language") --------------- */
-  --color-surface-dark: #0b0b0b;
-  --color-surface-light: #f5f4ef;
-  --color-card-dark: #111615;
-  --color-card-light: #ffffff;
-  --color-line-dark: #1f2926;
-  --color-line-light: #e5e7e5;
+  /* --- Semantic roles — LIGHT theme (owner revision, 2026-10-03) ----------
+     Components use these roles, never the raw palette, so the theme is
+     defined in one place. Every value is a brand-palette colour.
+       paper    page background            Ivory
+       surface  cards, inputs              white (brand kit §5 card-light)
+       ink      primary text               Obsidian   ~17.6:1 on paper
+       muted    secondary text             Graphite   ~9.4:1 on paper
+       line     hairlines, dividers        Silver
+     Mint is a signal only — rules, dots, underline accents. As TEXT on Ivory
+     it is ~1.7:1, so it is never used for text. */
+  --color-paper: #f5f4ef;
+  --color-surface: #ffffff;
+  --color-ink: #0b0b0b;
+  --color-muted: #374151;
+  --color-line: #d1d5db;
 
   /* --- Typography -------------------------------------------------------
      Sora for display/headings, Inter for body and UI.
@@ -52,6 +60,10 @@
 
   --text-body: 1rem; /* 16 */
   --text-body--line-height: 1.65;
+
+  /* Buttons, text links and navigation — one step between body and caption. */
+  --text-action: 0.9375rem; /* 15 */
+  --text-action--line-height: 1.4;
 
   --text-caption: 0.8125rem; /* 13 */
   --text-caption--line-height: 1.45;
@@ -85,20 +97,58 @@
   --container-wide: 84rem;
 }
 
+/* Side-by-side hero composition: laptops and up, and phones held landscape,
+   where stacking the text above the ring would leave the ring no height.
+   Mirrored in JS as SIDE_QUERY in components/hero/ServiceHero.tsx. */
+@custom-variant side {
+  @media (min-width: 64rem) {
+    @slot;
+  }
+  @media (orientation: landscape) and (max-height: 37.5rem) and (min-width: 40rem) {
+    @slot;
+  }
+}
+
+/* Very short viewports (phones in landscape): the hero caption tightens. */
+@custom-variant short (@media (max-height: 30rem));
+
 /* ==========================================================================
    BASE
-   Dark-first. The brand ratio is ~50% Obsidian / 35% Ivory / 10% Graphite &
-   Silver / 5% Mint — mint is a signal, never a wash.
+   Light-first: Ivory paper, Obsidian ink, Graphite and Silver for structure,
+   Mint as a restrained signal — never a wash.
    ========================================================================== */
 
 @layer base {
   html {
     -webkit-text-size-adjust: 100%;
+    /* Browser-drawn surfaces carry the palette too. */
+    scrollbar-color: var(--color-silver) var(--color-paper);
+    caret-color: var(--color-ink);
+    accent-color: var(--color-ink);
+    /* The fixed 80px header must never cover an anchor target (#start,
+       #apply, #services) or a field that keyboard focus scrolls to. */
+    scroll-padding-top: 6rem;
+  }
+
+  a,
+  button,
+  input,
+  select,
+  textarea,
+  label {
+    /* No double-tap-zoom delay on touch; a quiet tap flash, not the default. */
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: color-mix(in srgb, var(--color-mint) 18%, transparent);
+  }
+
+  ::selection {
+    background-color: color-mix(in srgb, var(--color-mint) 40%, transparent);
+    color: var(--color-ink);
   }
 
   body {
-    background-color: var(--color-obsidian);
-    color: var(--color-ivory);
+    background-color: var(--color-paper);
+    color: var(--color-ink);
     font-family: var(--font-sans);
     font-size: var(--text-body);
     line-height: 1.65;
@@ -122,10 +172,11 @@
     text-wrap: pretty;
   }
 
-  /* Visible, brand-consistent focus on every interactive element.
+  /* Visible focus on every interactive element. Ink, not mint: a mint ring on
+     Ivory is ~1.7:1, below the 3:1 a focus indicator needs.
      :focus-visible only, so pointer users never see a ring they did not earn. */
   :focus-visible {
-    outline: 2px solid var(--color-mint);
+    outline: 2px solid var(--color-ink);
     outline-offset: 3px;
     border-radius: var(--radius-sm);
   }
@@ -178,12 +229,36 @@
 }
 
 /* The thin dividers that carry structure across the brand board. */
-@utility rule-dark {
-  border-top: 1px solid var(--color-line-dark);
+@utility rule {
+  border-top: 1px solid var(--color-line);
 }
 
-@utility rule-light {
-  border-top: 1px solid var(--color-line-light);
+/* Accent words in headings. Mint cannot be text on Ivory, so the word stays
+   Ink and carries a low mint bar — the brand board's underline device. */
+@utility text-accent {
+  color: var(--color-ink);
+  background-image: linear-gradient(var(--color-mint), var(--color-mint));
+  background-repeat: no-repeat;
+  background-size: 100% 0.09em;
+  background-position: 0 92%;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+/* The hero's service caption, re-keyed on every change so it rises in. */
+@keyframes hero-swap {
+  from {
+    opacity: 0;
+    transform: translateY(0.25em);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@utility hero-swap {
+  animation: hero-swap 280ms var(--ease-genra) both;
 }
 
 /* Screen-reader-only, with a focusable variant for the skip link. */

@@ -14,29 +14,26 @@ import { Reveal } from "@/components/ui/Reveal";
  */
 export function RecruitingIntro() {
   return (
-    <section aria-labelledby="recruiting-heading" className="bg-obsidian">
+    <section aria-labelledby="recruiting-heading" className="bg-paper">
       <div className="container-wide py-32 sm:py-40">
         <div className="grid gap-16 lg:grid-cols-[minmax(0,32rem)_1fr] lg:gap-24">
           <Reveal>
-            <p className="text-eyebrow uppercase text-silver">
-              Career &amp; Recruiting
-            </p>
             <h2
               id="recruiting-heading"
-              className="mt-5 font-display text-h2 text-ivory"
+              className="font-display text-h2 text-ink"
             >
               You find the opportunity.
               <br />
-              <span className="text-mint">We handle the applications.</span>
+              <span className="text-accent">We handle the applications.</span>
             </h2>
           </Reveal>
 
           <Reveal delay={0.1}>
-            <p className="text-body-lg text-silver">
+            <p className="text-body-lg text-muted">
               GENRA works with international students, recent graduates and
               early-career professionals targeting employment in the US.
             </p>
-            <p className="mt-6 text-body text-silver">
+            <p className="mt-6 text-body text-muted">
               You tell us the roles you want and share your profile. We take on
               the repetitive part — working through applications from the
               information you provide, so your time goes into preparing for the
@@ -45,12 +42,12 @@ export function RecruitingIntro() {
 
             <Link
               href="/recruiting"
-              className="group mt-12 inline-flex items-center gap-4 text-[0.9375rem] font-medium text-ivory transition-colors duration-[var(--duration-fast)] hover:text-mint"
+              className="group mt-12 inline-flex items-center gap-4 text-action font-medium text-ink transition-colors duration-[var(--duration-fast)] hover:text-muted"
             >
               Explore Recruiting
               <span
                 aria-hidden="true"
-                className="block h-px w-10 bg-mint transition-[width] duration-[var(--duration-normal)] ease-[var(--ease-genra)] group-hover:w-16"
+                className="block h-px w-16 origin-left scale-x-[0.625] bg-mint transition-transform duration-[var(--duration-normal)] ease-[var(--ease-genra)] group-hover:scale-x-100"
               />
             </Link>
           </Reveal>

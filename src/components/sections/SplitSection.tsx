@@ -14,19 +14,18 @@ import { Reveal } from "@/components/ui/Reveal";
  */
 export function SplitSection() {
   return (
-    <section aria-labelledby="split-heading" className="bg-obsidian">
+    <section aria-labelledby="split-heading" className="bg-paper">
       <div className="container-wide py-32 sm:py-40">
         <Reveal>
-          <p className="text-eyebrow uppercase text-silver">One company</p>
           <h2
             id="split-heading"
-            className="mt-5 max-w-2xl text-h2 uppercase text-ivory"
+            className="max-w-2xl text-h2 text-ink"
           >
             Two directions
           </h2>
         </Reveal>
 
-        <div className="mt-20 grid gap-px bg-line-dark md:grid-cols-2">
+        <div className="mt-20 grid gap-px bg-line md:grid-cols-2">
           <Direction
             index="01"
             eyebrow="Software"
@@ -72,12 +71,12 @@ function Direction({
   delay: number;
 }) {
   return (
-    <Reveal delay={delay} className="bg-obsidian">
+    <Reveal delay={delay} className="bg-paper">
       <div className="flex h-full flex-col justify-between gap-16 px-0 py-12 md:px-12 md:py-16">
         <div>
           <div className="flex items-baseline gap-5">
-            <span className="font-display text-caption text-mint">{index}</span>
-            <p className="text-eyebrow uppercase text-silver">{eyebrow}</p>
+            <span className="font-display text-caption text-muted">{index}</span>
+            <p className="text-caption font-medium text-ink">{eyebrow}</p>
           </div>
 
           <div className="mt-10 space-y-2">
@@ -86,8 +85,8 @@ function Direction({
                 key={line}
                 className={
                   i === 0
-                    ? "font-display text-h3 text-ivory"
-                    : "font-display text-h3 text-silver"
+                    ? "font-display text-h3 text-ink"
+                    : "font-display text-h3 text-muted"
                 }
               >
                 {line}
@@ -98,12 +97,12 @@ function Direction({
 
         <Link
           href={href}
-          className="group inline-flex w-fit items-center gap-4 text-[0.9375rem] font-medium text-ivory transition-colors duration-[var(--duration-fast)] hover:text-mint"
+          className="group inline-flex w-fit items-center gap-4 text-action font-medium text-ink transition-colors duration-[var(--duration-fast)] hover:text-muted"
         >
           {cta}
           <span
             aria-hidden="true"
-            className="block h-px w-10 bg-mint transition-[width] duration-[var(--duration-normal)] ease-[var(--ease-genra)] group-hover:w-16"
+            className="block h-px w-16 origin-left scale-x-[0.625] bg-mint transition-transform duration-[var(--duration-normal)] ease-[var(--ease-genra)] group-hover:scale-x-100"
           />
         </Link>
       </div>

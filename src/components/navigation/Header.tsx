@@ -96,7 +96,7 @@ export function Header() {
           "fixed inset-x-0 top-0 z-50 transition-[background-color,border-color,backdrop-filter]",
           "duration-[var(--duration-normal)] ease-[var(--ease-genra)]",
           scrolled
-            ? "border-b border-line-dark bg-obsidian/80 backdrop-blur-md"
+            ? "border-b border-line bg-paper/80 backdrop-blur-md"
             : "border-b border-transparent bg-transparent",
         )}
       >
@@ -119,14 +119,14 @@ export function Header() {
                         href={item.href}
                         aria-current={active ? "page" : undefined}
                         className={cn(
-                          "relative text-[0.9375rem] font-medium transition-colors",
+                          "relative text-action font-medium transition-colors",
                           "duration-[var(--duration-fast)]",
-                          "after:absolute after:-bottom-1.5 after:left-0 after:h-px after:bg-mint",
-                          "after:transition-[width] after:duration-[var(--duration-normal)]",
+                          "after:absolute after:-bottom-1.5 after:left-0 after:h-px after:w-full after:origin-left after:bg-mint",
+                          "after:transition-transform after:duration-[var(--duration-normal)]",
                           "after:ease-[var(--ease-genra)]",
                           active
-                            ? "text-ivory after:w-full"
-                            : "text-silver hover:text-ivory after:w-0 hover:after:w-full",
+                            ? "text-ink after:scale-x-100"
+                            : "text-muted hover:text-ink after:scale-x-0 hover:after:scale-x-100",
                         )}
                       >
                         {item.label}
@@ -145,8 +145,8 @@ export function Header() {
               aria-controls="site-menu"
               aria-label="Open menu"
               className={cn(
-                "-mr-2 grid size-10 place-items-center rounded-md text-ivory",
-                "transition-colors duration-[var(--duration-fast)] hover:text-mint",
+                "-mr-2 grid size-10 place-items-center rounded-md text-ink",
+                "transition-colors duration-[var(--duration-fast)] hover:text-muted",
               )}
             >
               <Menu className="size-5" aria-hidden="true" />
@@ -170,7 +170,7 @@ export function Header() {
           aria-hidden="true"
           onClick={() => setMenuOpen(false)}
           className={cn(
-            "absolute inset-0 w-full cursor-default bg-obsidian/95 backdrop-blur-lg",
+            "absolute inset-0 w-full cursor-default bg-paper/95 backdrop-blur-lg",
             "transition-opacity duration-[var(--duration-normal)]",
             menuOpen ? "opacity-100" : "opacity-0",
           )}
@@ -190,8 +190,8 @@ export function Header() {
               onClick={() => setMenuOpen(false)}
               aria-label="Close menu"
               className={cn(
-                "-mr-2 grid size-10 place-items-center rounded-md text-ivory",
-                "transition-colors duration-[var(--duration-fast)] hover:text-mint",
+                "-mr-2 grid size-10 place-items-center rounded-md text-ink",
+                "transition-colors duration-[var(--duration-fast)] hover:text-muted",
               )}
             >
               <X className="size-5" aria-hidden="true" />
@@ -208,8 +208,8 @@ export function Header() {
                   <Link
                     href={item.href}
                     className={cn(
-                      "group flex items-baseline gap-5 py-2 text-ivory",
-                      "transition-colors duration-[var(--duration-fast)] hover:text-mint",
+                      "group flex items-baseline gap-5 py-2 text-ink",
+                      "transition-colors duration-[var(--duration-fast)] hover:text-muted",
                     )}
                   >
                     <span className="font-display text-h2">{item.label}</span>
@@ -218,10 +218,10 @@ export function Header() {
               ))}
             </ul>
 
-            <div className="mt-12 flex flex-wrap items-center gap-x-8 gap-y-3 rule-dark pt-8">
+            <div className="mt-12 flex flex-wrap items-center gap-x-8 gap-y-3 rule pt-8">
               <Link
                 href="/contact"
-                className="text-body text-silver transition-colors hover:text-ivory"
+                className="text-body text-muted transition-colors hover:text-ink"
               >
                 {cta.general}
               </Link>
@@ -229,7 +229,7 @@ export function Header() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="text-caption text-silver transition-colors hover:text-silver"
+                  className="text-caption text-muted transition-colors hover:text-ink"
                 >
                   {item.label}
                 </Link>

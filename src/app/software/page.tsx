@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
-import { PageHero } from "@/components/sections/PageHero";
+import { SoftwareHero } from "@/components/sections/SoftwareHero";
 import { ServiceCatalog } from "@/components/sections/ServiceCatalog";
 import { Process } from "@/components/sections/Process";
 import { Capabilities } from "@/components/sections/Capabilities";
 import { SelectedWork } from "@/components/sections/SelectedWork";
 import { FinalCTA } from "@/components/sections/FinalCTA";
-import { cta } from "@/config/site";
 
 export const metadata: Metadata = {
   title: "Software Solutions",
@@ -23,8 +22,9 @@ export const metadata: Metadata = {
 /**
  * /software
  *
- * Structure per prompt §16–§19. The hero is related to the homepage but not a
- * duplicate of it (§16) — no frame sequence, no workstation.
+ * Order per the owner revision of 2026-10-03: an image-led hero of its own,
+ * then the project form (inside FinalCTA, anchor #start), then the catalog,
+ * process and capabilities. The form is the second thing a visitor meets.
  *
  * Claims are limited to what GENRA does. No client names, metrics, logos or case
  * studies appear, because none are verified (§18, §53). `SelectedWork` renders
@@ -33,18 +33,20 @@ export const metadata: Metadata = {
 export default function SoftwarePage() {
   return (
     <>
-      <PageHero
-        eyebrow="Services"
-        title="Software Solutions"
-        lead={{ first: "You have the idea.", second: "We build the system." }}
-        body="GENRA builds digital products, software systems and automation for ideas, startups and businesses."
-        cta={{ label: cta.software, href: "#start" }}
+      <SoftwareHero />
+      <FinalCTA
+        placement="lead"
+        heading={
+          <>
+            Build something <span className="text-accent">real.</span>
+          </>
+        }
+        lead="Tell us what you are trying to build: the product, who it is for, and roughly where you are with it."
       />
       <ServiceCatalog />
       <Process />
       <Capabilities />
       <SelectedWork />
-      <FinalCTA />
     </>
   );
 }

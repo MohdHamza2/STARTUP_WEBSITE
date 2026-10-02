@@ -11,20 +11,20 @@ import { Reveal } from "@/components/ui/Reveal";
  */
 export function WorkThatMoves() {
   return (
-    <section aria-labelledby="moves-heading" className="relative bg-obsidian">
+    <section aria-labelledby="moves-heading" className="relative bg-paper">
       <div className="container-wide py-40 sm:py-56">
         <Reveal>
           <span aria-hidden="true" className="block h-px w-24 bg-mint" />
           <h2
             id="moves-heading"
-            className="mt-12 max-w-4xl text-display uppercase text-ivory"
+            className="mt-12 max-w-4xl text-display text-ink"
           >
             Work that moves people forward.
           </h2>
         </Reveal>
 
         <Reveal delay={0.12}>
-          <p className="mt-14 max-w-xl text-body-lg text-silver">
+          <p className="mt-14 max-w-xl text-body-lg text-muted">
             Technology is only worth building when someone is better off for it —
             a business that runs on less friction, a founder with a product that
             exists, a candidate spending their time on the opportunity instead of

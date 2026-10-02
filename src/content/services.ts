@@ -28,7 +28,17 @@ export interface Service {
   /** Concise supporting copy. Prompt §17 — do not overstate capability. */
   readonly description: string;
   readonly line: ServiceLine;
+  /**
+   * Homepage hero card art: a 3:4 WebP in public/images/services. Every file
+   * is an Unsplash photo, credited in assets/images/SOURCES.md.
+   */
+  readonly image: string;
+  readonly imageAlt: string;
 }
+
+/** Where a service leads. No per-service pages exist, by design. */
+export const serviceHref = (service: Service) =>
+  service.line === "recruiting" ? "/recruiting" : "/software";
 
 export const services: readonly Service[] = [
   {
@@ -37,6 +47,8 @@ export const services: readonly Service[] = [
     title: "MVP Development",
     description: "Turn an idea into a functional first product.",
     line: "software",
+    image: "/images/services/mvp.webp",
+    imageAlt: "Hand-drawn wireframes of mobile app screens beside a pen",
   },
   {
     number: "02",
@@ -44,6 +56,8 @@ export const services: readonly Service[] = [
     title: "SaaS Development",
     description: "Build scalable cloud and subscription software.",
     line: "software",
+    image: "/images/services/saas.webp",
+    imageAlt: "An analytics dashboard with charts open on a monitor",
   },
   {
     number: "03",
@@ -52,6 +66,8 @@ export const services: readonly Service[] = [
     description:
       "From concept and architecture through development and launch, build the complete digital product.",
     line: "software",
+    image: "/images/services/e2e.webp",
+    imageAlt: "A product team planning around a whiteboard in a bright studio",
   },
   {
     number: "04",
@@ -60,6 +76,8 @@ export const services: readonly Service[] = [
     description:
       "Build browser-based applications and platforms around real workflows.",
     line: "software",
+    image: "/images/services/webapp.webp",
+    imageAlt: "A web application open in a browser on a laptop",
   },
   {
     number: "05",
@@ -68,6 +86,8 @@ export const services: readonly Service[] = [
     description:
       "Create software designed around specific operational and business needs.",
     line: "software",
+    image: "/images/services/business.webp",
+    imageAlt: "Two colleagues reviewing operational data across two monitors",
   },
   {
     number: "06",
@@ -76,6 +96,8 @@ export const services: readonly Service[] = [
     description:
       "Build distinctive websites that present people, businesses, products and work professionally.",
     line: "software",
+    image: "/images/services/portfolio.webp",
+    imageAlt: "A personal portfolio website open on a laptop on a wooden table",
   },
   {
     number: "07",
@@ -84,6 +106,8 @@ export const services: readonly Service[] = [
     description:
       "Integrate useful AI capabilities where they create meaningful value.",
     line: "software",
+    image: "/images/services/ai.webp",
+    imageAlt: "An AI assistant app on a phone, ready for a request",
   },
   {
     number: "08",
@@ -91,6 +115,8 @@ export const services: readonly Service[] = [
     title: "Automation Systems",
     description: "Automate repetitive processes and connect workflows.",
     line: "software",
+    image: "/images/services/automation.webp",
+    imageAlt: "A person sketching an automated email workflow on a whiteboard",
   },
   {
     /**
@@ -105,6 +131,8 @@ export const services: readonly Service[] = [
     description:
       "You find the opportunity. GENRA handles the application workflow.",
     line: "recruiting",
+    image: "/images/services/recruiting.webp",
+    imageAlt: "A resume being reviewed at a desk",
   },
 ] as const;
 

@@ -24,10 +24,9 @@ export const metadata: Metadata = {
  */
 export default function TermsPage() {
   return (
-    <div className="bg-obsidian">
+    <div className="bg-paper">
       <div className="container-content pb-32 pt-40">
-        <p className="text-eyebrow uppercase text-silver">Legal</p>
-        <h1 className="mt-6 text-display text-ivory">Terms</h1>
+        <h1 className="text-display text-ink">Terms</h1>
 
         <div className="mt-16 space-y-14">
           <Section title="Using this site">
@@ -94,7 +93,7 @@ export default function TermsPage() {
               How your information is handled is set out in the{" "}
               <Link
                 href="/privacy"
-                className="text-mint underline underline-offset-4"
+                className="text-ink underline decoration-mint decoration-2 underline-offset-4"
               >
                 privacy notice
               </Link>
@@ -119,9 +118,9 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <section className="rule-dark pt-10">
-      <h2 className="font-display text-h3 text-ivory">{title}</h2>
-      <div className="mt-5 max-w-2xl text-body text-silver">{children}</div>
+    <section className="rule pt-10">
+      <h2 className="font-display text-h3 text-ink">{title}</h2>
+      <div className="mt-5 max-w-2xl text-body text-muted">{children}</div>
     </section>
   );
 }

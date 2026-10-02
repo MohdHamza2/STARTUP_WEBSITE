@@ -28,10 +28,9 @@ export const metadata: Metadata = {
  */
 export default function PrivacyPage() {
   return (
-    <div className="bg-obsidian">
+    <div className="bg-paper">
       <div className="container-content pb-32 pt-40">
-        <p className="text-eyebrow uppercase text-silver">Legal</p>
-        <h1 className="mt-6 text-display text-ivory">Privacy</h1>
+        <h1 className="text-display text-ink">Privacy</h1>
 
         <div className="mt-16 space-y-14">
           <Section title="What this covers">
@@ -45,14 +44,14 @@ export default function PrivacyPage() {
             <p>Only what you enter into a form. Depending on the form, that is:</p>
             <ul className="mt-5 space-y-2">
               {[
-                "Your name and email address.",
-                "Your phone number, if you provide one.",
+                "Your name, and your email address and/or phone number.",
+                "Project and contact enquiries require an email address; recruiting enquiries require a phone number and make email optional.",
                 "For recruiting enquiries: education, university, graduation year, work authorisation status, target role, preferred industry and location, and a LinkedIn URL — all optional.",
                 "For project enquiries: company, project type and a description of what you need.",
                 "A resume file, if you choose to upload one.",
                 "Anything you write in a free-text field.",
               ].map((item) => (
-                <li key={item} className="flex gap-4 text-body text-silver">
+                <li key={item} className="flex gap-4 text-body text-muted">
                   <span aria-hidden="true" className="mt-3 h-px w-4 shrink-0 bg-mint" />
                   <span>{item}</span>
                 </li>
@@ -117,7 +116,7 @@ export default function PrivacyPage() {
                 Email{" "}
                 <a
                   href={`mailto:${site.contact.email}`}
-                  className="text-mint underline underline-offset-4"
+                  className="text-ink underline decoration-mint decoration-2 underline-offset-4"
                 >
                   {site.contact.email}
                 </a>
@@ -130,7 +129,7 @@ export default function PrivacyPage() {
                 Send the request through the{" "}
                 <Link
                   href="/contact"
-                  className="text-mint underline underline-offset-4"
+                  className="text-ink underline decoration-mint decoration-2 underline-offset-4"
                 >
                   contact form
                 </Link>{" "}
@@ -166,9 +165,9 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <section className="rule-dark pt-10">
-      <h2 className="font-display text-h3 text-ivory">{title}</h2>
-      <div className="mt-5 max-w-2xl text-body text-silver">{children}</div>
+    <section className="rule pt-10">
+      <h2 className="font-display text-h3 text-ink">{title}</h2>
+      <div className="mt-5 max-w-2xl text-body text-muted">{children}</div>
     </section>
   );
 }
