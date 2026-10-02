@@ -12,6 +12,10 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Locally installed agent skills (third-party, gitignored) and their
+    // bundled scripts are tooling, not project source.
+    ".claude/**",
+    ".impeccable/**",
   ]),
 ]);
 

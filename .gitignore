@@ -42,9 +42,8 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# Derived hero assets. Generated from clips/*.zip by `npm run hero:build`,
-# which runs automatically as `prebuild`. The source archives are committed;
-# the ~10MB of encoded output is not.
+# Output of the retired frame-sequence hero pipeline (removed 2026-10-03).
+# Older clones may still hold it locally; it is unused and must not be committed.
 /public/hero/
 
 # Playwright
@@ -52,3 +51,15 @@ next-env.d.ts
 /playwright-report/
 /blob-report/
 /.playwright/
+
+# Claude Code: personal settings (Impeccable's hooks live here) and the
+# Impeccable engine binary (~17MB, re-downloaded by its launcher on first run).
+.claude/settings.local.json
+.claude/skills/impeccable/scripts/bin/
+
+# Third-party agent skills are NOT committed (owner decision 2026-10-03):
+# one source publishes no licence, and Impeccable alone is ~19MB.
+# Restore with the commands in Brain.md (§ Agent skills); skills-lock.json
+# pins the `npx skills` installs.
+.claude/skills/
+.claude/agents/impeccable-*.md

@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-03T00:00:00Z",
+  "title": "Design System: GENRA",
+  "extensions": {
+    "colorMeta": {
+      "paper": { "role": "neutral", "displayName": "Ivory Paper", "canonical": "#f5f4ef" },
+      "surface": { "role": "neutral", "displayName": "Sheet White", "canonical": "#ffffff" },
+      "ink": { "role": "neutral", "displayName": "Obsidian Ink", "canonical": "#0b0b0b" },
+      "muted": { "role": "neutral", "displayName": "Graphite", "canonical": "#374151" },
+      "line": { "role": "neutral", "displayName": "Silver Rule", "canonical": "#d1d5db" },
+      "mint": { "role": "primary", "displayName": "Drafting Mint", "canonical": "#34d399" },
+      "mint-deep": { "role": "primary", "displayName": "Deep Mint", "canonical": "#10b981" },
+      "error": { "role": "neutral", "displayName": "Error Red", "canonical": "#b91c1c" }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Page H1s and the final call to action, sentence case." },
+      "headline": { "displayName": "Headline", "purpose": "Section headings." },
+      "title": { "displayName": "Title", "purpose": "List-row and form titles." },
+      "body": { "displayName": "Body", "purpose": "Reading text, capped near 65ch." },
+      "label": { "displayName": "Label", "purpose": "Form labels, captions, row numbers." }
+    },
+    "shadows": [],
+    "motion": [
+      { "name": "ease-genra", "value": "cubic-bezier(0.22, 1, 0.36, 1)", "purpose": "Default ease-out for state changes and reveals." },
+      { "name": "duration-fast", "value": "150ms", "purpose": "Hover and colour changes." },
+      { "name": "duration-normal", "value": "300ms", "purpose": "Rule growth, header surface." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" },
+      { "name": "side", "value": "min-width 1024px, or landscape with max-height 600px and min-width 640px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The single primary action in a view.",
+      "html": "<button class=\"ds-btn-primary\">Start a Project</button>",
+      "css": ".ds-btn-primary { background: #0b0b0b; color: #f5f4ef; padding: 16px 32px; border: 0; border-radius: 9999px; font: 600 15px/1 Inter, system-ui, sans-serif; transition: background-color 150ms; } .ds-btn-primary:hover { background: #374151; } .ds-btn-primary:focus-visible { outline: 2px solid #0b0b0b; outline-offset: 3px; }"
+    },
+    {
+      "name": "Text Link",
+      "kind": "custom",
+      "description": "Secondary action: ink label with a mint rule that extends on hover.",
+      "html": "<a class=\"ds-link\" href=\"#\">Explore Software<span></span></a>",
+      "css": ".ds-link { display: inline-flex; align-items: center; gap: 12px; color: #0b0b0b; font: 500 15px Inter, system-ui, sans-serif; text-decoration: none; } .ds-link span { display: block; height: 1px; width: 32px; background: #34d399; transition: width 300ms cubic-bezier(0.22,1,0.36,1); } .ds-link:hover span { width: 48px; }"
+    },
+    {
+      "name": "Text Field",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Label above, white field, 4px corners, ink border on focus.",
+      "html": "<label class=\"ds-label\">Email<input class=\"ds-input\" type=\"email\"></label>",
+      "css": ".ds-label { display: grid; gap: 10px; color: #374151; font: 500 13px Inter, system-ui, sans-serif; } .ds-input { background: #fff; color: #0b0b0b; border: 1px solid #d1d5db; border-radius: 4px; padding: 14px 16px; font: 400 16px Inter, system-ui, sans-serif; } .ds-input:hover { border-color: #374151; } .ds-input:focus { outline: none; border-color: #0b0b0b; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Working Drawing",
+    "overview": "GENRA's pages read like an engineer's annotated drawing: ivory paper, black ink, precise hairlines, numbered parts and a single mint mark where attention belongs. The one place the drawing comes alive is the homepage hero, the Molten Ring; everything around it is calm.",
+    "keyCharacteristics": [
+      "Ivory paper, Obsidian ink, Silver hairlines, Mint as a mark, never a fill.",
+      "Sora 600 display in sentence case; Inter for reading.",
+      "Structure from numbered rows and 1px rules, not from boxes.",
+      "One signature motion (the ring); everywhere else motion only confirms."
+    ],
+    "rules": [
+      { "name": "The Mark Rule", "body": "Mint covers well under 5% of any screen and is never used for text.", "section": "colors" },
+      { "name": "The One Paper Rule", "body": "Every section sits on Ivory; no dark bands.", "section": "colors" },
+      { "name": "The Sentence Case Rule", "body": "Headings are sentence case; eyebrows at most one per three sections.", "section": "typography" },
+      { "name": "The Numbered Part Rule", "body": "Ordered content carries two-digit tabular numbers.", "section": "typography" },
+      { "name": "The No-Shadow Rule", "body": "Stand forward with a rule and space, never a shadow.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do keep every section on Ivory Paper (#f5f4ef) with Obsidian Ink text.",
+      "Do use mint only as a 1 to 2px rule, a dot, or the text-accent bar.",
+      "Do separate content with 1px Silver rules and numbered rows.",
+      "Do use credited, art-directed photography where an image carries meaning.",
+      "Do keep headings sentence case and at most two lines."
+    ],
+    "donts": [
+      "Don't add shadows, gradients, glassmorphism or glow.",
+      "Don't use mint for text, buttons or fills.",
+      "Don't introduce purple, blue or neon accents, robots, glowing brains or circuit imagery.",
+      "Don't put an eyebrow above every section heading.",
+      "Don't build card grids where a ruled list would do.",
+      "Don't invent clients, testimonials, metrics, logos or contact details."
+    ]
+  }
+}
