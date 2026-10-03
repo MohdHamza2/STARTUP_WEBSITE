@@ -268,14 +268,20 @@ export function ServiceHero() {
             </div>
           </div>
 
-          {/* Stage. Starts below the header so the glass band at its upper
-              edge is seen rather than hidden behind the navigation. */}
-          <div className="relative min-h-0 flex-1 side:absolute side:inset-x-0 side:top-20 side:bottom-0">
+          {/* Stage. Starts below the header (side by side) or a clear step
+              below the caption (stacked), so a neighbouring card cropped at
+              its top edge never crowds the navigation or the progress ticks. */}
+          <div className="relative mt-6 min-h-0 flex-1 side:absolute side:inset-x-0 side:top-20 side:bottom-0 side:mt-0">
             <MoltenRingCarousel
               items={items}
               getTarget={position}
               focusX={focusX}
-              cardHeight={focusX === 0.5 ? 0.62 : 0.58}
+              cardHeight={focusX === 0.5 ? 0.56 : 0.54}
+              // Separate cards with real space between them (owner,
+              // 2026-10-04): no fusion, strands or crossfade, and no glass
+              // band bending the neighbours' edges at the stage borders.
+              liquid={false}
+              glass={false}
               onActiveChange={setActive}
               onCardSelect={goTo}
               onDrag={onDrag}

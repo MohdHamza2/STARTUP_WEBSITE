@@ -13,8 +13,8 @@ import { Reveal } from "@/components/ui/Reveal";
  */
 export function Process() {
   return (
-    <section aria-labelledby="process-heading" className="bg-paper">
-      <div className="container-wide py-32 sm:py-40">
+    <section aria-labelledby="process-heading" className="bg-mist">
+      <div className="container-wide section-y">
         <Reveal>
           <h2 id="process-heading" className="max-w-2xl text-h2 text-ink">
             How the work moves.

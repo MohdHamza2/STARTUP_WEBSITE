@@ -38,7 +38,7 @@ export function FinalCTA({
       <div
         className={
           placement === "closing"
-            ? "container-wide py-40 sm:py-52"
+            ? "container-wide section-y"
             : "container-wide pb-32 pt-20 sm:pb-40 sm:pt-24"
         }
       >

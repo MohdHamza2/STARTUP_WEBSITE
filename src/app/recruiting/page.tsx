@@ -73,7 +73,7 @@ export default function RecruitingPage() {
 
       {/* Who it's for */}
       <section aria-labelledby="audience-heading" className="rule bg-paper">
-        <div className="container-wide py-32 sm:py-40">
+        <div className="container-wide section-y">
           <div className="grid gap-16 lg:grid-cols-[minmax(0,24rem)_1fr] lg:gap-24">
             <Reveal>
               <h2 id="audience-heading" className="text-h2 text-ink">
@@ -104,8 +104,8 @@ export default function RecruitingPage() {
       </section>
 
       {/* How it works */}
-      <section aria-labelledby="how-heading" className="bg-paper">
-        <div className="container-wide py-32 sm:py-40">
+      <section aria-labelledby="how-heading" className="bg-mist">
+        <div className="container-wide section-y">
           <Reveal>
             <h2 id="how-heading" className="max-w-2xl text-h2 text-ink">
               Four steps, stated plainly.
@@ -139,7 +139,7 @@ export default function RecruitingPage() {
 
       {/* What information is needed */}
       <section aria-labelledby="inputs-heading" className="bg-paper">
-        <div className="container-wide py-32 sm:py-40">
+        <div className="container-wide section-y">
           <div className="grid gap-16 lg:grid-cols-[minmax(0,24rem)_1fr] lg:gap-24">
             <Reveal>
               <h2 id="inputs-heading" className="text-h2 text-ink">

@@ -22,7 +22,7 @@ export function ServiceCatalog() {
 
   return (
     <section id="services" aria-labelledby="catalog-heading" className="rule bg-paper">
-      <div className="container-wide py-32 sm:py-40">
+      <div className="container-wide section-y">
         <Reveal>
           <h2 id="catalog-heading" className="max-w-2xl text-h2 text-ink">
             Nine ways an idea becomes a system.

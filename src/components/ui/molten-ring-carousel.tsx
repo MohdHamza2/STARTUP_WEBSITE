@@ -26,6 +26,11 @@
 // The cursor is never painted. It widens the fusion radius beneath itself, tips
 // nearby cards toward it, elbows their neighbours aside, and draws strands out
 // between them. Mouse only - on touch the finger is scrolling the page.
+//
+// All of that liquid behaviour sits behind the `liquid` prop. With it off (as
+// GENRA uses it since 2026-10-04) the same field and the same motion render
+// separate, hard-edged cards: no fusion, no strands, no ripple, no crossfade,
+// and a real gap between neighbours that stays open across the curve.
 import * as React from "react";
 import Link from "next/link";
 
@@ -53,9 +58,16 @@ export interface MoltenRingCarouselProps {
   cardRatio?: number;
   /** Card height as a fraction of the stage height. @default 0.56 */
   cardHeight?: number;
-  /** Fusion radius between neighbours, in card widths. @default 0.087 */
+  /**
+   * The supplied component's liquid look: cards fuse, strands form between
+   * them, edges ripple and neighbouring art crossfades. Off renders separate
+   * cards with clear space between them; the motion is the same.
+   * @default true
+   */
+  liquid?: boolean;
+  /** Fusion radius between neighbours, in card widths (liquid only). @default 0.087 */
   fuse?: number;
-  /** String threads between cards as they pull apart. @default true */
+  /** String threads between cards as they pull apart (liquid only). @default true */
   threads?: boolean;
   /** Optical band that bends the image at the upper and lower borders. @default true */
   glass?: boolean;
@@ -80,8 +92,21 @@ const MAX_STRANDS = 24;
 const FUSE = 0.087; // resting blend between neighbours
 const CORNER = 0.015;
 const CROSSFADE = 0.035; // over which neighbouring art crossfades inside the goo
-const SPACING = 1.12; // centre to centre along the arc, in card heights
+const SPACING = 1.12; // centre to centre along the arc, in card heights (liquid)
 const VISIBLE_SLOTS = 3.5; // cards further than this from the front are skipped
+
+/* Separate cards (liquid off). The gap is the clear space between neighbours,
+   measured on the INSIDE of the curve, where tilted cards come closest; it
+   scales with the stage so a phone gets a smaller but still obvious gap. */
+const GAP = 0.075; // fraction of the stage height
+const GAP_MIN = 24; // px
+const GAP_MAX = 72; // px
+/** Cursor lean and swell are damped so a hovered pair can never close the
+    gap; the hovered card's neighbours still step aside. */
+const SOLID_TOUCH = 0.35;
+/** Arrival without fusion: the deck starts slightly gathered, never stacked,
+    so no card is ever drawn over another. */
+const SOLID_GATHER = 0.75;
 
 /* Cursor. It contributes nothing to the picture; it only alters how the field
    responds nearby. Take-up and let-go run at different rates on purpose - a
@@ -497,6 +522,7 @@ export function MoltenRingCarousel({
   focusX = 0.5,
   cardRatio = 0.75,
   cardHeight = 0.56,
+  liquid = true,
   fuse = FUSE,
   threads = true,
   glass = true,
@@ -518,6 +544,7 @@ export function MoltenRingCarousel({
     focusX,
     cardRatio,
     cardHeight,
+    liquid,
     fuse,
     threads,
     glass,
@@ -532,6 +559,7 @@ export function MoltenRingCarousel({
       focusX,
       cardRatio,
       cardHeight,
+      liquid,
       fuse,
       threads,
       glass,
@@ -816,6 +844,12 @@ export function MoltenRingCarousel({
         entry = reduced ? 1 : Math.min(1, (now - entryStart) / ENTRY_MS);
       }
       const spread = inOutCubic(entry);
+      const liquid = config.liquid;
+      // Liquid: the deck starts fused at the front and is drawn apart.
+      // Solid: it starts only slightly gathered, so cards never overlap.
+      const gather = liquid
+        ? spread
+        : SOLID_GATHER + (1 - SOLID_GATHER) * spread;
 
       // --- turn -----------------------------------------------------------
       const goal = clamp(config.getTarget(), 0, count - 1);
@@ -843,7 +877,15 @@ export function MoltenRingCarousel({
       );
       const long = short * config.cardRatio;
       const radius = Math.max(height * 1.5, short * 3.2);
-      const angleStep = (short * SPACING) / radius;
+      let centreStep = short * SPACING;
+      if (!liquid) {
+        // Tilted along the arc, neighbours come closest on the inside of the
+        // curve, where the arc is shorter by half a card width. Spacing them
+        // for that edge keeps the gap open everywhere, wider on the outside.
+        const gap = clamp(height * GAP, GAP_MIN, GAP_MAX);
+        centreStep = (short + gap) / (1 - long / (2 * radius));
+      }
+      const angleStep = centreStep / radius;
       const shiftX = (config.focusX - 0.5) * width;
       const centreX = shiftX - radius; // the ring's near point is the focus
 
@@ -852,7 +894,7 @@ export function MoltenRingCarousel({
         // The deck begins collapsed at the front slot and spreads outward into
         // position, which is the motion that pulls the strands. Later cards
         // wait below, so scrolling down lifts the next one into place.
-        const angle = -slot * angleStep * spread;
+        const angle = -slot * angleStep * gather;
         at[i].slot = slot;
         at[i].angle = angle;
         at[i].x = centreX + Math.cos(angle) * radius;
@@ -894,8 +936,9 @@ export function MoltenRingCarousel({
 
         // Tipping toward the cursor is quick and returning is slow; that
         // asymmetry is what gives the surface a sense of mass.
-        const towardX = dx * (pull * pull) * PULL * long * 0.02;
-        const towardY = dy * (pull * pull) * PULL * long * 0.02;
+        const touch = liquid ? 1 : SOLID_TOUCH;
+        const towardX = dx * (pull * pull) * PULL * touch * long * 0.02;
+        const towardY = dy * (pull * pull) * PULL * touch * long * 0.02;
         leanX[i] += (towardX - leanX[i]) * ease(pull > 0 ? GRAB : RELEASE);
         leanY[i] += (towardY - leanY[i]) * ease(pull > 0 ? GRAB : RELEASE);
 
@@ -914,7 +957,7 @@ export function MoltenRingCarousel({
         dim[i] += (dimTarget - dim[i]) * ease(dimTarget > dim[i] ? GRAB : RELEASE);
 
         const wantSwell =
-          pull * pull * SWELL +
+          pull * pull * SWELL * touch +
           isHovered * NEIGHBOUR_SCALE -
           dimTarget * (NEIGHBOUR_SCALE / NEIGHBOUR_DIM);
         swell[i] +=
@@ -959,7 +1002,7 @@ export function MoltenRingCarousel({
 
       // --- strands ----------------------------------------------------------
       let strands = 0;
-      if (config.threads) {
+      if (liquid && config.threads) {
         for (let i = 0; i < count - 1 && strands < MAX_STRANDS; i++) {
           const j = i + 1;
           if (at[i].scale <= 0 || at[j].scale <= 0) continue;
@@ -1022,21 +1065,31 @@ export function MoltenRingCarousel({
       gl.uniform2fv(u("uStrandA"), strandA);
       gl.uniform2fv(u("uStrandB"), strandB);
       gl.uniform4fv(u("uStrandPar"), strandPar);
-      gl.uniform1f(u("uFuse"), config.fuse * long);
+      gl.uniform1f(u("uFuse"), liquid ? config.fuse * long : 0);
       gl.uniform1f(
         u("uJitter"),
-        reduced ? 0 : WOBBLE * long * clamp(speed * 2 + (1 - spread), 0, 1),
+        reduced || !liquid
+          ? 0
+          : WOBBLE * long * clamp(speed * 2 + (1 - spread), 0, 1),
       );
       gl.uniform1f(u("uTime"), reduced ? 0 : clock);
       gl.uniform3fv(u("uColor"), ink);
-      gl.uniform1f(u("uCrossfade"), CROSSFADE * long);
+      // Solid cards never share pixels, so the art switch is a 1px
+      // anti-aliased edge rather than a crossfade.
+      gl.uniform1f(u("uCrossfade"), liquid ? CROSSFADE * long : 0.75);
       gl.uniform1f(u("uHasArt"), atlas ? 1 : 0);
       gl.uniform2f(u("uGrid"), COLS, ROWS);
-      gl.uniform4f(u("uCursor"), mx, my, present, CURSOR_FUSE * long);
+      gl.uniform4f(
+        u("uCursor"),
+        mx,
+        my,
+        present,
+        liquid ? CURSOR_FUSE * long : 0,
+      );
       gl.uniform4f(
         u("uWake"),
         CURSOR_REACH * long,
-        reduced ? 0 : WAVE * long * clamp(pointerSpeed / 40, 0, 1),
+        reduced || !liquid ? 0 : WAVE * long * clamp(pointerSpeed / 40, 0, 1),
         WAVE_FREQ / long,
         WAVE_SPEED,
       );

@@ -21,7 +21,7 @@ export function Testimonials() {
 
   return (
     <section aria-labelledby="testimonials-heading" className="bg-paper">
-      <div className="container-wide py-32 sm:py-40">
+      <div className="container-wide section-y">
         <Reveal>
           <h2 id="testimonials-heading" className="max-w-2xl text-h2 text-ink">
             In their words.

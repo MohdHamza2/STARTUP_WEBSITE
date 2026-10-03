@@ -21,7 +21,7 @@ export function SelectedWork() {
 
   return (
     <section aria-labelledby="work-heading" className="bg-paper">
-      <div className="container-wide py-32 sm:py-40">
+      <div className="container-wide section-y">
         <Reveal>
           <h2 id="work-heading" className="max-w-3xl text-h2 text-ink">
             Ideas we&apos;ve brought to life.

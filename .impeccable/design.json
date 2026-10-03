@@ -1,36 +1,112 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-03T00:00:00Z",
+  "generatedAt": "2026-10-04T00:00:00Z",
   "title": "Design System: GENRA",
   "extensions": {
     "colorMeta": {
-      "paper": { "role": "neutral", "displayName": "Ivory Paper", "canonical": "#f5f4ef" },
-      "surface": { "role": "neutral", "displayName": "Sheet White", "canonical": "#ffffff" },
-      "ink": { "role": "neutral", "displayName": "Obsidian Ink", "canonical": "#0b0b0b" },
-      "muted": { "role": "neutral", "displayName": "Graphite", "canonical": "#374151" },
-      "line": { "role": "neutral", "displayName": "Silver Rule", "canonical": "#d1d5db" },
-      "mint": { "role": "primary", "displayName": "Drafting Mint", "canonical": "#34d399" },
-      "mint-deep": { "role": "primary", "displayName": "Deep Mint", "canonical": "#10b981" },
-      "error": { "role": "neutral", "displayName": "Error Red", "canonical": "#b91c1c" }
+      "paper": {
+        "role": "neutral",
+        "displayName": "Ivory Paper",
+        "canonical": "#f5f4ef"
+      },
+      "mist": {
+        "role": "neutral",
+        "displayName": "Mist",
+        "canonical": "#eeede9"
+      },
+      "surface": {
+        "role": "neutral",
+        "displayName": "Sheet White",
+        "canonical": "#ffffff"
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Obsidian Ink",
+        "canonical": "#0b0b0b"
+      },
+      "muted": {
+        "role": "neutral",
+        "displayName": "Graphite",
+        "canonical": "#374151"
+      },
+      "line": {
+        "role": "neutral",
+        "displayName": "Silver Rule",
+        "canonical": "#d1d5db"
+      },
+      "mint": {
+        "role": "primary",
+        "displayName": "Drafting Mint",
+        "canonical": "#34d399"
+      },
+      "mint-deep": {
+        "role": "primary",
+        "displayName": "Deep Mint",
+        "canonical": "#10b981"
+      },
+      "error": {
+        "role": "neutral",
+        "displayName": "Error Red",
+        "canonical": "#b91c1c"
+      }
     },
     "typographyMeta": {
-      "display": { "displayName": "Display", "purpose": "Page H1s and the final call to action, sentence case." },
-      "headline": { "displayName": "Headline", "purpose": "Section headings." },
-      "title": { "displayName": "Title", "purpose": "List-row and form titles." },
-      "body": { "displayName": "Body", "purpose": "Reading text, capped near 65ch." },
-      "label": { "displayName": "Label", "purpose": "Form labels, captions, row numbers." }
+      "display": {
+        "displayName": "Display",
+        "purpose": "Page H1s and the final call to action, sentence case."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Section headings."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "List-row and form titles."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Reading text, capped near 65ch."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Form labels, captions, row numbers."
+      }
     },
     "shadows": [],
     "motion": [
-      { "name": "ease-genra", "value": "cubic-bezier(0.22, 1, 0.36, 1)", "purpose": "Default ease-out for state changes and reveals." },
-      { "name": "duration-fast", "value": "150ms", "purpose": "Hover and colour changes." },
-      { "name": "duration-normal", "value": "300ms", "purpose": "Rule growth, header surface." }
+      {
+        "name": "ease-genra",
+        "value": "cubic-bezier(0.22, 1, 0.36, 1)",
+        "purpose": "Default ease-out for state changes and reveals."
+      },
+      {
+        "name": "duration-fast",
+        "value": "150ms",
+        "purpose": "Hover and colour changes."
+      },
+      {
+        "name": "duration-normal",
+        "value": "300ms",
+        "purpose": "Rule growth, header surface."
+      }
     ],
     "breakpoints": [
-      { "name": "sm", "value": "640px" },
-      { "name": "md", "value": "768px" },
-      { "name": "lg", "value": "1024px" },
-      { "name": "side", "value": "min-width 1024px, or landscape with max-height 600px and min-width 640px" }
+      {
+        "name": "sm",
+        "value": "640px"
+      },
+      {
+        "name": "md",
+        "value": "768px"
+      },
+      {
+        "name": "lg",
+        "value": "1024px"
+      },
+      {
+        "name": "side",
+        "value": "min-width 1024px, or landscape with max-height 600px and min-width 640px"
+      }
     ]
   },
   "components": [
@@ -68,18 +144,39 @@
       "One signature motion (the ring); everywhere else motion only confirms."
     ],
     "rules": [
-      { "name": "The Mark Rule", "body": "Mint covers well under 5% of any screen and is never used for text.", "section": "colors" },
-      { "name": "The One Paper Rule", "body": "Every section sits on Ivory; no dark bands.", "section": "colors" },
-      { "name": "The Sentence Case Rule", "body": "Headings are sentence case; eyebrows at most one per three sections.", "section": "typography" },
-      { "name": "The Numbered Part Rule", "body": "Ordered content carries two-digit tabular numbers.", "section": "typography" },
-      { "name": "The No-Shadow Rule", "body": "Stand forward with a rule and space, never a shadow.", "section": "elevation" }
+      {
+        "name": "The Mark Rule",
+        "body": "Mint covers well under 5% of any screen and is never used for text.",
+        "section": "colors"
+      },
+      {
+        "name": "The Two Papers Rule",
+        "body": "Sections sit on Ivory or Mist; Mist comes in grouped zones, never alternating stripes. No dark bands.",
+        "section": "colors"
+      },
+      {
+        "name": "The Sentence Case Rule",
+        "body": "Headings are sentence case; eyebrows at most one per three sections.",
+        "section": "typography"
+      },
+      {
+        "name": "The Numbered Part Rule",
+        "body": "Ordered content carries two-digit tabular numbers.",
+        "section": "typography"
+      },
+      {
+        "name": "The No-Shadow Rule",
+        "body": "Stand forward with a rule and space, never a shadow.",
+        "section": "elevation"
+      }
     ],
     "dos": [
-      "Do keep every section on Ivory Paper (#f5f4ef) with Obsidian Ink text.",
+      "Do keep sections on Ivory Paper (#f5f4ef), or Mist (#eeede9) in grouped zones, with Obsidian Ink text.",
       "Do use mint only as a 1 to 2px rule, a dot, or the text-accent bar.",
       "Do separate content with 1px Silver rules and numbered rows.",
       "Do use credited, art-directed photography where an image carries meaning.",
-      "Do keep headings sentence case and at most two lines."
+      "Do keep headings sentence case and at most two lines.",
+      "Do write copy with commas, colons, periods or parentheses; use an em dash only when nothing else works."
     ],
     "donts": [
       "Don't add shadows, gradients, glassmorphism or glow.",
@@ -87,7 +184,8 @@
       "Don't introduce purple, blue or neon accents, robots, glowing brains or circuit imagery.",
       "Don't put an eyebrow above every section heading.",
       "Don't build card grids where a ruled list would do.",
-      "Don't invent clients, testimonials, metrics, logos or contact details."
+      "Don't invent clients, testimonials, metrics, logos or contact details.",
+      "Don't let images touch, merge or crossfade into one another."
     ]
   }
 }

@@ -11,9 +11,9 @@ export function BrandStatement() {
   return (
     <section
       aria-labelledby="brand-statement"
-      className="relative flex min-h-screen items-center bg-paper"
+      className="bg-mist"
     >
-      <div className="container-wide py-32">
+      <div className="container-wide section-y">
         {/* h2, not h1 — the hero owns the page's single h1. */}
         <h2
           id="brand-statement"

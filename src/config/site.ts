@@ -23,7 +23,7 @@ export const site = {
   },
 
   description:
-    "GENRA builds digital products, software systems and automation — and helps candidates handle the job-application workflow.",
+    "GENRA builds digital products, software systems and automation, and helps candidates handle the job-application workflow.",
 
   /**
    * TODO(business-facts): production domain. DOC1 §50 Q4 unanswered.

@@ -14,8 +14,8 @@ import { Reveal } from "@/components/ui/Reveal";
  */
 export function RecruitingIntro() {
   return (
-    <section aria-labelledby="recruiting-heading" className="bg-paper">
-      <div className="container-wide py-32 sm:py-40">
+    <section aria-labelledby="recruiting-heading" className="bg-mist">
+      <div className="container-wide section-y">
         <div className="grid gap-16 lg:grid-cols-[minmax(0,32rem)_1fr] lg:gap-24">
           <Reveal>
             <h2
@@ -35,7 +35,7 @@ export function RecruitingIntro() {
             </p>
             <p className="mt-6 text-body text-muted">
               You tell us the roles you want and share your profile. We take on
-              the repetitive part — working through applications from the
+              the repetitive part: working through applications from the
               information you provide, so your time goes into preparing for the
               opportunities rather than filling in the same forms.
             </p>

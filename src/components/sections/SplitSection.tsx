@@ -15,7 +15,7 @@ import { Reveal } from "@/components/ui/Reveal";
 export function SplitSection() {
   return (
     <section aria-labelledby="split-heading" className="bg-paper">
-      <div className="container-wide py-32 sm:py-40">
+      <div className="container-wide section-y">
         <Reveal>
           <h2
             id="split-heading"

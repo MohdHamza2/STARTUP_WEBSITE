@@ -15,7 +15,7 @@ import { Reveal } from "@/components/ui/Reveal";
 export function Capabilities() {
   return (
     <section aria-labelledby="capabilities-heading" className="bg-paper">
-      <div className="container-wide py-32 sm:py-40">
+      <div className="container-wide section-y">
         <div className="grid gap-16 lg:grid-cols-[minmax(0,26rem)_1fr] lg:gap-24">
           <Reveal>
             <h2

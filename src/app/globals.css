@@ -30,6 +30,11 @@
      Mint is a signal only — rules, dots, underline accents. As TEXT on Ivory
      it is ~1.7:1, so it is never used for text. */
   --color-paper: #f5f4ef;
+  /* Mist: Ivory with 4% Graphite mixed in. A second paper tone for a few
+     grouped sections, so the page has a quiet tonal rhythm rather than
+     stripes (owner revision 2026-10-04). Text contrast is unchanged in
+     practice: Graphite on Mist is ~8.8:1. */
+  --color-mist: #eeede9;
   --color-surface: #ffffff;
   --color-ink: #0b0b0b;
   --color-muted: #374151;
@@ -226,6 +231,13 @@
   max-width: var(--container-wide);
   margin-inline: auto;
   padding-inline: 1.5rem;
+}
+
+/* Vertical rhythm for content sections: 72px on phones, rising to 112px on
+   desktop, so neighbouring sections read as one continuous page. (Was
+   128-224px; tightened by owner request 2026-10-04.) */
+@utility section-y {
+  padding-block: clamp(4.5rem, 3rem + 4vw, 7rem);
 }
 
 /* The thin dividers that carry structure across the brand board. */

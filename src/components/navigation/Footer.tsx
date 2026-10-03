@@ -21,7 +21,7 @@ export function Footer() {
   );
 
   return (
-    <footer className="rule bg-paper">
+    <footer className="rule bg-mist">
       <div className="container-wide py-20">
         <div className="flex flex-col gap-16 md:flex-row md:justify-between">
           <div className="max-w-xs">

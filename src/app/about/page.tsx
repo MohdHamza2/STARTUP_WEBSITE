@@ -34,7 +34,7 @@ export default function AboutPage() {
       />
 
       <section aria-labelledby="what-heading" className="bg-paper">
-        <div className="container-wide py-32 sm:py-40">
+        <div className="container-wide section-y">
           <div className="grid gap-16 lg:grid-cols-[minmax(0,22rem)_1fr] lg:gap-24">
             <Reveal>
               <h2 id="what-heading" className="text-h2 text-ink">
@@ -67,7 +67,7 @@ export default function AboutPage() {
       </section>
 
       <section aria-labelledby="how-we-work" className="bg-paper">
-        <div className="container-wide py-32 sm:py-40">
+        <div className="container-wide section-y">
           <Reveal>
             <h2 id="how-we-work" className="max-w-2xl text-h2 text-ink">
               Build. Automate. <span className="text-accent">Advance.</span>

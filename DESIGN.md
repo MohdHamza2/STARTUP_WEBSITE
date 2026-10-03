@@ -3,6 +3,7 @@ name: GENRA
 description: Build. Automate. Advance. A light, technical software studio.
 colors:
   paper: "#f5f4ef"
+  mist: "#eeede9"
   surface: "#ffffff"
   ink: "#0b0b0b"
   muted: "#374151"
@@ -104,7 +105,10 @@ A monochrome working palette with one green signal.
   Never text, never a background fill, never a button.
 
 ### Neutral
-- **Ivory Paper** (#f5f4ef): every page background.
+- **Ivory Paper** (#f5f4ef): the page background.
+- **Mist** (#eeede9): Ivory with 4% Graphite. The second paper tone, used in a
+  few grouped zones (homepage: Process with the brand statement, the recruiting
+  intro with About; /recruiting: how it works; the footer).
 - **Sheet White** (#ffffff): inputs and the rare raised surface (form success
   panel).
 - **Obsidian Ink** (#0b0b0b): headings, body text, primary buttons, focus ring.
@@ -118,8 +122,10 @@ A monochrome working palette with one green signal.
 for text: on Ivory it is about 1.7:1. Emphasis in text is Ink with a low mint
 bar beneath it (the `text-accent` utility).
 
-**The One Paper Rule.** Every section sits on Ivory. Depth comes from rules and
-spacing, not from alternating section colours or dark bands.
+**The Two Papers Rule.** Sections sit on Ivory or Mist and nothing else. Mist
+comes in grouped zones that give the page a quiet tonal rhythm; it never
+alternates section by section as stripes. No dark bands, no colour fills, no
+gradients.
 
 ## Typography
 
@@ -156,7 +162,9 @@ two-digit numbers (`01`) in tabular figures, like part callouts on a drawing.
 ## Layout
 
 A single 84rem (1344px) wide container with 24px gutters; a 68rem container
-for reading pages. Sections breathe: 128 to 208px vertical padding on desktop.
+for reading pages. Sections use one rhythm, the `section-y` utility: 72px of
+vertical padding on phones rising to 112px on desktop, so neighbours read as one
+continuous page with comfortable, not empty, space between them.
 Composition is asymmetric: left-aligned headings with content offset into a
 wider right column (`minmax(0,24rem) 1fr`), collapsing to one column below
 1024px. The header is 80px and fixed.
@@ -169,8 +177,7 @@ with the caption on top and the ring below.
 ## Elevation & Depth
 
 Flat. There are no shadows in the system. Depth is drawn: 1px Silver rules,
-numbered rows, and white space. The only optical depth is inside the hero
-ring's WebGL shader (the glass band at the stage edges).
+numbered rows, white space, and the two paper tones.
 
 ### Named Rules
 **The No-Shadow Rule.** If something needs to stand forward, give it a rule
@@ -208,9 +215,12 @@ hero are circles. No other radius appears.
   scroll.
 
 ### The Molten Ring (signature)
-- Nine 3:4 photographic cards on a large arc, rendered as one WebGL2 signed
-  distance field so neighbours fuse and leave strands as they part. Scroll
-  position turns it; it never loops and releases the page after service 09.
+- Nine 3:4 photographic cards on a large arc, rendered in WebGL2 as
+  **separate cards with clear space between them** (owner, 2026-10-04): no
+  fusion, strands, crossfade or edge distortion. The gap is 7.5% of the stage
+  height (24 to 72px), measured on the inside of the curve where tilted cards
+  come closest. Scroll position turns it; it never loops and releases the page
+  after service 09.
 - Caption: number, mint rule, service line, Sora title, one-line description,
   an "Explore" text link, and up/down circle buttons with a nine-tick progress
   rule (active tick mint).
@@ -220,11 +230,14 @@ hero are circles. No other radius appears.
 ## Do's and Don'ts
 
 ### Do:
-- **Do** keep every section on Ivory Paper (#f5f4ef) with Obsidian Ink text.
+- **Do** keep sections on Ivory Paper (#f5f4ef), or Mist (#eeede9) in grouped
+  zones, with Obsidian Ink text.
 - **Do** use mint only as a 1 to 2px rule, a dot, or the text-accent bar.
 - **Do** separate content with 1px Silver rules and numbered rows.
 - **Do** use credited, art-directed photography where an image carries meaning.
 - **Do** keep headings sentence case and at most two lines.
+- **Do** write copy with commas, colons, periods or parentheses; use an em dash
+  only when nothing else works.
 
 ### Don't:
 - **Don't** add shadows, gradients, glassmorphism or glow.
@@ -233,4 +246,5 @@ hero are circles. No other radius appears.
   circuit imagery.
 - **Don't** put an eyebrow above every section heading.
 - **Don't** build card grids where a ruled list would do.
+- **Don't** let images touch, merge or crossfade into one another.
 - **Don't** invent clients, testimonials, metrics, logos or contact details.
