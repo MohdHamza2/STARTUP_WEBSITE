@@ -80,6 +80,39 @@ Next task: apply it; verify the tables, the private bucket, and anon denial.
 
 # CHANGE LOG
 
+## 2026-10-04 (13)
+
+### Agent
+
+Tooling (no app code touched).
+
+### Task
+
+Owner asked for a full agent-skill set covering all agency work (MVP/SaaS, web apps,
+business software, portfolios, AI apps, automation, design, animation, graphics).
+
+### Work Completed
+
+- Installed 69 skills at user level (`~/.claude/skills`) via `npx skills add -g`. The
+  list and sources are in `Brain.md` §27.
+- Wrote `~/.claude/CLAUDE.md`, a skill-routing table for each development step.
+  Project docs override skills on conflict. `deploy-to-vercel` needs owner approval.
+- Reviewed the bundled scripts: local brainstorm server, Playwright helpers, dependency
+  auditor, and a Vercel deploy script that uploads code (gated as noted).
+
+### Files Changed
+
+- `Brain.md` §27 (user-level skills); this file. Global files are outside the repo.
+
+### Verification
+
+Every skill folder has a `SKILL.md`, and every skill named in the routing table
+exists on disk or is built in.
+
+### Next Action
+
+Unchanged from the status block above.
+
 ## 2026-10-03 (12)
 
 ### Agent

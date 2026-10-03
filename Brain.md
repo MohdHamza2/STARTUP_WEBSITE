@@ -718,6 +718,23 @@ Restore: `npx skills experimental_install` (reads `skills-lock.json`) and
 `.claude/agents/impeccable-*.md`, `.claude/settings.local.json` and the 17MB
 Impeccable engine binary are gitignored; ESLint ignores `.claude/` and `.impeccable/`.
 
+**User-level skills (added 2026-10-04, outside this repo).** 69 skills were installed
+to `~/.claude/skills` with `npx skills add <repo> -g -a claude-code -y -s <names>`, so they
+apply to every project on this machine, not only GENRA. They include global copies of the
+Vercel, Taste and Emil sets above, plus obra/superpowers (brainstorming, writing-plans,
+executing-plans, systematic-debugging, test-driven-development,
+verification-before-completion, code review, worktrees, parallel agents),
+anthropics/skills (frontend-design, webapp-testing, mcp-builder, canvas-design,
+algorithmic-art, theme-factory, web-artifacts-builder), vercel/ai `ai-sdk`, `shadcn`,
+`tailwind-design-system`, GSAP (6), Three.js (3), `remotion-best-practices`, Supabase/Postgres
+(2), Prisma (3), Better Auth (2), `stripe-best-practices`, n8n (6), `playwright-best-practices`,
+Trail of Bits `supply-chain-risk-auditor` and `differential-review`, and coreyhaines31
+marketing (seo-audit, ai-seo, schema, site-architecture, copywriting, copy-editing, cro).
+`~/.claude/CLAUDE.md` maps each development step to its skills. Project docs override a
+skill on conflict. `deploy-to-vercel` can upload project code, so it needs owner approval
+every time. These skills are not pinned in `skills-lock.json`. On a new machine, rerun the
+installs (`npx skills ls -g` shows the current set).
+
 Skill conflicts resolved in favour of the brand/repo: Taste discourages Inter
 (brand kit mandates Inter body — kept); Taste prefers Motion for scroll values (the
 hero reads scroll once per frame without React state — same principle, no library);
