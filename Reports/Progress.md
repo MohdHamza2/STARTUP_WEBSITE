@@ -37,8 +37,8 @@ COMPLETE (revision) / BLOCKED (backend verification — owner input)
 
 ## Last Verified
 
-2026-10-03 — typecheck and lint clean; production build clean; 34 unit tests; E2E
-124 passed / 2 skipped (126) across desktop, tablet and mobile.
+2026-10-04 — typecheck and lint clean; production build clean; 34 unit tests; E2E
+124 passed / 2 skipped (126); hero visual QA at 7 viewports.
 
 ## Current Blocker
 
@@ -79,6 +79,56 @@ Next task: apply it; verify the tables, the private bucket, and anon denial.
 ---
 
 # CHANGE LOG
+
+## 2026-10-04 (14)
+
+### Agent
+
+FRONTEND
+
+### Task
+
+Owner refinement (with screenshots): make the hero carousel cards independent
+with real space between them (no connecting shapes, no image-to-image fades),
+keep the animation and composition; reduce the vertical gaps between homepage
+sections moderately; add a very subtle tonal variation between sections; avoid
+em dashes in copy; verify across devices.
+
+### Changes
+
+- `molten-ring-carousel.tsx`: new `liquid` prop (default true keeps the
+  supplied behaviour). Off: no fusion, strands, cursor fusion, wobble or ripple;
+  1px art edge instead of a crossfade; arrival starts 75% gathered (never
+  stacked); cursor lean/swell damped to 35%; gap 7.5% of stage height (24 to
+  72px) held on the inside of the curve.
+- `ServiceHero.tsx`: `liquid={false}`, `glass={false}`, card height 0.54
+  (side by side) / 0.56 (stacked), stacked stage 24px below the caption.
+- `globals.css`: `--color-mist` (#EEEDE9, Ivory + 4% Graphite) and the
+  `section-y` rhythm utility (72 to 112px).
+- Sections: all post-hero sections (and /software, /recruiting, /about content
+  sections, for one consistent rhythm) use `section-y`; BrandStatement lost its
+  full-screen height; mist on Process + BrandStatement, RecruitingIntro +
+  AboutPreview, /recruiting "how it works", and the footer.
+- Copy: em dashes removed from WorkThatMoves, RecruitingIntro, AboutPreview and
+  `site.description` (sections touched in this task only).
+- DESIGN.md + `.impeccable/design.json`, Brain.md §12, §24, §28.
+
+### Verification
+
+- [x] Typecheck, lint clean; unit 34 passed
+- [x] E2E 124 passed, 2 skipped (desktop, tablet, mobile), incl. axe contrast
+- [x] Hero screenshots (headless, SwiftShader) at 1920x1080, 1440x900, 1366x768,
+      1024x768, 768x1024, 390x844, 844x390: at rest and mid-transition the
+      cards are separate with visible gaps, no bridges or fades; no horizontal
+      overflow; progression reaches 09
+- [x] Post-hero homepage 1440x900: content height ~5,800px (was ~8,200px);
+      section tones read as two quiet zones plus the footer
+- [x] Impeccable detector: 0 findings on components and CSS
+- [ ] Physical devices (touch feel) still unverified
+
+### Commit
+
+See the commit following this entry (`feat(home): separate hero cards, tighten section rhythm, add mist tone`).
 
 ## 2026-10-04 (13)
 

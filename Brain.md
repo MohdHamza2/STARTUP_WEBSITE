@@ -407,6 +407,12 @@ role tokens, never raw hex.
 | `line` | Silver `#D1D5DB` | Hairlines, dividers, input borders |
 | `mint` | `#34D399` | Rules, dots, the `text-accent` underline bar, active tick. **Never text** (~1.7:1 on Ivory) |
 
+Since 2026-10-04: a second paper tone **`mist` `#EEEDE9`** (Ivory + 4% Graphite)
+in grouped zones (homepage Process + BrandStatement, RecruitingIntro + AboutPreview;
+/recruiting "how it works"; the footer), never alternating stripes; and one section
+rhythm, the **`section-y`** utility (72px phone → 112px desktop padding), replacing
+128–224px paddings and BrandStatement's full-screen height.
+
 Rules: sentence-case headings; no eyebrow labels above headings; 4px corners on
 everything except pill buttons; no shadows; mint is a mark, never a fill;
 `text-action` (15px) for buttons/links. `cn()` (lib/utils) is taught the custom
@@ -704,6 +710,27 @@ What changed, by area:
   recruiting required-fields test updated; Playwright Chromium runs SwiftShader so
   WebGL2 is exercised.
 
+# 28. SESSION 2026-10-04 — HERO CARD SEPARATION, SPACING, TONE (record)
+
+Owner refinement with two screenshots (current hero; a reference showing a
+single independent card with empty space around it). Asked: separate the
+carousel cards (no connecting shapes, no image-to-image fades, real gaps),
+keep the animation and composition; tighten the post-hero section spacing
+moderately; add very subtle tonal variation between sections; avoid em dashes
+in copy; verify across devices. Not touched: backend, forms, database.
+
+Done: §24 (liquid off, gaps), §12 (mist, `section-y`), em dashes removed from
+the copy of the sections touched (WorkThatMoves, RecruitingIntro, AboutPreview,
+`site.description`). DESIGN.md + sidecar updated (Two Papers Rule, gap rule,
+em-dash Do). The em-dash preference is also saved in the owner's global
+master prompt.
+
+Gotcha: the dev server on port 3000 may belong to another Claude session in
+this folder; `next dev` refuses a second instance (even on another port). Its
+HMR serves your edits, so headless Playwright screenshots against :3000 work.
+Programmatic `window.scrollTo` during a Lenis snap animation is overridden by
+Lenis (real wheel and touch input are not); pause after a snap in scripts.
+
 # 27. AGENT SKILLS (installed 2026-10-03, project scope, NOT in git)
 
 | Source | Skills | Used for |
@@ -835,15 +862,25 @@ Files:
   physics are the original's (rounded-box SDF cards fused by a smooth minimum,
   strands, cursor influence, glass band at the stage edges). Adapted: the ring is
   driven by `getTarget()` (read every frame) instead of its own wheel handler; it
-  does **not wrap**; geometry is sized from stage height (card 0.58 of the stage,
-  0.62 when stacked; centre-to-centre 1.12 card heights; radius max(1.5H, 3.2
-  cards)); strands also appear in proportion to turn speed plus a fine resting
-  thread; easing is time-normalised (`ease(rate)`, dt capped at 0.25s); the arrival
+  does **not wrap**; geometry is sized from stage height (radius max(1.5H, 3.2
+  cards)); easing is time-normalised (`ease(rate)`, dt capped at 0.25s); the arrival
   runs on wall-clock time (2.2s); the loop stops when idle, off screen or in a hidden
   tab; backing store capped at 4.2M device px; atlas cell sized to the device and
   to MAX_TEXTURE_SIZE (3 columns). A real `<Link>` is positioned over the front card
   every frame (pointer hit target, `aria-hidden`, `tabIndex -1`). Mouse-only cursor
   effects and drag; touch is left to native page scroll (`touch-action: pan-y`).
+  **Since 2026-10-04 the hero runs with `liquid={false}` and `glass={false}`**
+  (owner: cards must be independent, with clear space between them). Liquid off
+  means: no smooth-minimum fusion, no strands, no cursor fusion, no edge
+  wobble or cursor ripple, a 1px art edge instead of a crossfade, the arrival
+  starts 75% gathered instead of stacked (no card is ever drawn over another),
+  and cursor lean/swell are damped to 35% so a hovered pair cannot close the
+  gap. Spacing: gap = 7.5% of stage height, clamped 24–72px, and the
+  centre-to-centre step is `(cardH + gap) / (1 − cardW / 2R)` so the gap holds
+  on the INSIDE of the curve, where tilted cards come closest. Card height is
+  0.54 of the stage side by side, 0.56 stacked; stacked stage sits 24px below
+  the caption. The liquid path is still in the component (prop default true)
+  in case the owner wants it back.
 - `src/components/hero/ServiceHero.tsx` — the page integration. The section is
   `100svh + 8 × 70svh + 35svh` tall with a sticky stage; **each service owns 70svh of
   page scroll** and the last holds 35svh before release. After scroll stops inside the
