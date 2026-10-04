@@ -1,4 +1,24 @@
-import { test, expect } from "@playwright/test";
+import { test, expect, type Page } from "@playwright/test";
+
+/**
+ * Attach a resume and wait for the form to react. Retried as a whole: under a
+ * heavily loaded parallel run the file can land before React has hydrated
+ * the page, and that first change event is then never seen.
+ */
+async function attachResume(
+  page: Page,
+  file: { name: string; mimeType: string; buffer: Buffer },
+  expected: RegExp,
+) {
+  await expect(async () => {
+    await page.locator('input[type="file"][name="resume"]').setInputFiles(file);
+    // Scoped to the form: Next.js renders its own role="alert" route announcer
+    // on every page, so an unscoped getByRole("alert") is ambiguous.
+    await expect(page.locator("form").getByRole("alert")).toContainText(expected, {
+      timeout: 2_000,
+    });
+  }).toPass({ timeout: 20_000 });
+}
 
 /**
  * Form contracts (prompt §67, §68).
@@ -122,16 +142,14 @@ test.describe("recruiting form", () => {
   test("rejects a non-PDF file before it can be submitted", async ({ page }) => {
     await page.goto("/recruiting#apply");
 
-    await page.locator('input[type="file"][name="resume"]').setInputFiles({
-      name: "resume.docx",
-      mimeType:
-        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-      buffer: Buffer.from("not a pdf"),
-    });
-
-    // Scoped to the form: Next.js renders its own role="alert" route announcer
-    // on every page, so an unscoped getByRole("alert") is ambiguous.
-    await expect(page.locator("form").getByRole("alert")).toContainText(
+    await attachResume(
+      page,
+      {
+        name: "resume.docx",
+        mimeType:
+          "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        buffer: Buffer.from("not a pdf"),
+      },
       /file type isn't supported/i,
     );
   });
@@ -139,14 +157,14 @@ test.describe("recruiting form", () => {
   test("rejects a file over the size limit", async ({ page }) => {
     await page.goto("/recruiting#apply");
 
-    await page.locator('input[type="file"][name="resume"]').setInputFiles({
-      name: "huge.pdf",
-      mimeType: "application/pdf",
-      // 10 MB + 1 byte.
-      buffer: Buffer.alloc(10 * 1024 * 1024 + 1),
-    });
-
-    await expect(page.locator("form").getByRole("alert")).toContainText(
+    await attachResume(
+      page,
+      {
+        name: "huge.pdf",
+        mimeType: "application/pdf",
+        // 10 MB + 1 byte.
+        buffer: Buffer.alloc(10 * 1024 * 1024 + 1),
+      },
       /exceeds the maximum allowed file size/i,
     );
   });

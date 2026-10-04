@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ArrowDown, ArrowUp } from "lucide-react";
 import { MoltenRingCarousel } from "@/components/ui/molten-ring-carousel";
 import { ServiceHeroStatic } from "./ServiceHeroStatic";
+import { HeroRobot } from "./HeroRobot";
 import { services, serviceHref } from "@/content/services";
 import { site } from "@/config/site";
 import { scrollToY } from "@/lib/scroll";
@@ -42,6 +43,8 @@ const DWELL = 35;
 /** Mirrors the `side` custom variant in globals.css. */
 const SIDE_QUERY =
   "(min-width: 64rem), (orientation: landscape) and (max-height: 37.5rem) and (min-width: 40rem)";
+/** Three-zone composition (text | robot | carousel) from this width up. */
+const WIDE_QUERY = "(min-width: 64rem)";
 /** How far into a step a gesture must travel to count as "next". */
 const COMMIT = 0.12;
 
@@ -57,7 +60,10 @@ export function ServiceHero() {
   const stickyRef = useRef<HTMLDivElement>(null);
   const [mode, setMode] = useState<"ring" | "static">("ring");
   const [active, setActive] = useState(0);
-  const [focusX, setFocusX] = useState(0.58);
+  const stageRef = useRef<HTMLDivElement>(null);
+  const zoneRef = useRef<HTMLDivElement>(null);
+  const [wide, setWide] = useState(false);
+  const [ring, setRing] = useState({ focusX: 0.5, cardHeight: 0.56 });
 
   // Reduced motion → the still presentation, live if the preference changes.
   useEffect(() => {
@@ -70,21 +76,46 @@ export function ServiceHero() {
     return () => query.removeEventListener("change", read);
   }, []);
 
-  // Where the front card sits across the stage, per composition.
+  // Where the front card sits and how tall it is, per composition. From 1024px
+  // up the hero is three equal zones (text | robot | carousel) and the ring is
+  // measured into the right-hand zone, so the composition holds at any width
+  // instead of being tuned to one screen. Below that, the two-zone layout.
   useEffect(() => {
-    const query = window.matchMedia(SIDE_QUERY);
+    const side = window.matchMedia(SIDE_QUERY);
+    const large = window.matchMedia(WIDE_QUERY);
     const read = () => {
-      const w = window.innerWidth;
-      setFocusX(!query.matches ? 0.5 : w >= 1280 ? 0.57 : w >= 1024 ? 0.6 : 0.68);
+      setWide(large.matches);
+      let next = {
+        focusX: !side.matches ? 0.5 : 0.68,
+        cardHeight: side.matches ? 0.54 : 0.56,
+      };
+      const zone = zoneRef.current?.getBoundingClientRect();
+      const stage = stageRef.current?.getBoundingClientRect();
+      if (large.matches && zone?.width && stage?.width && stage.height) {
+        next = {
+          focusX: (zone.left + zone.width / 2 - stage.left) / stage.width,
+          // The card (3:4) fills 92% of its zone's width at most.
+          cardHeight: Math.min(0.54, (zone.width * 0.92) / 0.75 / stage.height),
+        };
+      }
+      setRing((prev) =>
+        Math.abs(prev.focusX - next.focusX) < 0.001 &&
+        Math.abs(prev.cardHeight - next.cardHeight) < 0.001
+          ? prev
+          : next,
+      );
     };
     read();
-    query.addEventListener("change", read);
-    window.addEventListener("resize", read);
+    const sizer = new ResizeObserver(read);
+    if (stickyRef.current) sizer.observe(stickyRef.current);
+    side.addEventListener("change", read);
+    large.addEventListener("change", read);
     return () => {
-      query.removeEventListener("change", read);
-      window.removeEventListener("resize", read);
+      sizer.disconnect();
+      side.removeEventListener("change", read);
+      large.removeEventListener("change", read);
     };
-  }, []);
+  }, [mode]);
 
   const stepPx = useCallback(
     () => ((stickyRef.current?.clientHeight ?? window.innerHeight) * STEP) / 100,
@@ -183,8 +214,8 @@ export function ServiceHero() {
               side by side — pointer-transparent there so the ring still
               takes the cursor everywhere except the controls themselves. */}
           <div className="relative z-10 shrink-0 side:pointer-events-none side:absolute side:inset-0">
-            <div className="container-wide pt-24 side:flex side:h-full side:items-center side:pt-20">
-              <div className="side:pointer-events-auto side:w-[min(30rem,40%)] lg:w-[34%]">
+            <div className="container-wide pt-24 side:flex side:h-full side:items-center side:pt-20 lg:gap-x-[clamp(2rem,4vw,4.5rem)]">
+              <div className="side:pointer-events-auto side:max-lg:w-[min(30rem,40%)] lg:min-w-0 lg:flex-1">
                 {/* The page's heading. Visually the service caption leads; the
                     proposition is carried by the logo, the ring and the copy. */}
                 <h1 id="hero-heading" className="sr-only">
@@ -265,18 +296,34 @@ export function ServiceHero() {
                   ))}
                 </ol>
               </div>
+
+              {/* Centre zone: the robot. Right zone: empty here, measured to
+                  place the ring, which is drawn on the full-width stage. */}
+              <div className="hidden lg:flex lg:min-w-0 lg:flex-1 lg:items-center lg:justify-center">
+                {wide && (
+                  <HeroRobot className="aspect-[2/3] h-auto w-full max-w-[calc(70svh*2/3)]" />
+                )}
+              </div>
+              <div
+                ref={zoneRef}
+                aria-hidden="true"
+                className="hidden lg:block lg:min-w-0 lg:flex-1 lg:self-stretch"
+              />
             </div>
           </div>
 
           {/* Stage. Starts below the header (side by side) or a clear step
               below the caption (stacked), so a neighbouring card cropped at
               its top edge never crowds the navigation or the progress ticks. */}
-          <div className="relative mt-6 min-h-0 flex-1 side:absolute side:inset-x-0 side:top-20 side:bottom-0 side:mt-0">
+          <div
+            ref={stageRef}
+            className="relative mt-6 min-h-0 flex-1 side:absolute side:inset-x-0 side:top-20 side:bottom-0 side:mt-0"
+          >
             <MoltenRingCarousel
               items={items}
               getTarget={position}
-              focusX={focusX}
-              cardHeight={focusX === 0.5 ? 0.56 : 0.54}
+              focusX={ring.focusX}
+              cardHeight={ring.cardHeight}
               // Separate cards with real space between them (owner,
               // 2026-10-04): no fusion, strands or crossfade, and no glass
               // band bending the neighbours' edges at the stage borders.

@@ -107,6 +107,13 @@ const SOLID_TOUCH = 0.35;
 /** Arrival without fusion: the deck starts slightly gathered, never stacked,
     so no card is ever drawn over another. */
 const SOLID_GATHER = 0.75;
+/** Solid cards are a little softer at the corner (about 10px on a laptop)
+    and sit on a restrained shadow that belongs to the front card. All as
+    fractions of the card height. */
+const SOLID_CORNER = 0.024;
+const SHADOW_DROP = 0.03;
+const SHADOW_BLUR = 0.075;
+const SHADOW_OPACITY = 0.15;
 
 /* Cursor. It contributes nothing to the picture; it only alters how the field
    responds nearby. Take-up and let-go run at different rates on purpose - a
@@ -221,6 +228,12 @@ uniform vec4  uLip;        // refract px, squeeze, ripple px, ripple frequency
 uniform float uFringe;
 uniform float uSheen;
 
+// Soft drop shadow under the cards (solid mode): x = drop below the card,
+// y = blur, z = opacity, all px. uLift is each card's share of it, 1 at the
+// front and fading to 0 a slot away, so the shadow travels with its card.
+uniform vec4  uShadow;
+uniform float uLift[MAX_CARDS];
+
 vec2 atlasUV(vec2 uv, float idx) {
   return (vec2(mod(idx, uGrid.x), floor(idx / uGrid.x)) + uv) / uGrid;
 }
@@ -326,6 +339,7 @@ void main() {
   float dm0 = 1.0, dm1 = 1.0;
 
   float halfSpan = length(uSize) * 0.5;
+  float shadow = 0.0;
 
   for (int i = 0; i < MAX_CARDS; i++) {
     if (float(i) >= uCount) break;
@@ -337,7 +351,7 @@ void main() {
     vec2 q = p - uCentre[i];
     // Beyond this radius a card cannot reach the surface, so it is rejected
     // before any transcendentals run.
-    float cull = halfSpan * grown + k + uJitter + 8.0;
+    float cull = halfSpan * grown + k + uJitter + 8.0 + uShadow.x + uShadow.y;
     if (dot(q, q) > cull * cull) continue;
 
     float ca = cos(uAngle[i]), sa = sin(uAngle[i]);
@@ -351,6 +365,13 @@ void main() {
 
     float di = sdRoundBox(q, halfSize, r);
     d = smin(d, di, k);
+
+    if (uShadow.z > 0.0 && uLift[i] > 0.001) {
+      // The drop is straight down on screen; rotated into card space here.
+      vec2 qs = q + uShadow.x * vec2(sa, ca);
+      float ds = sdRoundBox(qs, halfSize * 0.96, r);
+      shadow = max(shadow, uLift[i] * (1.0 - smoothstep(-0.5 * uShadow.y, uShadow.y, ds)));
+    }
 
     // Clamped so that fused area beyond a card's own bounds takes that card's
     // edge pixels instead of tiling or spilling into the adjacent atlas cell.
@@ -393,7 +414,8 @@ void main() {
   // field, and an unbounded fwidth across it would trace a translucent seam.
   float aa = clamp(fwidth(d), 0.5, 2.0);
   float alpha = 1.0 - smoothstep(-aa, aa, d);
-  if (alpha <= 0.001) discard;
+  float shade = shadow * uShadow.z * (1.0 - alpha);
+  if (alpha <= 0.001 && shade <= 0.002) discard;
 
   float nearest = smoothstep(-uCrossfade, uCrossfade, d1 - d0);
 
@@ -419,7 +441,10 @@ void main() {
   // taking light and not purely as a distortion.
   col += bend * uSheen;
 
-  fragColor = vec4(col, alpha);
+  // Card over its shadow. The shadow is black, so only alpha changes; the
+  // colour is scaled so the unpremultiplied result composites correctly.
+  float outA = alpha + shade;
+  fragColor = vec4(col * (alpha / max(outA, 0.0001)), outA);
 }`;
 
 function build(gl: WebGL2RenderingContext, vert: string, frag: string) {
@@ -701,6 +726,7 @@ export function MoltenRingCarousel({
     const pos = new Float32Array(MAX_CARDS * 2);
     const rot = new Float32Array(MAX_CARDS);
     const scale = new Float32Array(MAX_CARDS * 4);
+    const lift = new Float32Array(MAX_CARDS);
     const strandA = new Float32Array(MAX_STRANDS * 2);
     const strandB = new Float32Array(MAX_STRANDS * 2);
     const strandPar = new Float32Array(MAX_STRANDS * 4);
@@ -984,6 +1010,10 @@ export function MoltenRingCarousel({
         scale[i * 4 + 1] = at[i].scale;
         scale[i * 4 + 2] = 1 - dim[i];
         scale[i * 4 + 3] = i;
+        // Front card carries the shadow; it hands over smoothly as the ring
+        // turns, so the shadow leaves with one card and arrives with the next.
+        const front01 = clamp(1 - Math.abs(at[i].slot) * 1.25, 0, 1);
+        lift[i] = front01 * front01 * (3 - 2 * front01) * spread;
       }
 
       // The front card's link follows the card, so the hit target is a real
@@ -1056,7 +1086,7 @@ export function MoltenRingCarousel({
 
       gl.uniform2f(u("uResolution"), width, height);
       gl.uniform2f(u("uSize"), long, short);
-      gl.uniform1f(u("uCorner"), CORNER * long);
+      gl.uniform1f(u("uCorner"), liquid ? CORNER * long : SOLID_CORNER * short);
       gl.uniform1f(u("uCount"), count);
       gl.uniform2fv(u("uCentre"), pos);
       gl.uniform1fv(u("uAngle"), rot);
@@ -1103,6 +1133,14 @@ export function MoltenRingCarousel({
       );
       gl.uniform1f(u("uFringe"), FRINGE);
       gl.uniform1f(u("uSheen"), SHEEN);
+      gl.uniform4f(
+        u("uShadow"),
+        liquid ? 0 : SHADOW_DROP * short,
+        liquid ? 0 : SHADOW_BLUR * short,
+        liquid ? 0 : SHADOW_OPACITY,
+        0,
+      );
+      gl.uniform1fv(u("uLift"), lift);
 
       gl.activeTexture(gl.TEXTURE0);
       gl.bindTexture(gl.TEXTURE_2D, atlas);

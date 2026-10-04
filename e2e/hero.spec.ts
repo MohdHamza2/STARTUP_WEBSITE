@@ -59,7 +59,7 @@ test.describe("service hero", () => {
     // Painted pixels, not element presence: the canvas existing proves nothing.
     // A WebGL buffer cannot be read back reliably, so this samples a real
     // screenshot of the stage and counts pixels that are not the Ivory page.
-    const stage = page.locator("#services-hero canvas");
+    const stage = page.locator("#services-hero canvas:not([data-robot])");
     await expect
       .poll(
         async () => {
@@ -156,6 +156,71 @@ test.describe("service hero", () => {
         timeout: 15_000,
       })
       .toBeGreaterThan(100);
+  });
+});
+
+test.describe("hero robot", () => {
+  /** Horizontal centre of the mint eye pixels in the robot's head region.
+      The body only floats vertically, so this moves only if the eyes do. */
+  async function eyeCentreX(page: Page) {
+    const png = await page.locator("#services-hero canvas[data-robot][data-ready]").screenshot();
+    const { data, info } = await sharp(png).raw().toBuffer({ resolveWithObject: true });
+    let sum = 0;
+    let n = 0;
+    const rows = Math.floor(info.height * 0.45);
+    for (let y = 0; y < rows; y++) {
+      for (let x = 0; x < info.width; x++) {
+        const i = (y * info.width + x) * info.channels;
+        const r = data[i], g = data[i + 1], b = data[i + 2];
+        if (g > r + 60 && g > b + 30) {
+          sum += x;
+          n++;
+        }
+      }
+    }
+    return n ? sum / n : NaN;
+  }
+
+  test("sits between the caption and the carousel, and its eyes follow the cursor", async ({
+    page,
+  }) => {
+    // A raymarched robot on a software GPU, alongside a full parallel run.
+    test.slow();
+    const width = page.viewportSize()?.width ?? 0;
+    await page.goto("/");
+    const robot = page.locator("#services-hero canvas[data-robot][data-ready]");
+
+    if (width < 1024) {
+      // Tablets and phones keep the two-zone hero; no robot is mounted.
+      await expect(page.locator("#services-hero canvas[data-robot]")).toHaveCount(0);
+      return;
+    }
+
+    await expect(robot).toBeVisible({ timeout: 20_000 });
+    const caption = await page.locator("#services-hero [aria-live]").boundingBox();
+    const body = await robot.boundingBox();
+    const card = page.locator('#services-hero a[aria-hidden="true"]');
+    // The ring arrives once its images load; slow under a parallel run.
+    await expect
+      .poll(async () => (await card.boundingBox())?.height ?? 0, { timeout: 20_000 })
+      .toBeGreaterThan(100);
+    const front = await card.boundingBox();
+    expect(caption!.x + caption!.width).toBeLessThan(body!.x);
+    expect(body!.x + body!.width).toBeLessThan(front!.x);
+
+    // Polled rather than slept: under a parallel run on a software GPU the
+    // frame rate is low and the eyes take longer to arrive.
+    const viewport = page.viewportSize()!;
+    await page.mouse.move(5, viewport.height / 2);
+    await page.waitForTimeout(800);
+    const left = await eyeCentreX(page);
+    await page.mouse.move(viewport.width - 5, viewport.height / 2);
+    await expect
+      .poll(async () => (await eyeCentreX(page)) - left, {
+        message: "the eyes did not follow the cursor",
+        timeout: 15_000,
+      })
+      .toBeGreaterThan(3);
   });
 });
 
