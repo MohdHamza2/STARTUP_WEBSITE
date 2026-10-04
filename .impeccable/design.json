@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-04T00:00:00Z",
+  "generatedAt": "2026-10-04T12:00:00Z",
   "title": "Design System: GENRA",
   "extensions": {
     "colorMeta": {
@@ -167,6 +167,11 @@
       {
         "name": "The No-Shadow Rule",
         "body": "Stand forward with a rule and space, never a shadow.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Hero Exception",
+        "body": "Physical objects in the hero (the front ring card and the robot) may carry a soft, attached shadow; ring cards have ~10px corners. Nothing else does.",
         "section": "elevation"
       }
     ],

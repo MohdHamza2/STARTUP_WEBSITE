@@ -453,7 +453,7 @@ address into this file or any tracked file.** The repository is public.
 | Typecheck | `npm run typecheck` | clean |
 | Lint | `npm run lint` | clean |
 | Unit (Vitest) | `npm test` | **34 pass** — 29 validation + 3 encoding guard + 2 `cn()` merge |
-| E2E (Playwright) | `npm run e2e` | **124 passed, 2 skipped (126 total), exit 0** |
+| E2E (Playwright) | `npm run e2e` | **127 passed, 2 skipped (129 total), exit 0** (2026-10-04, incl. the robot test) |
 | Build | `npm run build` | clean (run by the E2E web server) |
 
 E2E runs on **desktop, tablet (Chromium at an iPad viewport) and mobile (Pixel 7)**, and
@@ -655,8 +655,8 @@ testimonials removed; agent skills installed and PRODUCT.md / DESIGN.md written.
 4. **Owner/agent:** test the hero on a real phone and tablet (touch scroll, frame
    rate) — headless emulation cannot prove gesture feel.
 5. **Owner, any time:** business facts (§18 D) → fill in `src/config/site.ts`.
-6. Future task (out of scope so far): the cursor-following character on the hero's
-   right side. The right third of the side-by-side hero is deliberately empty for it.
+6. Future task: a mobile/touch version of the robot interaction (owner asked for
+   desktop first; on touch and below 1024px the robot is not shown).
 
 ## Warnings
 
@@ -709,6 +709,49 @@ What changed, by area:
   progression, release after 09, buttons, links, reduced-motion fallback);
   recruiting required-fields test updated; Playwright Chromium runs SwiftShader so
   WebGL2 is exercised.
+
+# 29. SESSION 2026-10-04 (2) — HERO ROBOT + THREE-ZONE COMPOSITION (record)
+
+Owner brief with three references (a monkey hero for the "head follows the
+cursor" behaviour only; two robot images for the general silhouette only):
+add a genuinely 3D robot in the centre of the hero, body static and floating,
+head and eyes following the cursor subtly and immediately; make the hero a
+balanced text | robot | carousel composition; give the carousel cards subtle
+rounded corners and a shadow that travels with the active card; desktop first.
+
+Built:
+- `src/components/hero/HeroRobot.tsx` — raw WebGL2 raymarcher (no 3D engine).
+  Separate SDF parts: body (inverted egg, flat rounded top, mint seam), two
+  detached arms, a floating head (ellipsoid) with a protruding glass visor and
+  mint eyes painted in head space. Studio lighting: wrap diffuse, soft shadows,
+  AO, warm floor bounce, a reflected softbox, ACES. Silhouette anti-aliasing by
+  closest approach. Floor contact shadow lighter and wider as it floats up.
+  Head: yaw ±7°, pitch ±4.5°, roll 18% of yaw; eyes ±0.045/0.03 on the visor.
+  Smoothing: 1 − e^(−dt·26) (eyes 34), return 4. One passive window
+  pointermove listener (mouse + fine pointer only); no React state per frame.
+  Loop pauses off screen / hidden tab. Pixel budget 1M device px, adaptive
+  render scale (drops 20% per step below ~45fps, floor 0.55, climbs back).
+  Software renderer (SwiftShader/llvmpipe…) → no float, redraw only while the
+  head moves. Canvas carries `data-robot` (and `data-ready` after frame 1).
+- `ServiceHero.tsx` — at ≥1024px the caption container is a 3-column flex
+  (gap clamp(2rem,4vw,4.5rem)); centre column mounts the robot (aspect 2:3,
+  max-width 70svh·⅔); right column is an empty measured zone; the ring's
+  focusX and cardHeight are computed from it (card ≤ 92% of the zone width).
+- Ring: corner 2.4% of card height (~10px), front-card shadow in the shader
+  (`uShadow`, `uLift[]`): drop 3%, blur 7.5%, opacity 15%, handed over by
+  slot distance.
+
+Verified: 1920×1080, 1440×900, 1366×768, 1280×720, 1024×768 — caption, robot,
+card in order, no overlaps, balanced gaps; 768×1024 and 390×844 unchanged (no
+robot). On the owner's AMD Radeon 740M at DPR 2: median and p95 frame 16.7ms
+(steady 60fps) with the robot at 788×1180 px. E2E 127/2 skipped.
+
+Gotchas: `next build` failed with "next/font/google queries have exactly one
+entry" — root cause a stale Turbopack persistent cache; fixed by deleting
+`.next/cache/turbopack` (regenerated). Hero tests must pick the ring canvas
+with `canvas:not([data-robot])`. Parallel E2E on SwiftShader is slow:
+heavy tests poll and use `test.slow()`; resume-upload tests retry the attach
+(the first change event can land before hydration).
 
 # 28. SESSION 2026-10-04 — HERO CARD SEPARATION, SPACING, TONE (record)
 

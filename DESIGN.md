@@ -169,10 +169,12 @@ Composition is asymmetric: left-aligned headings with content offset into a
 wider right column (`minmax(0,24rem) 1fr`), collapsing to one column below
 1024px. The header is 80px and fixed.
 
-The homepage hero has two compositions: **side by side** (laptops up, and
-phones held landscape) with the caption left, the ring centre-right and the
-right margin deliberately empty; and **stacked** (phones, portrait tablets)
-with the caption on top and the ring below.
+The homepage hero has three compositions. **Three zones** (1024px and up):
+equal columns for the caption, the robot and the ring, with a matching gap
+(32 to 72px) between them; the ring is measured into the right column and
+its card fills at most 92% of it. **Side by side** (phones held landscape):
+caption left, ring right. **Stacked** (phones, portrait tablets): caption on
+top, ring below. The robot appears only in the three-zone layout.
 
 ## Elevation & Depth
 
@@ -181,13 +183,17 @@ numbered rows, white space, and the two paper tones.
 
 ### Named Rules
 **The No-Shadow Rule.** If something needs to stand forward, give it a rule
-above it and more space around it; do not add a shadow.
+above it and more space around it; do not add a shadow. The only exceptions
+are physical objects in the hero (owner, 2026-10-04): the front ring card's
+soft drop shadow and the robot's contact shadow on its invisible floor. Both
+are rendered with the object, so they move with it.
 
 ## Shapes
 
 **The Sharp-Plus-Pill Rule.** Containers, inputs, images and panels are near
 square (4px). Buttons, and only buttons, are full pills. Icon buttons in the
-hero are circles. No other radius appears.
+hero are circles. The hero ring's photo cards are the one exception, at about
+10px (2.4% of the card height), so they read as physical prints.
 
 ## Components
 
@@ -226,6 +232,22 @@ hero are circles. No other radius appears.
   rule (active tick mint).
 - Falls back to a static, linked list of the same nine services under reduced
   motion, without WebGL2, or without JavaScript.
+- Depth (owner, 2026-10-04): softly rounded corners and a restrained shadow
+  (drop 3%, blur 7.5% of card height, 15% opacity) that belongs to the front
+  card and hands over to the next one as the ring turns.
+
+### The Robot (signature)
+- A small floating figurine in the centre zone of the hero, rendered as real
+  3D (a raymarched WebGL2 field): satin ivory-white ceramic body and detached
+  arms, a fine mint seam, a floating head with a dark glass visor and soft
+  mint eyes, studio-lit with soft shadows and a contact shadow below.
+- The body only floats (about 6px over 4.6s). The head turns toward the
+  cursor (at most 7 degrees across, 4.5 up and down, a hint of roll) and the
+  eyes move a little further; tracking is critically damped (about 38ms, no
+  overshoot) and returns home gently when the cursor leaves.
+- Desktop and pointer only: shown at 1024px and up, tracking with a fine
+  pointer. Not shown when stacked, under reduced motion, or without WebGL2.
+  On a software renderer it holds still and redraws only while the head moves.
 
 ## Do's and Don'ts
 

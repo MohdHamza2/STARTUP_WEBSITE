@@ -38,7 +38,8 @@ COMPLETE (revision) / BLOCKED (backend verification — owner input)
 ## Last Verified
 
 2026-10-04 — typecheck and lint clean; production build clean; 34 unit tests; E2E
-124 passed / 2 skipped (126); hero visual QA at 7 viewports.
+127 passed / 2 skipped (129); hero robot checked at 5 desktop sizes and on a
+hardware GPU (60fps).
 
 ## Current Blocker
 
@@ -79,6 +80,58 @@ Next task: apply it; verify the tables, the private bucket, and anon denial.
 ---
 
 # CHANGE LOG
+
+## 2026-10-04 (15)
+
+### Agent
+
+FRONTEND
+
+### Task
+
+Owner brief (with a monkey reference for the interaction and two robot
+references for the silhouette): add a genuinely 3D robot to the centre of the
+hero, body static and floating, head and eyes following the cursor subtly and
+immediately; make the hero a balanced text | robot | carousel composition;
+give the carousel cards subtly rounded corners and a shadow that moves with
+the active card; desktop first, mobile unchanged.
+
+### Changes
+
+- New `src/components/hero/HeroRobot.tsx`: raymarched WebGL2 robot built from
+  separate parts (body, arms, floating head, glass visor, mint eyes), studio
+  lighting with soft shadows, AO and a contact shadow; critically damped head
+  and eye tracking; float; adaptive render scale; software-renderer guard.
+- `ServiceHero.tsx`: three equal zones from 1024px; the ring is measured into
+  the right zone; robot mounted in the centre zone only at that width.
+- `molten-ring-carousel.tsx`: ~10px card corners and a front-card shadow drawn
+  in the shader that hands over between cards.
+- E2E: robot test (position between caption and card; eyes follow the cursor,
+  measured by the mint eye centroid; absent below 1024px); ring canvas
+  selected with `:not([data-robot])`; resume tests retry the attach.
+- DESIGN.md (three compositions, hero shadow/corner exceptions, The Robot),
+  Brain.md §14, §20, §29.
+
+### Verification
+
+- [x] Typecheck, lint clean; unit 34 passed; production build clean
+- [x] E2E 127 passed, 2 skipped (129), desktop + tablet + mobile
+- [x] Visual: 1920x1080, 1440x900, 1366x768, 1280x720, 1024x768 balanced, no
+      overlaps; 768x1024 and 390x844 unchanged (no robot)
+- [x] Hardware GPU (AMD Radeon 740M, DPR 2): steady 60fps (median and p95
+      16.7ms), robot at full sharpness
+- [x] Impeccable detector: 0 findings on hero and ui components
+- [ ] Physical touch devices; mobile robot interaction is a future task
+
+### Bugs Found / Fixed
+
+- Build failure from a stale Turbopack cache (`.next/cache/turbopack`), fixed
+  by clearing it.
+- Hero paint test matched two canvases once the robot existed; fixed selector.
+
+### Commit
+
+See the commit following this entry (`feat(hero): 3D cursor-aware robot and three-zone composition`).
 
 ## 2026-10-04 (14)
 
