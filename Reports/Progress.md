@@ -80,6 +80,30 @@ anon denial proven. Next schema change: new numbered migration + regenerate type
 
 # CHANGE LOG
 
+## 2026-10-05 (20)
+
+### Agent
+
+BACKEND (live verification) + deployment
+
+### Task
+
+Owner: deploy the favicon; confirm the live form saves to Supabase.
+
+### Verification
+
+- Owner added `genra.tech` to the Turnstile widget; error 110200 cleared in ~1 min.
+- Owner submitted the live recruiting form → "Received."; SQL shows the lead (phone
+  only, CONSENTED, source WEBSITE), its recruiting_leads row and the FORM_SUBMITTED
+  event. Vercel already had the needed env values.
+- `main` fast-forwarded to `arsh` again (`a4bed9b..3ca6309`) on the owner's "yes".
+
+### Commit
+
+Docs only (this entry).
+
+---
+
 ## 2026-10-05 (19)
 
 ### Agent

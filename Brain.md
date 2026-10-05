@@ -634,7 +634,14 @@ data-retention period. Every insertion point is marked `TODO(business-facts)`
 (`grep -rn "TODO(business-facts)" src .env.example`). Most live in
 `src/config/site.ts`; filling a value there makes the UI appear automatically.
 
-## F. Live Turnstile widget rejects the domain (error 110200) — owner, Cloudflare
+## F. Live Turnstile widget rejects the domain (error 110200) — RESOLVED 2026-10-05
+
+The owner added `genra.tech` to the widget (it is in the owner's Cloudflare
+account); the error cleared within ~1 minute. Vercel turned out to already hold
+the Supabase and Turnstile secrets: the owner's live recruiting submission
+(19:46 IST) returned "Received." and the row, detail row and FORM_SUBMITTED event
+were confirmed in SQL. The Vercel project itself is in another account (likely
+MohdHamza2, the GitHub repo owner); the owner has no Vercel login.
 
 Found 2026-10-05 after deploying. Vercel already has a REAL site key (`0x4AAA…`),
 but on www.genra.tech Turnstile fails with **110200 "Domain not authorized"**, so no
@@ -684,12 +691,13 @@ exists); `.env.local` created without the secret.
 1a. **Deployed 2026-10-05:** on the owner's instruction `main` was fast-forwarded to
    `arsh` (`f8e1f65..a4bed9b`, 16 commits, no PR); Vercel deployed genra.tech in ~1 min.
    All routes 200, robot + ring + new forms confirmed by screenshot.
-2. **Owner:** Turnstile hostname (§18 F) and, in Vercel → Settings → Environment
-   Variables (Production): `NEXT_PUBLIC_SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`,
-   `SUPABASE_RESUME_BUCKET=resumes`, `TURNSTILE_SECRET_KEY` (same widget as the site
-   key). Redeploy after any env change.
-3. **Owner submits a live test form; agent confirms the row in SQL, then deletes it.**
-4. Later: Resend sender on a verified genra.tech address + team inbox (§18 B).
+2. ~~Turnstile hostname, Vercel env, live test form~~ done 2026-10-05 (§18 F). The
+   owner's own test lead (name "Arshad", RECRUITING) is in `leads`; delete it when the
+   owner says so.
+3. Later: Resend sender on a verified genra.tech address + team inbox (§18 B), so
+   the team is emailed about new leads. Until then leads are only visible in the
+   Supabase Table Editor.
+4. Later: move hosting into an account the owner controls (Vercel Pro or Cloudflare).
 4. **Owner/agent:** test the hero on a real phone and tablet (touch scroll, frame
    rate) — headless emulation cannot prove gesture feel.
 5. **Owner, any time:** business facts (§18 D) → fill in `src/config/site.ts`.
