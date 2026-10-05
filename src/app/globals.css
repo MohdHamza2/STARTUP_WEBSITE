@@ -240,6 +240,25 @@
   padding-block: clamp(4.5rem, 3rem + 4vw, 7rem);
 }
 
+/* Editorial photography (owner, 2026-10-06): softly rounded, with a shadow
+   tinted to the warm paper rather than grey, so a photo sits on the page
+   instead of floating over it. `photo-raised` is for the one image that
+   overlaps a section boundary. The only shadows in the system besides the
+   hero ring and robot; see DESIGN.md. */
+@utility photo {
+  border-radius: var(--radius-md);
+  box-shadow:
+    0 1px 2px rgb(40 36 24 / 0.05),
+    0 18px 40px -24px rgb(40 36 24 / 0.3);
+}
+
+@utility photo-raised {
+  border-radius: var(--radius-md);
+  box-shadow:
+    0 2px 4px rgb(40 36 24 / 0.05),
+    0 40px 72px -36px rgb(40 36 24 / 0.4);
+}
+
 /* The thin dividers that carry structure across the brand board. */
 @utility rule {
   border-top: 1px solid var(--color-line);

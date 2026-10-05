@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { capabilities } from "@/content/services";
 import { Reveal } from "@/components/ui/Reveal";
 
@@ -12,7 +13,9 @@ import { Reveal } from "@/components/ui/Reveal";
  * No framework is named, because naming them would either be a logo wall in
  * words or a claim about tools not in this project.
  */
-export function Capabilities() {
+/** `image` is passed on /software only; the homepage keeps this section
+    typographic, because its neighbour (BrandStatement) already carries a photo. */
+export function Capabilities({ image }: { image?: { src: string; alt: string } }) {
   return (
     <section aria-labelledby="capabilities-heading" className="bg-paper">
       <div className="container-wide section-y">
@@ -27,6 +30,16 @@ export function Capabilities() {
             <p className="mt-6 text-body-lg text-muted">
               Technology should serve the outcome.
             </p>
+            {image && (
+              <Image
+                src={image.src}
+                alt={image.alt}
+                width={1600}
+                height={1067}
+                sizes="(min-width: 1024px) 26rem, 100vw"
+                className="photo mt-14 aspect-[4/3] w-full object-cover"
+              />
+            )}
           </Reveal>
 
           <ul className="grid gap-px bg-line sm:grid-cols-2">

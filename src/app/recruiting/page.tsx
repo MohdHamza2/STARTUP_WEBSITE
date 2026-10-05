@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { RecruitingHero } from "@/components/sections/RecruitingHero";
 import { Reveal } from "@/components/ui/Reveal";
 import { RecruitingForm } from "@/components/forms/RecruitingForm";
@@ -81,6 +82,14 @@ export default function RecruitingPage() {
               <h2 id="audience-heading" className="text-h2 text-ink">
                 Built around one problem.
               </h2>
+              <Image
+                src="/images/sections/applying.webp"
+                alt="A young woman focused on her laptop at a desk by a window"
+                width={1600}
+                height={1064}
+                sizes="(min-width: 1024px) 24rem, 100vw"
+                className="photo mt-14 aspect-[3/4] w-full max-w-sm object-cover object-[62%_50%]"
+              />
             </Reveal>
 
             <Reveal delay={0.1}>

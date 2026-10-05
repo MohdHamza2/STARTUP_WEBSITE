@@ -39,13 +39,13 @@ export function RecruitingHero() {
 
       <div className="container-wide mt-14 sm:mt-16">
         <Image
-          src="/images/pages/recruiting.webp"
-          alt="A candidate reading through application documents at a desk in a bright office"
+          src="/images/pages/recruiting-graduate.webp"
+          alt="A graduate raising a mortarboard in front of a university building"
           width={2400}
-          height={1350}
+          height={1600}
           priority
           sizes="(min-width: 1344px) 1296px, 100vw"
-          className="aspect-[4/3] w-full rounded-sm object-cover object-[50%_45%] sm:aspect-[16/9] lg:aspect-[21/9]"
+          className="photo aspect-[4/3] w-full object-cover object-[55%_25%] sm:aspect-[16/9] lg:aspect-[21/9]"
         />
       </div>
     </section>
