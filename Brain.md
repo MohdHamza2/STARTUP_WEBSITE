@@ -19,8 +19,9 @@ session; sections below were edited in place where the facts changed.
 
 1. Read this file end to end. Then `Reports/Progress.md` (chronological log) and
    `.claude/CLAUDE.md` (the operating rules — they override default agent behaviour).
-2. Branch is **`arsh`**. Never commit or push to `main`. `main` receives work only via
-   pull requests merged by the owner.
+2. Branch is **`arsh`**. Never commit or push to `main` on your own. `main` deploys
+   to **genra.tech** (Vercel, auto-deploy on push). It moves only when the owner says
+   so: via a PR, or (2026-10-05, owner's instruction) a fast-forward push of `arsh`.
 3. Pull first: `git fetch origin && git status -sb`. Another developer (GitHub user
    `MohdHamza2`) also works on this repo and merges `main` into `arsh`. On 2026-09-27
    the local clone was **6 commits behind** even though the owner believed it had been
@@ -631,6 +632,16 @@ data-retention period. Every insertion point is marked `TODO(business-facts)`
 (`grep -rn "TODO(business-facts)" src .env.example`). Most live in
 `src/config/site.ts`; filling a value there makes the UI appear automatically.
 
+## F. Live Turnstile widget rejects the domain (error 110200) — owner, Cloudflare
+
+Found 2026-10-05 after deploying. Vercel already has a REAL site key (`0x4AAA…`),
+but on www.genra.tech Turnstile fails with **110200 "Domain not authorized"**, so no
+visitor gets a token and no live form can be submitted (the old site had the same
+problem). Fix, no redeploy needed: Cloudflare dashboard → Turnstile → the widget →
+Settings → Hostname Management → Add `genra.tech` (covers `www.` too). The agent must
+not complete the live challenge with automation; the owner submits live tests and
+the agent checks the rows in SQL.
+
 ## E. Server secret key — RESOLVED locally 2026-10-05, still needed in Vercel
 
 This clone's `.env.local` (gitignored) holds the project URL, bucket name,
@@ -668,10 +679,15 @@ exists); `.env.local` created without the secret.
 ## Exact next actions
 
 1. ~~Owner: server key in `.env.local`~~ done. ~~Agent: live spec~~ done, 2/2 passed.
-2. **Owner, before launch:** real Turnstile keys, a Resend sender on a verified
-   domain + team inbox (§18 B), and all env values in Vercel (§18 E).
-3. **Agent, after 2:** submit once on the deployed site and confirm the row and the
-   notification email; then run `submission.spec.ts` again.
+1a. **Deployed 2026-10-05:** on the owner's instruction `main` was fast-forwarded to
+   `arsh` (`f8e1f65..a4bed9b`, 16 commits, no PR); Vercel deployed genra.tech in ~1 min.
+   All routes 200, robot + ring + new forms confirmed by screenshot.
+2. **Owner:** Turnstile hostname (§18 F) and, in Vercel → Settings → Environment
+   Variables (Production): `NEXT_PUBLIC_SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`,
+   `SUPABASE_RESUME_BUCKET=resumes`, `TURNSTILE_SECRET_KEY` (same widget as the site
+   key). Redeploy after any env change.
+3. **Owner submits a live test form; agent confirms the row in SQL, then deletes it.**
+4. Later: Resend sender on a verified genra.tech address + team inbox (§18 B).
 4. **Owner/agent:** test the hero on a real phone and tablet (touch scroll, frame
    rate) — headless emulation cannot prove gesture feel.
 5. **Owner, any time:** business facts (§18 D) → fill in `src/config/site.ts`.

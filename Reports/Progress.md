@@ -80,6 +80,37 @@ anon denial proven. Next schema change: new numbered migration + regenerate type
 
 # CHANGE LOG
 
+## 2026-10-05 (18)
+
+### Agent
+
+BACKEND (deployment)
+
+### Task
+
+Owner: deploy everything on `arsh` to genra.tech (Vercel builds `main`) and test a
+live form.
+
+### Changes
+
+- `main` fast-forwarded to `arsh` (`f8e1f65..a4bed9b`, 16 commits; `main` had nothing
+  `arsh` lacked). Owner's explicit instruction; no PR (no `gh` CLI here).
+
+### Verification
+
+- New site live ~60s after the push; `/`, `/software`, `/recruiting`, `/about`,
+  `/contact`, `/privacy`, `/terms` → 200, unknown route → 404.
+- Live screenshots: robot + molten ring hero; new recruiting form.
+- Live Turnstile fails with **110200 Domain not authorized** (`Brain.md` §18 F).
+  No live submission possible until the owner adds `genra.tech` to the widget.
+- Vercel env values cannot be seen from here; the owner checks them (§20 step 2).
+
+### Commit
+
+Docs only (this entry), on `arsh`.
+
+---
+
 ## 2026-10-05 (17)
 
 ### Agent
