@@ -946,6 +946,16 @@ DESIGN.md).
 
 # 22. ENVIRONMENT AND TOOLING GOTCHAS (Windows development machine)
 
+- **Replacing a photo: use a NEW file name.** `next/image` caches optimised
+  images by URL (locally in `.next/cache/images`, and on Vercel), so overwriting
+  `x.webp` keeps serving the old picture. (2026-10-06)
+- **Shader index maths must be integer.** Float `mod`/`floor` of `idx / n` is
+  inexact on AMD/D3D11 (3.0/3.0 < 1.0); it streaked hero cards 04 and 07. The
+  SwiftShader E2E never shows GPU-precision bugs; check the hero on the real GPU
+  (`--use-angle=d3d11 --ignore-gpu-blocklist --enable-gpu`). (2026-10-06)
+- **`npx playwright test` wipes `test-results/`**: keep ad-hoc screenshots
+  elsewhere.
+
 - **Git was not on PATH** in agent PowerShell sessions. Prefix commands with
   `$env:Path = "C:\Program Files\Git\cmd;" + $env:Path`, or use a Bash shell.
 - **Pushing:** `git push origin arsh` works when `GIT_TERMINAL_PROMPT=1` is set, so Git

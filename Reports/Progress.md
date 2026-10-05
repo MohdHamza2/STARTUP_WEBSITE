@@ -80,6 +80,53 @@ anon denial proven. Next schema change: new numbered migration + regenerate type
 
 # CHANGE LOG
 
+## 2026-10-06 (23)
+
+### Agent
+
+FRONTEND
+
+### Task
+
+Owner brief "visual imagery + image quality refinement": fix blurred/streaked
+hero cards 04 and 07 at the root; replace the generic /software and /recruiting
+hero photos; add a few content-relevant editorial images without making the
+site image-heavy.
+
+### Changes
+
+- **Hero bug (root cause):** `molten-ring-carousel.tsx` `atlasUV()` used float
+  `mod`/`floor` of `idx / 3.0`. On AMD Radeon (ANGLE D3D11) `3.0 / 3.0` evaluates
+  just under 1.0, so atlas cells 3 and 6 (cards 04, 07) were addressed one column
+  past the 3x3 sheet and CLAMP_TO_EDGE smeared its last pixel column into
+  horizontal streaks. Source images were fine (all 768x1024). Now integer maths.
+- New photos (Unsplash, free licence, credited in `assets/images/SOURCES.md`):
+  /software hero (top-down engineering desk), /recruiting hero (graduate), home
+  BrandStatement (planning table, overlaps 3.5rem into the next section), home
+  RecruitingIntro (candidate portrait), /software Capabilities (whiteboard
+  architecture, optional `image` prop), /recruiting "Built around one problem".
+- `globals.css`: `photo` / `photo-raised` utilities (8px corners, warm-tinted
+  shadow). DESIGN.md: Photograph Exception to the No-Shadow Rule.
+- Hero files renamed (`software-engineering-desk.webp`,
+  `recruiting-graduate.webp`): optimised images are cached by URL, and reusing
+  the old names served the old photos.
+
+### Verification
+
+- Bug reproduced on the Radeon 740M before the fix; after: all nine cards
+  crisp at 1920/1440/1366/1280/1024, at rest, mid-transition and via scroll.
+- Pages reviewed at 1440, 1024 and 390: no overflow, crops checked.
+- typecheck, lint; unit 49; E2E 129 passed / 6 skipped (incl. live submission,
+  which cleaned up after itself).
+- Section photos lazy-load; e.g. planning photo 57 KB at 1080w.
+
+### Not covered
+
+- The hero E2E runs on SwiftShader, which never showed the bug, so no automated
+  test guards the atlas maths; verified on real GPU only.
+
+---
+
 ## 2026-10-05 (22)
 
 ### Agent
