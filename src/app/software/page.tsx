@@ -9,10 +9,10 @@ import { FinalCTA } from "@/components/sections/FinalCTA";
 export const metadata: Metadata = {
   title: "Software Solutions",
   description:
-    "GENRA builds digital products, software systems and automation for ideas, startups and businesses — MVPs, SaaS, web applications, business software and AI-powered systems.",
+    "GENRA builds digital products, software systems and automation for ideas, startups and businesses: MVPs, SaaS, web applications, business software and AI-powered systems.",
   alternates: { canonical: "/software" },
   openGraph: {
-    title: "GENRA — Software Solutions",
+    title: "GENRA | Software Solutions",
     description:
       "GENRA builds digital products, software systems and automation for ideas, startups and businesses.",
     url: "/software",

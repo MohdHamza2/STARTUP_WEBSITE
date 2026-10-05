@@ -67,7 +67,7 @@ export function Logo({
         </span>
       )}
       {/* The visible wordmark is decorative text; this is the accessible name. */}
-      <span className="sr-only">GENRA — home</span>
+      <span className="sr-only">GENRA home</span>
     </span>
   );
 }

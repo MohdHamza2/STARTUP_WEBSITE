@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     "GENRA handles the job-application workflow for international students, recent graduates and early-career professionals targeting US employment.",
   alternates: { canonical: "/recruiting" },
   openGraph: {
-    title: "GENRA — Career & Recruiting",
+    title: "GENRA | Career & Recruiting",
     description:
       "You find the opportunity. GENRA handles the applications.",
     url: "/recruiting",
