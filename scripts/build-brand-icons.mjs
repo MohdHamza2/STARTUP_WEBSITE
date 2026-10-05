@@ -19,17 +19,25 @@ import sharp from "sharp";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const MARK = path.join(ROOT, "public", "brand", "mark-ivory.png");
+// Icons match the light site: the header's black mark on paper (2026-10-05).
+const ICON_MARK = path.join(ROOT, "public", "brand", "mark-obsidian.png");
 const APP = path.join(ROOT, "src", "app");
 const PUBLIC = path.join(ROOT, "public");
 
 const OBSIDIAN = { r: 11, g: 11, b: 11, alpha: 1 };
+const PAPER = { r: 245, g: 244, b: 239, alpha: 1 }; // #F5F4EF, the site background
 const IVORY = "#f5f4ef";
 const MINT = "#34d399";
 
-/** Mark centred on Obsidian, with the clear space the brand kit asks for. */
+/**
+ * Black mark centred on paper, with the clear space the brand kit asks for.
+ * The source has wide transparent margins; trimming them first keeps the mark
+ * legible at 32px instead of shrinking it to a few pixels.
+ */
 async function icon(size, outPath) {
   const inset = Math.round(size * 0.22);
-  const mark = await sharp(MARK)
+  const mark = await sharp(ICON_MARK)
+    .trim()
     .resize(size - inset * 2, size - inset * 2, {
       fit: "contain",
       background: { r: 0, g: 0, b: 0, alpha: 0 },
@@ -37,7 +45,7 @@ async function icon(size, outPath) {
     .toBuffer();
 
   await sharp({
-    create: { width: size, height: size, channels: 4, background: OBSIDIAN },
+    create: { width: size, height: size, channels: 4, background: PAPER },
   })
     .composite([{ input: mark, top: inset, left: inset }])
     .png()
