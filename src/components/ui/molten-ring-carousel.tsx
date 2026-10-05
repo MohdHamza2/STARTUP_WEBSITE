@@ -234,8 +234,14 @@ uniform float uSheen;
 uniform vec4  uShadow;
 uniform float uLift[MAX_CARDS];
 
+// Integer cell maths. With floats, idx / cols can land a hair under a whole
+// number on some GPUs (3.0 / 3.0 = 0.9999999 on AMD/D3D11), so floor() and
+// mod() put cards 3 and 6 one column past the sheet, where CLAMP_TO_EDGE
+// smeared the sheet's last pixel column across them as horizontal streaks.
 vec2 atlasUV(vec2 uv, float idx) {
-  return (vec2(mod(idx, uGrid.x), floor(idx / uGrid.x)) + uv) / uGrid;
+  int i = int(idx + 0.5);
+  int cols = int(uGrid.x + 0.5);
+  return (vec2(float(i % cols), float(i / cols)) + uv) / uGrid;
 }
 
 /* Bilinear value noise. The perturbation is small and rides on a surface
