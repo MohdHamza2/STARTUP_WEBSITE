@@ -18,16 +18,17 @@ import { fileURLToPath } from "node:url";
 import sharp from "sharp";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const MARK = path.join(ROOT, "public", "brand", "mark-ivory.png");
-// Icons match the light site: the header's black mark on paper (2026-10-05).
-const ICON_MARK = path.join(ROOT, "public", "brand", "mark-obsidian.png");
+// Everything matches the light site: the header's black mark on paper
+// (2026-10-05; previously the ivory mark on Obsidian from the dark theme).
+const MARK = path.join(ROOT, "public", "brand", "mark-obsidian.png");
 const APP = path.join(ROOT, "src", "app");
 const PUBLIC = path.join(ROOT, "public");
 
-const OBSIDIAN = { r: 11, g: 11, b: 11, alpha: 1 };
 const PAPER = { r: 245, g: 244, b: 239, alpha: 1 }; // #F5F4EF, the site background
-const IVORY = "#f5f4ef";
+const INK = "#0b0b0b";
+const MUTED = "#374151";
 const MINT = "#34d399";
+const CLEAR = { r: 0, g: 0, b: 0, alpha: 0 };
 
 /**
  * Black mark centred on paper, with the clear space the brand kit asks for.
@@ -36,12 +37,9 @@ const MINT = "#34d399";
  */
 async function icon(size, outPath) {
   const inset = Math.round(size * 0.22);
-  const mark = await sharp(ICON_MARK)
+  const mark = await sharp(MARK)
     .trim()
-    .resize(size - inset * 2, size - inset * 2, {
-      fit: "contain",
-      background: { r: 0, g: 0, b: 0, alpha: 0 },
-    })
+    .resize(size - inset * 2, size - inset * 2, { fit: "contain", background: CLEAR })
     .toBuffer();
 
   await sharp({
@@ -57,37 +55,43 @@ async function icon(size, outPath) {
 /**
  * Open Graph card, 1200x630.
  *
- * Mark, wordmark and tagline on Obsidian with the mint rule — the brand board's
- * dark lockup. The wordmark is drawn as SVG text with wide tracking rather than
- * loading Sora, because the rasteriser has no access to the web font; at this
- * size a geometric fallback is indistinguishable in a social preview.
+ * The header lockup (black mark, wordmark, mint rule) plus the tagline, on
+ * paper. Everything is centred: WhatsApp and others crop the card to a centre
+ * square for small previews, and a left-aligned lockup lost its first letters.
+ *
+ * The wordmark is SVG text with wide tracking rather than Sora, because the
+ * rasteriser has no access to the web font; at this size a geometric fallback
+ * is indistinguishable in a social preview. letter-spacing also trails the last
+ * glyph, so each centred line is nudged right by half its spacing.
  */
 async function ogImage(outPath) {
   const W = 1200;
   const H = 630;
+  const MARK_BOX = 176;
 
-  const mark = await sharp(MARK).resize(96, 96, { fit: "contain" }).toBuffer();
+  const mark = await sharp(MARK)
+    .trim()
+    .resize(MARK_BOX, MARK_BOX, { fit: "contain", background: CLEAR })
+    .toBuffer();
 
+  const font = `font-family="Helvetica, Arial, sans-serif" text-anchor="middle"`;
   const text = Buffer.from(`
     <svg width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg">
-      <text x="96" y="372" fill="${IVORY}"
-            font-family="Helvetica, Arial, sans-serif" font-size="108"
-            font-weight="600" letter-spacing="24">GENRA</text>
-      <rect x="100" y="410" width="120" height="4" fill="${MINT}"/>
-      <text x="96" y="486" fill="${IVORY}"
-            font-family="Helvetica, Arial, sans-serif" font-size="34"
-            font-weight="500" letter-spacing="6">Build. Automate. Advance.</text>
-      <text x="96" y="540" fill="#6b7280"
-            font-family="Helvetica, Arial, sans-serif" font-size="26"
-            letter-spacing="3">You name it. We build it.</text>
+      <text x="${W / 2 + 9}" y="386" fill="${INK}" ${font} font-size="80"
+            font-weight="600" letter-spacing="17.6">GENRA</text>
+      <rect x="${W / 2 - 44}" y="410" width="88" height="4" fill="${MINT}"/>
+      <text x="${W / 2 + 2}" y="472" fill="${INK}" ${font} font-size="32"
+            font-weight="500" letter-spacing="4">Build. Automate. Advance.</text>
+      <text x="${W / 2 + 1}" y="518" fill="${MUTED}" ${font} font-size="24"
+            letter-spacing="2">You name it. We build it.</text>
     </svg>
   `);
 
   await sharp({
-    create: { width: W, height: H, channels: 4, background: OBSIDIAN },
+    create: { width: W, height: H, channels: 4, background: PAPER },
   })
     .composite([
-      { input: mark, top: 96, left: 96 },
+      { input: mark, top: 106, left: (W - MARK_BOX) / 2 },
       { input: text, top: 0, left: 0 },
     ])
     .png()

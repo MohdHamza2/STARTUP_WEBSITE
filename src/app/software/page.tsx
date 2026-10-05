@@ -16,6 +16,8 @@ export const metadata: Metadata = {
     description:
       "GENRA builds digital products, software systems and automation for ideas, startups and businesses.",
     url: "/software",
+    // A page-level openGraph replaces the root one, image included.
+    images: "/opengraph-image.png",
   },
 };
 

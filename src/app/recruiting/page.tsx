@@ -18,6 +18,8 @@ export const metadata: Metadata = {
     description:
       "You find the opportunity. GENRA handles the applications.",
     url: "/recruiting",
+    // A page-level openGraph replaces the root one, image included.
+    images: "/opengraph-image.png",
   },
 };
 
