@@ -62,6 +62,9 @@ test.describe("live submission", () => {
 
     for (let attempt = 0; attempt < 2; attempt++) {
       await page.goto("/software#start");
+      // A second goto to the same #hash URL only scrolls, so the success
+      // screen would stay. Reload for a fresh form.
+      if (attempt > 0) await page.reload();
       await page.getByLabel("Name").fill(`${NAME} software`);
       await page.getByLabel("Email").fill(email);
       await page.getByLabel("Type of project").selectOption("OTHER");
