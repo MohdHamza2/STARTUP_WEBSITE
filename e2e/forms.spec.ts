@@ -24,13 +24,9 @@ async function attachResume(
  * Form contracts (prompt §67, §68).
  *
  * These assert structure, the conditional-field behaviour and client-side file
- * rules. They deliberately do NOT assert a successful submission: that requires
- * Supabase, Resend and Turnstile credentials, which do not exist yet (owner
- * decision D4). Asserting success against an unconfigured stack would test
- * nothing and would report a green suite for an unproven integration.
- *
- * When credentials land, add the submit-path cases — the server actions already
- * return typed success and error states for them to assert against.
+ * rules. Real submissions live in submission.spec.ts (it needs the Supabase
+ * server key); server-side failure paths are unit-tested in
+ * src/lib/actions/submitLead.test.ts.
  */
 
 test.describe("project form", () => {

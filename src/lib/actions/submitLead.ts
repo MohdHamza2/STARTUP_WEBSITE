@@ -2,6 +2,7 @@
 
 import { headers } from "next/headers";
 import { getServiceClient, getServiceConfig } from "@/lib/db/client";
+import type { Json, TablesInsert } from "@/lib/db/types";
 import { verifyTurnstile } from "@/lib/security/turnstile";
 import { rateLimit, clientKey } from "@/lib/security/rateLimit";
 import { sendTeamNotification, sendConfirmation } from "@/lib/email/notify";
@@ -111,6 +112,11 @@ interface LeadCore {
   consent: boolean;
 }
 
+/** The detail row, typed by the generated schema; lead_id is filled in here. */
+type LeadDetail =
+  | { table: "recruiting_leads"; row: Omit<TablesInsert<"recruiting_leads">, "lead_id"> }
+  | { table: "software_leads"; row: Omit<TablesInsert<"software_leads">, "lead_id"> };
+
 /**
  * Create the `leads` row plus its detail row.
  *
@@ -171,16 +177,19 @@ async function findRecentDuplicate(
     return null;
   }
 
-  return (data?.id as string | undefined) ?? null;
+  return data?.id ?? null;
 }
 
 async function createLead(
   core: LeadCore,
-  detailTable: "recruiting_leads" | "software_leads",
-  detail: Record<string, unknown>,
+  detail: LeadDetail,
 ): Promise<string | null> {
   const db = getServiceClient();
-  if (!db) return null;
+  if (!db) {
+    // Every submission fails until this is fixed, so it must show in the logs.
+    console.error("[submit] Supabase is not configured; lead not saved");
+    return null;
+  }
 
   const { data, error } = await db
     .from("leads")
@@ -201,11 +210,12 @@ async function createLead(
     return null;
   }
 
-  const leadId = data.id as string;
+  const leadId = data.id;
 
-  const { error: detailError } = await db
-    .from(detailTable)
-    .insert({ lead_id: leadId, ...detail });
+  const { error: detailError } =
+    detail.table === "recruiting_leads"
+      ? await db.from("recruiting_leads").insert({ lead_id: leadId, ...detail.row })
+      : await db.from("software_leads").insert({ lead_id: leadId, ...detail.row });
 
   if (detailError) {
     console.error("[submit] detail insert failed:", detailError.message);
@@ -220,7 +230,7 @@ async function createLead(
 async function recordEvent(
   leadId: string,
   eventType: string,
-  metadata: Record<string, unknown>,
+  metadata: { [key: string]: Json | undefined },
 ): Promise<void> {
   const db = getServiceClient();
   if (!db) return;
@@ -337,18 +347,20 @@ export async function submitRecruiting(
       source: d.source,
       consent: d.consent,
     },
-    "recruiting_leads",
     {
-      visa_status: d.visaStatus || null,
-      education: d.education || null,
-      university: d.university || null,
-      graduation_year:
-        typeof d.graduationYear === "number" ? d.graduationYear : null,
-      target_role: d.targetRole || null,
-      preferred_industry: d.preferredIndustry || null,
-      location: d.location || null,
-      linkedin_url: d.linkedinUrl || null,
-      additional_information: d.additionalInformation || null,
+      table: "recruiting_leads",
+      row: {
+        visa_status: d.visaStatus || null,
+        education: d.education || null,
+        university: d.university || null,
+        graduation_year:
+          typeof d.graduationYear === "number" ? d.graduationYear : null,
+        target_role: d.targetRole || null,
+        preferred_industry: d.preferredIndustry || null,
+        location: d.location || null,
+        linkedin_url: d.linkedinUrl || null,
+        additional_information: d.additionalInformation || null,
+      },
     },
   );
 
@@ -456,8 +468,10 @@ export async function submitProject(
           source: d.source,
           consent: d.consent,
         },
-        "recruiting_leads",
-        { additional_information: d.projectDescription },
+        {
+          table: "recruiting_leads",
+          row: { additional_information: d.projectDescription },
+        },
       )
     : await createLead(
         {
@@ -468,15 +482,16 @@ export async function submitProject(
           source: d.source,
           consent: d.consent,
         },
-        "software_leads",
         {
-          company: d.company || null,
-          project_type: d.projectType,
-          project_description: d.projectDescription,
-          additional_information:
-            [d.otherProjectType, d.additionalInformation]
-              .filter(Boolean)
-              .join("\n\n") || null,
+          table: "software_leads",
+          row: {
+            company: d.company || null,
+            project_type: d.projectType,
+            // Its own column since 0002; the schema strips it unless OTHER.
+            other_project_type: d.otherProjectType || null,
+            project_description: d.projectDescription,
+            additional_information: d.additionalInformation || null,
+          },
         },
       );
 
@@ -555,10 +570,9 @@ export async function submitContact(
       source: d.source,
       consent: d.consent,
     },
-    isRecruiting ? "recruiting_leads" : "software_leads",
     isRecruiting
-      ? { additional_information: d.message }
-      : { project_description: d.message },
+      ? { table: "recruiting_leads", row: { additional_information: d.message } }
+      : { table: "software_leads", row: { project_description: d.message } },
   );
 
   if (!leadId) {

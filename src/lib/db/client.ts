@@ -1,5 +1,6 @@
 import "server-only";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+import type { Database } from "./types";
 
 /**
  * Server-side Supabase client.
@@ -40,13 +41,13 @@ export function getServiceConfig(): ServiceConfig | null {
   };
 }
 
-let cached: SupabaseClient | null = null;
+let cached: SupabaseClient<Database> | null = null;
 
-export function getServiceClient(): SupabaseClient | null {
+export function getServiceClient(): SupabaseClient<Database> | null {
   const config = getServiceConfig();
   if (!config) return null;
 
-  cached ??= createClient(config.url, config.serviceRoleKey, {
+  cached ??= createClient<Database>(config.url, config.serviceRoleKey, {
     auth: { persistSession: false, autoRefreshToken: false },
   });
 

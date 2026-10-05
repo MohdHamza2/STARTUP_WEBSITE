@@ -27,8 +27,9 @@ create table if not exists public.leads (
     name varchar(150) not null,
     -- Nullable since owner decision 2026-10-03: the recruiting form takes a
     -- phone number as its required contact and email is optional. (DOC4 §4.31
-    -- and decision D1 had it NOT NULL; this migration had never been applied
-    -- anywhere, so it is amended in place rather than with a follow-up.)
+    -- and decision D1 had it NOT NULL. This file was amended in place, but the
+    -- live project already had the NOT NULL version, so 0002 repeats the
+    -- change for databases created before the amendment.)
     -- Project and contact enquiries still require email, enforced in the
     -- application schemas. leads_contact_check below guarantees every lead
     -- can be reached by at least one channel.
