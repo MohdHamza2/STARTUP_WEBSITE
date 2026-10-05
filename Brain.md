@@ -34,8 +34,9 @@ session; sections below were edited in place where the facts changed.
    Then read `PRODUCT.md` and `DESIGN.md` at the repo root.
 5. Verify the gate before touching anything: `npm run typecheck && npm run lint &&
    npm test && npm run e2e`. Expected results are in §14.
-6. `.env.local` is NOT in git and NOT in this clone. The owner holds the real values.
-   Copy `.env.example` to `.env.local` and ask the owner for them. Never commit secrets.
+6. `.env.local` is NOT in git. Since 2026-10-05 this clone has one with the non-secret
+   values; the owner pastes the secret key in themselves (§18 E). In a fresh clone,
+   copy `.env.example` to `.env.local`. Never commit secrets, never ask for them in chat.
 7. The owner's original build brief is NOT in the repo except as summarised in §25.
    Code comments cite it as "prompt §N" — §25 is the key to those references.
 8. Owner preference: **brief answers.** Lead with the result, not the process.
@@ -123,8 +124,8 @@ booking, CMS, or **public user accounts**.
 | Area | State |
 |---|---|
 | Frontend (all routes, light theme, Molten Ring hero, forms, a11y, SEO) | Done and verified (2026-10-03) |
-| Backend code (server actions, validation, Turnstile, rate limit, email, storage) | Written, typechecked, unit-tested — **never executed against real services** |
-| Database | Migration written (amended 2026-10-03: `leads.email` nullable) — **NOT applied**; staging tables do not exist |
+| Backend code (server actions, validation, Turnstile, rate limit, email, storage) | Typed against the live schema, 15 action unit tests; real browser run reaches the DB step (2026-10-05). **Live insert awaits the server key in `.env.local`** (§30) |
+| Database | **Applied and verified 2026-10-05** (migrations 0001 to 0003, RLS deny-all, private `resumes` bucket). See §8, §30 |
 | Email | API key valid — **sender address unusable** (gmail.com, see §18 B) |
 | Business facts (domain, contact, socials, legal entity, retention) | **Not supplied** — omitted, never invented |
 | Testimonials section | Fabricated entries removed; renders nothing until verified (owner, 2026-10-03) |
@@ -267,24 +268,34 @@ User-facing errors are generic; no database detail or IDs ever reach the visitor
 
 # 8. DATABASE ARCHITECTURE
 
-File: `supabase/migrations/0001_init.sql` — implements DOC4 §4.31 / §4.32 verbatim.
+Files: `supabase/migrations/0001_init.sql` (DOC4 §4.31 / §4.32 verbatim),
+`0002_server_access_and_other_type.sql`, `0003_resume_files_lead_index.sql`.
+Generated types: `src/lib/db/types.ts` (the server client is `SupabaseClient<Database>`;
+regenerate after any schema change).
 
 - Tables: `leads` (central), `recruiting_leads`, `software_leads`, `resume_files`,
   `lead_events`, `lead_notes`, `admin_users`
 - UUID keys; CHECK constraints on `lead_type`, `status`, `consent_status`;
   13 indexes; `updated_at` trigger
 - `leads.email` is **nullable** since 2026-10-03 (recruiting may give phone only), with
-  `leads_contact_check: email is not null or phone is not null`. The migration was
-  amended in place because it had never been applied anywhere. Project and contact
-  enquiries still require email in the application schemas.
+  `leads_contact_check: email is not null or phone is not null`. 0001 was amended in
+  place, but the live project already had the older NOT NULL copy, so 0002 repeats
+  the change. Project and contact enquiries still require email in the app schemas.
+- 0002 also: `software_leads.other_project_type varchar(200)` with a CHECK that it is
+  present exactly when `project_type = 'OTHER'`; explicit `service_role` grants;
+  `touch_updated_at` pinned `search_path = ''` and not executable by anon.
+- 0003: index on `resume_files.lead_id` (Supabase advisor).
 - RLS enabled on every table with **no policy**, plus `revoke all` from `anon` and
   `authenticated` as a second layer. **Do not add a permissive policy** — it would
   expose resumes, visa status and contact details to anyone holding the anon key
 - Creates the private bucket `resumes`: 10 MB limit, `application/pdf` only
 - Deliberately NOT created (DOC4 §4.4): the `outreach_*` tables
 
-**STATUS: NOT APPLIED.** Verified 2026-09-25: all seven tables and the bucket are
-missing from the staging project. See §18 A for how to apply it.
+**STATUS: APPLIED 2026-10-05** to Supabase project `epfqcoeyfqzuzvtprjhj` (the only
+project; it had been paused and was restored). Migration history lists 0001, 0002,
+0003. Verified: anon/authenticated hold zero table grants, RLS on everywhere with no
+policy, no storage policies, bucket private / 10 MB / PDF only, security advisor
+shows only the intended "RLS enabled, no policy" notices.
 
 ---
 
@@ -311,10 +322,11 @@ missing from the staging project. See §18 A for how to apply it.
 
 ## Blocked / pending
 
-- [ ] Apply the migration to staging (owner) — §18 A
+- [x] Apply the migration (agent, 2026-10-05 via Supabase MCP) — §8
+- [ ] Server secret key in `.env.local` and in Vercel (owner) — §18 E
 - [ ] A usable Resend sender (owner — depends on having a domain) — §18 B
-- [ ] Trace a real submission end to end, including the duplicate path (agent, once
-      A and B are done)
+- [ ] Run `e2e/submission.spec.ts` (live insert + resume + duplicate) once the key
+      is in `.env.local` (agent)
 - [ ] Business facts (owner) — §18 D
 - [ ] Decide the Testimonials section (owner) — §18 C
 
@@ -452,8 +464,8 @@ address into this file or any tracked file.** The repository is public.
 |---|---|---|
 | Typecheck | `npm run typecheck` | clean |
 | Lint | `npm run lint` | clean |
-| Unit (Vitest) | `npm test` | **34 pass** — 29 validation + 3 encoding guard + 2 `cn()` merge |
-| E2E (Playwright) | `npm run e2e` | **127 passed, 2 skipped (129 total), exit 0** (2026-10-04, incl. the robot test) |
+| Unit (Vitest) | `npm test` | **49 pass** (2026-10-05) — 29 validation + 15 server actions + 3 encoding guard + 2 `cn()` merge |
+| E2E (Playwright) | `npm run e2e` | **127 passed, 8 skipped (135 total), exit 0** (2026-10-05). Skips: 2 desktop-only interactions + `submission.spec.ts` on all 3 projects until the server key exists |
 | Build | `npm run build` | clean (run by the E2E web server) |
 
 E2E runs on **desktop, tablet (Chromium at an iPad viewport) and mobile (Pixel 7)**, and
@@ -475,10 +487,18 @@ builds and serves production on **port 3100** (never 3000 — see §22). Specs:
 
 The 2 skips are desktop-only interactions correctly skipped on mobile.
 
-**What is NOT tested, and why:** any successful submission, database write, upload or
-email. There is no schema and no usable sender, so such a test would either fail or
-be faked. Add submit-path E2E once §18 A and B are unblocked — the actions already
-return typed states to assert against.
+- `submission.spec.ts` (2026-10-05) — LIVE: software enquiry with Other (+ resubmit →
+  one lead and a DUPLICATE_SUBMISSION event), recruiting phone-only with a PDF
+  (row, resume_files, object bytes, no public or keyless access). Desktop only;
+  skips without `SUPABASE_SERVICE_ROLE_KEY`; deletes everything it created.
+- `src/lib/actions/submitLead.test.ts` (Vitest, node env) — guards before writes
+  (validation, missing/invalid token, Turnstile unconfigured, rate limit), never a
+  false success (no DB, lead insert fails, detail insert fails → compensating
+  delete), typed rows (null email, Other column, duplicate), resume (private path,
+  upsert off, fake PDF, oversize, orphan object removed).
+
+**What is NOT tested yet:** the live spec has not run (needs the key, §18 E); email
+sending (no usable sender, §18 B).
 
 ---
 
@@ -558,23 +578,19 @@ Lessons that generalise:
 | `19329a7` | 10-03 | agent | Recruiting: phone required, email optional (schema, action, migration) |
 | `3fb0d11` | 10-03 | agent | Light theme, Molten Ring hero, image-led /software and /recruiting |
 | (docs commit after `3fb0d11`) | 10-03 | agent | Brain.md §24/§26/§27 + Progress.md entry 12 |
+| `24195ea` | 10-05 | agent | **Supabase integration**: migrations 0002/0003 applied, typed client, action tests, live spec |
+| (docs commit after `24195ea`) | 10-05 | agent | Brain.md §30 and status sections + Progress.md entry 16 |
 
 ---
 
 # 18. CURRENT BLOCKERS AND OPEN ISSUES
 
-## A. Migration not applied — BLOCKS all backend verification
+## A. Migration not applied — RESOLVED 2026-10-05
 
-Supabase's REST gateway cannot execute SQL (nine endpoints were probed, all 404/401).
-The owner must do ONE of:
-
-1. Supabase dashboard → SQL Editor → paste the whole of
-   `supabase/migrations/0001_init.sql` → Run. (Simplest.)
-2. Give the agent a Postgres connection string so it can run the file with `psql`.
-3. Install the Supabase CLI, `supabase link`, then `supabase db push`.
-
-Then verify: seven tables exist, bucket `resumes` exists and is private, anon reads
-are denied.
+Applied through the Supabase MCP (`apply_migration`), so it is now in the project's
+migration history. Future schema changes: new numbered file in
+`supabase/migrations/`, apply it the same way, run the advisors, regenerate
+`src/lib/db/types.ts`. See §8 and §30.
 
 ## B. Email sender unusable
 
@@ -617,10 +633,19 @@ data-retention period. Every insertion point is marked `TODO(business-facts)`
 (`grep -rn "TODO(business-facts)" src .env.example`). Most live in
 `src/config/site.ts`; filling a value there makes the UI appear automatically.
 
-## E. Credentials are not in this clone
+## E. Server secret key — the one remaining backend blocker
 
-The D4 audit ran where the owner had a populated `.env.local`. This clone has none.
-The required variables are listed in `.env.example`.
+Since 2026-10-05 this clone has a `.env.local` (gitignored) with the project URL,
+bucket name and Cloudflare's always-pass Turnstile TEST keys. `SUPABASE_SERVICE_ROLE_KEY`
+is deliberately empty: it cannot be read through the MCP and must never be pasted into
+chat. The owner pastes it from Supabase dashboard → Project Settings → API Keys →
+Secret keys (`sb_secret_…`, or the legacy `service_role`). Without it every
+submission shows an error (never a false success) and the server logs
+`[submit] Supabase is not configured; lead not saved`.
+
+Production (Vercel) needs: `NEXT_PUBLIC_SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`,
+`SUPABASE_RESUME_BUCKET=resumes`, the REAL Turnstile site key + secret (the test keys
+accept a dummy token and must never reach production), and Resend values (§18 B).
 
 ---
 
@@ -637,21 +662,22 @@ Other contributors also commit to this repo — check `git log` before assuming 
 
 # 20. CURRENT HANDOFF
 
-## Last completed (2026-10-03) — major visual revision, see §26
+## Last completed (2026-10-05) — Supabase backend integration, see §30
 
-Light theme; Molten Ring hero replacing the frame hero; image-led /software and
-/recruiting heroes with their forms directly beneath; recruiting form phone-required
-/ email-optional (schema, server action, migration, copy, tests); fabricated
-testimonials removed; agent skills installed and PRODUCT.md / DESIGN.md written.
+Migrations 0001 to 0003 applied and verified on the live project; generated DB types;
+typed inserts; "Other" project type stored in its own column; anon access proven
+denied; 15 server-action unit tests; live submission E2E written (skips until the key
+exists); `.env.local` created without the secret.
 
 ## Exact next actions
 
-1. **Owner:** apply the migration (§18 A) — it now includes the nullable email and
-   `leads_contact_check`, so apply the CURRENT file.
-2. **Owner:** provide the `.env.local` values and a usable email sender (§18 B, E).
-3. **Agent, once 1 and 2 are done:** submit each form for real and trace every row,
-   object and email; submit a phone-only recruiting lead and a duplicate of it; add
-   submit-path E2E; record the results here.
+1. **Owner:** paste the Supabase secret key into `.env.local`
+   (`SUPABASE_SERVICE_ROLE_KEY=`), §18 E. Never in chat.
+2. **Agent, right after 1:** `npx playwright test e2e/submission.spec.ts --project=desktop`
+   (rebuilds first if no server is on 3100). It submits both forms, verifies rows,
+   the duplicate event and the private PDF, then deletes what it created. Record
+   the result in §14 and §30.
+3. **Owner:** a usable email sender (§18 B) and real Turnstile keys for production.
 4. **Owner/agent:** test the hero on a real phone and tablet (touch scroll, frame
    rate) — headless emulation cannot prove gesture feel.
 5. **Owner, any time:** business facts (§18 D) → fill in `src/config/site.ts`.
@@ -660,9 +686,59 @@ testimonials removed; agent skills installed and PRODUCT.md / DESIGN.md written.
 
 ## Warnings
 
-- Do not claim the submit path works until step 4 is done.
+- Do not claim a live insert works until step 2 has passed.
 - Never invent contact details, clients, testimonials, metrics or legal facts.
 - Never edit source files with PowerShell 5.1 `Get-Content` / `Set-Content` (§22).
+
+---
+
+# 30. SESSION 2026-10-05 — SUPABASE BACKEND INTEGRATION (record)
+
+Owner brief: connect the software and recruiting forms to the EXISTING Supabase
+project end to end (no new project, no secrets in chat, RLS on, private resumes,
+server-side Turnstile, honest success/error states, generated types, tests).
+
+Found on inspection:
+- One project, `epfqcoeyfqzuzvtprjhj`, PAUSED. Restored it (no data existed).
+- The schema and bucket were already there from a manual run of an OLDER 0001:
+  `leads.email` NOT NULL and no `leads_contact_check`, so a phone-only recruiting
+  lead would have failed. Migration history was empty.
+- anon/authenticated already had no grants; service_role had grants; no policies.
+- `touch_updated_at` had a mutable search_path and was executable by anon.
+- The app never uses the anon/publishable key (all access is server-side).
+
+Done:
+- 0001 re-applied through `apply_migration` (idempotent) to record history; 0002
+  (nullable email + contact check, `other_project_type` + check, explicit
+  service_role grants, hardened function); 0003 (`resume_files.lead_id` index).
+  The "Other" text used to be merged into `additional_information`; it now has its
+  own column.
+- Verified in SQL: valid app-shaped rows insert; no-contact, OTHER-without-detail
+  and bad lead_type are rejected; delete cascades (run in a rolled-back block).
+- Public-key probe (REST + Storage, 16 calls): every read, insert, update, delete,
+  RPC, upload, list, public URL and bucket lookup refused.
+- `src/lib/db/types.ts` generated; client is `SupabaseClient<Database>`; detail rows
+  typed per table (`LeadDetail` union); event metadata typed as `Json`.
+- `createLead` now logs `[submit] Supabase is not configured; lead not saved`.
+- Client bundle scan: only the public Turnstile site key; no secret, no server code.
+- Real headless browser on the production build: Turnstile test widget issues a
+  token, the server verifies it with Cloudflare, the form then shows the honest
+  error (no key yet); a stripped token and an invalid phone are refused.
+- `vitest.setup.ts`: browser shims guarded so node-environment tests can share it.
+
+Decisions:
+- Keep the service-role, server-only architecture. Anon insert policies were
+  rejected: they would let anyone write leads while skipping Turnstile.
+- No signed-URL code: nothing reads resumes yet. Generate signed URLs server-side
+  when the internal dashboard exists.
+- Cloudflare test keys in `.env.local` only. They accept a dummy token: production
+  must use real keys.
+
+Gotchas:
+- A hidden Browser pane never loads `lazyOnload` scripts (Turnstile) — use headless
+  Playwright for form checks, as with the WebGL hero.
+- `next build` while `next start` serves the same `.next` breaks the running
+  server: stop the preview before building.
 
 ---
 

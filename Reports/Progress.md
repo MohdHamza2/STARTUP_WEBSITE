@@ -14,45 +14,43 @@ Never delete historical progress unless explicitly instructed.
 
 ## Current Phase
 
-Major visual revision complete (light theme, Molten Ring hero, image-led page
-heroes). Backend still blocked on owner input for end-to-end verification.
+Supabase backend integrated (2026-10-05): schema applied and verified on the live
+project, forms wired and typed, security proven. One owner step left: the server
+secret key in `.env.local`, then the live submission spec runs.
 
 ## Current Feature
 
-None in progress. Revision of 2026-10-03 committed — see change-log entry (12) and
-`Brain.md` §26.
+None in progress. Backend integration committed: entry (16), `Brain.md` §30.
 
 ## Current Agent
 
-FRONTEND (lead) + BACKEND + DATABASE (coordinated recruiting-contact change)
+DATABASE + BACKEND (coordinated; no frontend change)
 
 ## Current Status
 
-COMPLETE (revision) / BLOCKED (backend verification — owner input)
+COMPLETE except the live insert test, which needs the owner's server key.
 
 ## Last Commit
 
-`3fb0d11` — the 2026-10-03 site revision (with `d9a59ad` skill setup / design records,
-`19329a7` recruiting phone-required, and the docs commit that follows). See entry 12.
+`24195ea` feat(backend): Supabase integration, then its docs commit.
+See entry 16.
 
 ## Last Verified
 
-2026-10-04 — typecheck and lint clean; production build clean; 34 unit tests; E2E
-127 passed / 2 skipped (129); hero robot checked at 5 desktop sizes and on a
-hardware GPU (60fps).
+2026-10-05 — typecheck and lint clean; production build clean; 49 unit tests; E2E
+127 passed / 8 skipped (135; the live spec skips until the key exists).
 
 ## Current Blocker
 
-1. Migration `supabase/migrations/0001_init.sql` is not applied (`Brain.md` §18 A).
-   Apply the CURRENT file — it now makes `leads.email` nullable with a contact CHECK.
+1. `SUPABASE_SERVICE_ROLE_KEY` is empty in `.env.local` (the owner pastes it; never
+   in chat). `Brain.md` §18 E.
 2. `RESEND_FROM` is a gmail.com address, which Resend cannot send from (§18 B).
 3. Business facts are still missing (§18 D).
 
 ## Next Action
 
-The owner resolves 1–2; the agent then traces a real submission for all three forms
-(including a phone-only recruiting lead and the duplicate path) and adds submit-path
-E2E. Separately: check the hero on a real phone and tablet.
+After the owner adds the key: `npx playwright test e2e/submission.spec.ts --project=desktop`,
+then record the result. Separately: check the hero on a real phone and tablet.
 
 ---
 
@@ -66,20 +64,67 @@ Known gap: touch feel and low-end GPU frame rate untested on physical devices.
 
 ## Backend
 
-Status: Code complete; never executed against real services.
+Status: Wired to the live schema with generated types; verified up to the DB step in
+a real browser (2026-10-05). Live insert pending the server key.
 Changed 2026-10-03: recruiting phone required / email optional; duplicate detection
 by email or phone; confirmation email only when an email exists.
 Known issues: `RESEND_FROM` unusable; the rate limiter is per-instance.
 
 ## Database
 
-Status: Migration written, NOT applied. Amended 2026-10-03 (nullable email +
-`leads_contact_check`).
-Next task: apply it; verify the tables, the private bucket, and anon denial.
+Status: APPLIED 2026-10-05 (0001 to 0003), RLS deny-all, private resumes bucket,
+anon denial proven. Next schema change: new numbered migration + regenerate types.
 
 ---
 
 # CHANGE LOG
+
+## 2026-10-05 (16)
+
+### Agent
+
+DATABASE + BACKEND
+
+### Task
+
+Owner brief: complete Supabase backend + form integration on the existing project.
+
+### Changes
+
+- Restored the paused project. Found an older manual copy of 0001 live (email NOT
+  NULL, no contact check, empty migration history).
+- `supabase/migrations/0001_init.sql`: comment corrected (it HAD been applied).
+- `0002_server_access_and_other_type.sql` (new): nullable email + contact check,
+  `other_project_type` + check, service_role grants, hardened `touch_updated_at`.
+- `0003_resume_files_lead_index.sql` (new): advisor-flagged FK index.
+- All three applied via the Supabase MCP; history lists 0001, 0002, 0003.
+- `src/lib/db/types.ts` (new, generated); `src/lib/db/client.ts` typed.
+- `src/lib/actions/submitLead.ts`: typed detail rows and event metadata; "Other" text
+  in its own column (was merged into additional_information); logs when Supabase is
+  not configured.
+- `src/lib/actions/submitLead.test.ts` (new, 15 tests); `vitest.setup.ts` window guard.
+- `e2e/submission.spec.ts` (new, live, skips without the key); forms.spec header.
+- `.env.local` created (gitignored): URL, bucket, Turnstile TEST keys, empty secret.
+
+### Verification
+
+- SQL: app-shaped rows accepted; invalid rows rejected; cascade works (rolled back).
+- Public key vs REST + Storage: 16 of 16 calls refused.
+- Advisors: security shows only the intended RLS-no-policy notices; performance fixed.
+- Client bundle: no secrets, no server code.
+- Headless browser on the prod build: Turnstile token issued and verified; the form
+  shows an error (never success) without the key; a stripped token is refused.
+- typecheck, lint clean; 49 unit tests; E2E 127 passed / 8 skipped, exit 0.
+
+### Not verified
+
+- A live insert through the app (needs the server key). Email (no sender).
+
+### Commit
+
+`24195ea` feat(backend), then the docs commit.
+
+---
 
 ## 2026-10-04 (15)
 
