@@ -194,6 +194,8 @@ Hard boundaries:
 src/
   app/                 routes, layout, globals.css (tokens), sitemap, robots,
                        manifest, icon / apple-icon / opengraph-image PNGs
+                       (icons: black mark on paper since 2026-10-05; OG card
+                       stays dark; all from scripts/build-brand-icons.mjs)
   components/
     brand/Logo.tsx     supplied mark (never redrawn) + Sora wordmark + mint rule
     navigation/        Header (primary nav = Software + Recruiting ONLY; overlay
