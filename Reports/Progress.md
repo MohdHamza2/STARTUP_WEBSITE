@@ -80,6 +80,32 @@ anon denial proven. Next schema change: new numbered migration + regenerate type
 
 # CHANGE LOG
 
+## 2026-10-05 (22)
+
+### Agent
+
+FRONTEND
+
+### Task
+
+Owner: remove the em dashes from titles; deploy entries 21 and 22.
+
+### Changes
+
+- Title separator `—` → `|` (`layout.tsx` default, template, og and twitter
+  titles; `manifest.ts`; /software and /recruiting og titles). Browser titles read
+  e.g. "Software Solutions | GENRA".
+- /software description: em dash → colon. Logo accessible name "GENRA home".
+- Body copy left alone (e.g. one dash on /privacy), per the no-global-rewrite rule.
+
+### Verification
+
+- typecheck, lint clean; navigation + accessibility E2E 61 passed / 2 skipped.
+- Production build: 0 em dashes in any page's title or meta tags; og:image on all
+  7 pages.
+
+---
+
 ## 2026-10-05 (21)
 
 ### Agent
