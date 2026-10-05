@@ -14,13 +14,12 @@ Never delete historical progress unless explicitly instructed.
 
 ## Current Phase
 
-Supabase backend integrated (2026-10-05): schema applied and verified on the live
-project, forms wired and typed, security proven. One owner step left: the server
-secret key in `.env.local`, then the live submission spec runs.
+Supabase backend integrated and verified live (2026-10-05): both forms save real
+rows, duplicates are caught, resumes land in the private bucket.
 
 ## Current Feature
 
-None in progress. Backend integration committed: entry (16), `Brain.md` §30.
+None in progress. Entries (16) and (17), `Brain.md` §30.
 
 ## Current Agent
 
@@ -28,29 +27,31 @@ DATABASE + BACKEND (coordinated; no frontend change)
 
 ## Current Status
 
-COMPLETE except the live insert test, which needs the owner's server key.
+COMPLETE locally. Production needs its env values (real Turnstile, Resend, Vercel).
 
 ## Last Commit
 
-`24195ea` feat(backend): Supabase integration, then its docs commit.
-See entry 16.
+`24195ea` feat(backend) + docs, then the live-verification test fix + docs. See
+entries 16 and 17.
 
 ## Last Verified
 
 2026-10-05 — typecheck and lint clean; production build clean; 49 unit tests; E2E
-127 passed / 8 skipped (135; the live spec skips until the key exists).
+127 passed / 8 skipped (full suite, before the key); live `submission.spec.ts`
+2/2 passed with the key.
 
 ## Current Blocker
 
-1. `SUPABASE_SERVICE_ROLE_KEY` is empty in `.env.local` (the owner pastes it; never
-   in chat). `Brain.md` §18 E.
+1. Production env values: real Turnstile keys, Supabase key + URL in Vercel
+   (`Brain.md` §18 E).
 2. `RESEND_FROM` is a gmail.com address, which Resend cannot send from (§18 B).
 3. Business facts are still missing (§18 D).
 
 ## Next Action
 
-After the owner adds the key: `npx playwright test e2e/submission.spec.ts --project=desktop`,
-then record the result. Separately: check the hero on a real phone and tablet.
+Owner: production keys and an email sender. Agent: then verify a submission and
+notification on the deployed site. Separately: check the hero on a real phone and
+tablet.
 
 ---
 
@@ -64,8 +65,8 @@ Known gap: touch feel and low-end GPU frame rate untested on physical devices.
 
 ## Backend
 
-Status: Wired to the live schema with generated types; verified up to the DB step in
-a real browser (2026-10-05). Live insert pending the server key.
+Status: Wired to the live schema with generated types; live submissions verified
+2026-10-05 (both forms, duplicate path, private PDF). Email untested (no sender).
 Changed 2026-10-03: recruiting phone required / email optional; duplicate detection
 by email or phone; confirmation email only when an email exists.
 Known issues: `RESEND_FROM` unusable; the rate limiter is per-instance.
@@ -78,6 +79,37 @@ anon denial proven. Next schema change: new numbered migration + regenerate type
 ---
 
 # CHANGE LOG
+
+## 2026-10-05 (17)
+
+### Agent
+
+BACKEND (verification)
+
+### Task
+
+Live verification after the owner pasted the Supabase secret key into `.env.local`.
+
+### Changes
+
+- `e2e/submission.spec.ts`: reload before the resubmit. A second `goto` to the same
+  `#hash` URL only scrolls, so the first run timed out on the success screen
+  (test bug; the first submission itself had succeeded).
+
+### Verification
+
+- Key checked without printing it: `sb_secret_` format, one line; DB and storage
+  calls succeed.
+- `submission.spec.ts --project=desktop`: 2/2 passed (software Other + duplicate;
+  recruiting phone-only + private PDF). Cleanup left 0 rows, 0 objects.
+- Manual browser submissions, rows read in SQL, then deleted. No server errors.
+- Client bundle: no secret. typecheck and lint clean.
+
+### Commit
+
+`test(e2e)` commit after `0c3e760` (see git log).
+
+---
 
 ## 2026-10-05 (16)
 

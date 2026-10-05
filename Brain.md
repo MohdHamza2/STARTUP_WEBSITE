@@ -124,7 +124,7 @@ booking, CMS, or **public user accounts**.
 | Area | State |
 |---|---|
 | Frontend (all routes, light theme, Molten Ring hero, forms, a11y, SEO) | Done and verified (2026-10-03) |
-| Backend code (server actions, validation, Turnstile, rate limit, email, storage) | Typed against the live schema, 15 action unit tests; real browser run reaches the DB step (2026-10-05). **Live insert awaits the server key in `.env.local`** (§30) |
+| Backend code (server actions, validation, Turnstile, rate limit, email, storage) | **Verified live 2026-10-05**: both forms save real rows, the duplicate path works, PDFs land in the private bucket (§30). Email not yet (no sender) |
 | Database | **Applied and verified 2026-10-05** (migrations 0001 to 0003, RLS deny-all, private `resumes` bucket). See §8, §30 |
 | Email | API key valid — **sender address unusable** (gmail.com, see §18 B) |
 | Business facts (domain, contact, socials, legal entity, retention) | **Not supplied** — omitted, never invented |
@@ -323,10 +323,9 @@ shows only the intended "RLS enabled, no policy" notices.
 ## Blocked / pending
 
 - [x] Apply the migration (agent, 2026-10-05 via Supabase MCP) — §8
-- [ ] Server secret key in `.env.local` and in Vercel (owner) — §18 E
+- [x] Server secret key in `.env.local` (owner, 2026-10-05). Still needed in Vercel — §18 E
+- [x] Live submission verified: `e2e/submission.spec.ts` 2/2 passed (2026-10-05)
 - [ ] A usable Resend sender (owner — depends on having a domain) — §18 B
-- [ ] Run `e2e/submission.spec.ts` (live insert + resume + duplicate) once the key
-      is in `.env.local` (agent)
 - [ ] Business facts (owner) — §18 D
 - [ ] Decide the Testimonials section (owner) — §18 C
 
@@ -465,7 +464,7 @@ address into this file or any tracked file.** The repository is public.
 | Typecheck | `npm run typecheck` | clean |
 | Lint | `npm run lint` | clean |
 | Unit (Vitest) | `npm test` | **49 pass** (2026-10-05) — 29 validation + 15 server actions + 3 encoding guard + 2 `cn()` merge |
-| E2E (Playwright) | `npm run e2e` | **127 passed, 8 skipped (135 total), exit 0** (2026-10-05). Skips: 2 desktop-only interactions + `submission.spec.ts` on all 3 projects until the server key exists |
+| E2E (Playwright) | `npm run e2e` | **127 passed, 8 skipped (135 total), exit 0** (2026-10-05, before the key). With the key, `submission.spec.ts` runs on desktop: **2/2 passed** (2026-10-05); it still skips on tablet/mobile by design |
 | Build | `npm run build` | clean (run by the E2E web server) |
 
 E2E runs on **desktop, tablet (Chromium at an iPad viewport) and mobile (Pixel 7)**, and
@@ -497,8 +496,7 @@ The 2 skips are desktop-only interactions correctly skipped on mobile.
   delete), typed rows (null email, Other column, duplicate), resume (private path,
   upsert off, fake PDF, oversize, orphan object removed).
 
-**What is NOT tested yet:** the live spec has not run (needs the key, §18 E); email
-sending (no usable sender, §18 B).
+**What is NOT tested yet:** email sending (no usable sender, §18 B).
 
 ---
 
@@ -633,15 +631,13 @@ data-retention period. Every insertion point is marked `TODO(business-facts)`
 (`grep -rn "TODO(business-facts)" src .env.example`). Most live in
 `src/config/site.ts`; filling a value there makes the UI appear automatically.
 
-## E. Server secret key — the one remaining backend blocker
+## E. Server secret key — RESOLVED locally 2026-10-05, still needed in Vercel
 
-Since 2026-10-05 this clone has a `.env.local` (gitignored) with the project URL,
-bucket name and Cloudflare's always-pass Turnstile TEST keys. `SUPABASE_SERVICE_ROLE_KEY`
-is deliberately empty: it cannot be read through the MCP and must never be pasted into
-chat. The owner pastes it from Supabase dashboard → Project Settings → API Keys →
-Secret keys (`sb_secret_…`, or the legacy `service_role`). Without it every
-submission shows an error (never a false success) and the server logs
-`[submit] Supabase is not configured; lead not saved`.
+This clone's `.env.local` (gitignored) holds the project URL, bucket name,
+Cloudflare's always-pass Turnstile TEST keys and, since 2026-10-05, the owner's
+`sb_secret_…` key (pasted by the owner; never read through the MCP or chat). Where the
+key is missing, every submission shows an error (never a false success) and the
+server logs `[submit] Supabase is not configured; lead not saved`.
 
 Production (Vercel) needs: `NEXT_PUBLIC_SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`,
 `SUPABASE_RESUME_BUCKET=resumes`, the REAL Turnstile site key + secret (the test keys
@@ -671,13 +667,11 @@ exists); `.env.local` created without the secret.
 
 ## Exact next actions
 
-1. **Owner:** paste the Supabase secret key into `.env.local`
-   (`SUPABASE_SERVICE_ROLE_KEY=`), §18 E. Never in chat.
-2. **Agent, right after 1:** `npx playwright test e2e/submission.spec.ts --project=desktop`
-   (rebuilds first if no server is on 3100). It submits both forms, verifies rows,
-   the duplicate event and the private PDF, then deletes what it created. Record
-   the result in §14 and §30.
-3. **Owner:** a usable email sender (§18 B) and real Turnstile keys for production.
+1. ~~Owner: server key in `.env.local`~~ done. ~~Agent: live spec~~ done, 2/2 passed.
+2. **Owner, before launch:** real Turnstile keys, a Resend sender on a verified
+   domain + team inbox (§18 B), and all env values in Vercel (§18 E).
+3. **Agent, after 2:** submit once on the deployed site and confirm the row and the
+   notification email; then run `submission.spec.ts` again.
 4. **Owner/agent:** test the hero on a real phone and tablet (touch scroll, frame
    rate) — headless emulation cannot prove gesture feel.
 5. **Owner, any time:** business facts (§18 D) → fill in `src/config/site.ts`.
@@ -686,7 +680,7 @@ exists); `.env.local` created without the secret.
 
 ## Warnings
 
-- Do not claim a live insert works until step 2 has passed.
+- Do not claim email works until a real notification has arrived.
 - Never invent contact details, clients, testimonials, metrics or legal facts.
 - Never edit source files with PowerShell 5.1 `Get-Content` / `Set-Content` (§22).
 
@@ -725,6 +719,18 @@ Done:
   token, the server verifies it with Cloudflare, the form then shows the honest
   error (no key yet); a stripped token and an invalid phone are refused.
 - `vitest.setup.ts`: browser shims guarded so node-environment tests can share it.
+
+Live verification (after the owner added the key, same day):
+- `submission.spec.ts` on desktop: **2/2 passed** — software Other + resubmit (one
+  lead, FORM_SUBMITTED + DUPLICATE_SUBMISSION), recruiting phone-only + PDF (row,
+  resume_files, object bytes read back, public and keyless URLs refused). Its
+  cleanup ran (0 rows, 0 objects after).
+- First run failed on a TEST bug: a second `goto` to the same `#hash` URL only
+  scrolls, so the success screen stayed. Fixed with a reload.
+- Manual browser submissions of both forms, then rows read in SQL: recruiting
+  email null + phone + CONSENTED + detail row + event; software OTHER with
+  `other_project_type` and description. Deleted afterwards. No server errors.
+- Client bundle re-scanned with the key present: no secret.
 
 Decisions:
 - Keep the service-role, server-only architecture. Anon insert policies were
