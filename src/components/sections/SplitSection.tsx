@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 import { Reveal } from "@/components/ui/Reveal";
 
 /**
@@ -95,14 +96,16 @@ function Direction({
           </div>
         </div>
 
+        {/* The first clear choice after the hero (owner, 2026-10-07): a filled
+            pill, equal weight on both sides because neither path is secondary. */}
         <Link
           href={href}
-          className="group inline-flex w-fit items-center gap-4 text-action font-medium text-ink transition-colors duration-[var(--duration-fast)] hover:text-muted"
+          className="group inline-flex w-fit items-center gap-3 rounded-pill bg-ink px-8 py-4 text-action font-semibold text-paper transition-[background-color,transform] duration-[var(--duration-fast)] ease-[var(--ease-genra)] hover:bg-graphite active:scale-[0.98]"
         >
           {cta}
-          <span
+          <ArrowRight
             aria-hidden="true"
-            className="block h-px w-16 origin-left scale-x-[0.625] bg-mint transition-transform duration-[var(--duration-normal)] ease-[var(--ease-genra)] group-hover:scale-x-100"
+            className="size-4 transition-transform duration-[var(--duration-normal)] ease-[var(--ease-genra)] group-hover:translate-x-1"
           />
         </Link>
       </div>
