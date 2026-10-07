@@ -747,6 +747,8 @@ reviews, deploy only the blur fix, and even out the hero arrows.
   Logo shows both marks by CSS, `ThemeToggle` in the header, `themeScript`
   before paint, Turnstile matches the theme at load. Axe runs every route in
   both themes.
+  **Default changed the same day (owner): light for every visitor**, whatever
+  the system setting; dark only via the toggle (saved choice). Test pins it.
 - **REFUSED: fake reviews.** Fabricated testimonials presented as real are
   deceptive and unlawful (US FTC rule on fake reviews, 2024), and conflict with
   the project's truthfulness rule. The Testimonials section already renders

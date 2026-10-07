@@ -80,6 +80,30 @@ anon denial proven. Next schema change: new numbered migration + regenerate type
 
 # CHANGE LOG
 
+## 2026-10-07 (25)
+
+### Agent
+
+FRONTEND
+
+### Task
+
+Owner: start every visitor on the light theme; dark only by choice. Deploy.
+
+### Changes
+
+- `lib/theme.ts`: before-paint script applies dark only for a saved "dark".
+- `ThemeToggle`: no longer follows the system setting.
+- `layout.tsx`: viewport hints back to light only (no dark canvas flash).
+- `accessibility.spec.ts`: dark audits opt in via the saved choice; new test:
+  light by default under a dark system preference, toggle and persistence.
+
+### Verification
+
+- tsc, lint; accessibility + navigation E2E 85 passed / 2 skipped.
+
+---
+
 ## 2026-10-07 (24)
 
 ### Agent
