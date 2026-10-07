@@ -25,6 +25,12 @@ export interface Service {
   /** Stable machine value. Persisted to software_leads.project_type. */
   readonly value: string;
   readonly title: string;
+  /**
+   * Shorter title for the homepage hero caption, which reserves exactly two
+   * lines so the arrows sit in the same place on every card. Falls back to
+   * `title`. (Owner, 2026-10-07.)
+   */
+  readonly heroTitle?: string;
   /** Concise supporting copy. Prompt §17 — do not overstate capability. */
   readonly description: string;
   readonly line: ServiceLine;
@@ -63,6 +69,7 @@ export const services: readonly Service[] = [
     number: "03",
     value: "END_TO_END_SOFTWARE_PRODUCTION",
     title: "End-to-End Software Production",
+    heroTitle: "End-to-End Software",
     description:
       "From concept and architecture through development and launch, build the complete digital product.",
     line: "software",

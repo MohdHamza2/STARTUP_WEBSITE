@@ -235,15 +235,19 @@ export function ServiceHero() {
                       , service {active + 1} of {count}
                     </span>
                   </p>
+                  {/* Title and description each reserve their full height
+                      (2 lines; 2 or 3 lines) so the caption is the same size on
+                      every card and the controls below never move. */}
                   <p
                     key={service.value}
-                    className="hero-swap mt-3 font-display text-[clamp(1.875rem,1.2rem+3vw,2.5rem)] font-semibold leading-[1.04] tracking-[-0.03em] text-ink side:mt-5 side:text-[clamp(1.75rem,min(3.7vw,7.4svh),4.25rem)] short:mt-2"
+                    className="hero-swap mt-3 line-clamp-2 min-h-[2lh] font-display text-[clamp(1.875rem,1.2rem+3vw,2.5rem)] font-semibold leading-[1.04] tracking-[-0.03em] text-ink side:mt-5 side:text-[clamp(1.75rem,min(3.7vw,7.4svh),4.25rem)] short:mt-2"
                   >
-                    {service.title}
+                    <span aria-hidden="true">{service.heroTitle ?? service.title}</span>
+                    <span className="sr-only">{service.title}</span>
                   </p>
                   <p
                     key={`${service.value}-d`}
-                    className="hero-swap mt-3 line-clamp-2 max-w-sm text-body text-muted side:mt-5 side:line-clamp-3 short:mt-2 short:line-clamp-2"
+                    className="hero-swap mt-3 line-clamp-2 min-h-[2lh] max-w-sm text-body text-muted side:mt-5 side:line-clamp-3 side:min-h-[3lh] short:mt-2 short:line-clamp-2 short:min-h-[2lh]"
                   >
                     {service.description}
                   </p>
