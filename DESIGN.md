@@ -86,13 +86,8 @@ around it is calm: typography, rules and white space do the work that cards,
 icons and gradients do on generic sites.
 
 Real photography (credited Unsplash, art-directed per service) is used
-selectively: the hero ring, one image-led hero each on `/software` and
-`/recruiting`, and (owner, 2026-10-06) a few section photos where the image
-carries the section's meaning: two on the homepage (BrandStatement, the
-planning table; RecruitingIntro, the candidate), one in `/software`
-Capabilities, one in `/recruiting` "Built around one problem". Every other
-section stays typographic on purpose. Never decorative stock, never generated
-"AI" imagery. Sources and crops: `assets/images/SOURCES.md`.
+selectively: the hero ring, and one image-led hero each on `/software` and
+`/recruiting`. Never decorative stock, never generated "AI" imagery.
 
 **Key Characteristics:**
 - Ivory paper, Obsidian ink, Silver hairlines, Mint as a mark, never a fill.
@@ -183,8 +178,7 @@ top, ring below. The robot appears only in the three-zone layout.
 
 ## Elevation & Depth
 
-Flat. There are no shadows in the system except the hero's objects and
-photographs (both named below). Depth is drawn: 1px Silver rules,
+Flat. There are no shadows in the system. Depth is drawn: 1px Silver rules,
 numbered rows, white space, and the two paper tones.
 
 ### Named Rules
@@ -193,14 +187,6 @@ above it and more space around it; do not add a shadow. The only exceptions
 are physical objects in the hero (owner, 2026-10-04): the front ring card's
 soft drop shadow and the robot's contact shadow on its invisible floor. Both
 are rendered with the object, so they move with it.
-
-**The Photograph Exception** (owner, 2026-10-06). Editorial photos use the
-`photo` utility: 8px corners and a soft shadow tinted to the warm paper, never
-grey or black. `photo-raised` (deeper shadow) is reserved for the single image
-that overlaps a section edge (homepage BrandStatement, 3.5rem over). No other
-element gets a shadow, and photos never get borders, glow or gradients. Vary
-placement (beside text, under a heading, overlapping an edge) instead of
-repeating one image-then-text pattern down a page.
 
 ## Shapes
 

@@ -47,12 +47,7 @@ export default function SoftwarePage() {
       />
       <ServiceCatalog />
       <Process />
-      <Capabilities
-        image={{
-          src: "/images/sections/architecture.webp",
-          alt: "Two people mapping out a system on a whiteboard, one holding a laptop",
-        }}
-      />
+      <Capabilities />
       <SelectedWork />
     </>
   );

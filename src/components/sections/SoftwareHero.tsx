@@ -47,13 +47,13 @@ export function SoftwareHero() {
         </div>
 
         <Image
-          src="/images/pages/software-engineering-desk.webp"
-          alt="An engineer's desk seen from above: code open on two monitors and a laptop, hands at the keyboard"
+          src="/images/pages/software.webp"
+          alt="A product team reviewing interface sketches together around a table"
           width={2400}
-          height={1376}
+          height={1350}
           priority
           sizes="(min-width: 1024px) 45vw, 100vw"
-          className="photo aspect-[4/3] w-full object-cover object-[50%_30%] lg:aspect-[5/4]"
+          className="aspect-[4/3] w-full rounded-sm object-cover lg:aspect-[5/4]"
         />
       </div>
     </section>

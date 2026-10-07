@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import { Reveal } from "@/components/ui/Reveal";
 
@@ -27,15 +26,6 @@ export function RecruitingIntro() {
               <br />
               <span className="text-accent">We handle the applications.</span>
             </h2>
-            {/* A smaller supporting portrait: the person the service is for. */}
-            <Image
-              src="/images/sections/candidate.webp"
-              alt="A young professional working through an application on a laptop"
-              width={1600}
-              height={1066}
-              sizes="(min-width: 1024px) 20rem, 80vw"
-              className="photo mt-14 aspect-[4/5] w-full max-w-80 object-cover object-[64%_50%]"
-            />
           </Reveal>
 
           <Reveal delay={0.1}>
