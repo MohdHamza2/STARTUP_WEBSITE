@@ -37,8 +37,13 @@
   --color-mist: #eeede9;
   --color-surface: #ffffff;
   --color-ink: #0b0b0b;
+  /* Hover state of ink-filled buttons: a step lighter than ink. */
+  --color-ink-soft: #374151;
   --color-muted: #374151;
   --color-line: #d1d5db;
+  /* Validation errors only. Red-700 on paper ~6:1, on its surface ~5.9:1. */
+  --color-danger: #b91c1c;
+  --color-danger-surface: #fef2f2;
 
   /* --- Typography -------------------------------------------------------
      Sora for display/headings, Inter for body and UI.
@@ -102,6 +107,32 @@
   --container-wide: 84rem;
 }
 
+/* ==========================================================================
+   DARK THEME (owner, 2026-10-07)
+   The same semantic roles, re-pointed at the brand's original dark palette
+   (the site was dark-first until 2026-10-03): Obsidian page, #111615 cards,
+   #1F2926-family lines, Ivory ink. Components never change; only the roles do.
+   `data-theme` is set on <html> before first paint by the inline script in
+   layout.tsx: the visitor's saved choice, else their system preference.
+     ink   on paper  ~18:1      muted on paper ~8.2:1
+     muted on mist   ~7.9:1     muted on surface ~7.7:1
+   ========================================================================== */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/* Unlayered, so it wins over Tailwind's layered theme variables. */
+[data-theme="dark"] {
+  color-scheme: dark;
+  --color-paper: #0b0b0b;
+  --color-mist: #101413;
+  --color-surface: #111615;
+  --color-ink: #f5f4ef;
+  --color-ink-soft: #d6d5cf;
+  --color-muted: #a3aba8;
+  --color-line: #26302d;
+  --color-danger: #f87171;
+  --color-danger-surface: #1f1111;
+}
+
 /* Side-by-side hero composition: laptops and up, and phones held landscape,
    where stacking the text above the ring would leave the ring no height.
    Mirrored in JS as SIDE_QUERY in components/hero/ServiceHero.tsx. */
@@ -127,7 +158,8 @@
   html {
     -webkit-text-size-adjust: 100%;
     /* Browser-drawn surfaces carry the palette too. */
-    scrollbar-color: var(--color-silver) var(--color-paper);
+    color-scheme: light;
+    scrollbar-color: var(--color-line) var(--color-paper);
     caret-color: var(--color-ink);
     accent-color: var(--color-ink);
     /* The fixed 80px header must never cover an anchor target (#start,

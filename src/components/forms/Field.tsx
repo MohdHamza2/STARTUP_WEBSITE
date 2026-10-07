@@ -18,9 +18,9 @@ import { cn } from "@/lib/utils";
 
 const controlClass =
   "w-full rounded-sm border border-line bg-surface px-4 py-3.5 text-body " +
-  "text-ink placeholder:text-graphite/55 transition-colors duration-[var(--duration-fast)] " +
-  "hover:border-graphite focus:border-ink focus:outline-none " +
-  "aria-[invalid=true]:border-red-700";
+  "text-ink placeholder:text-muted/55 transition-colors duration-[var(--duration-fast)] " +
+  "hover:border-muted focus:border-ink focus:outline-none " +
+  "aria-[invalid=true]:border-danger";
 
 function Shell({
   id,
@@ -55,7 +55,7 @@ function Shell({
         <p
           id={`${id}-error`}
           role="alert"
-          className="mt-2 text-caption text-red-700"
+          className="mt-2 text-caption text-danger"
         >
           {error}
         </p>
@@ -218,7 +218,7 @@ export function Checkbox({
         </label>
       </div>
       {error && (
-        <p id={`${id}-error`} role="alert" className="mt-2 text-caption text-red-700">
+        <p id={`${id}-error`} role="alert" className="mt-2 text-caption text-danger">
           {error}
         </p>
       )}

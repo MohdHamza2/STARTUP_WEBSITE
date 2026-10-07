@@ -29,7 +29,7 @@ export function SoftwareHero() {
           <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-5">
             <Link
               href="#start"
-              className="inline-flex items-center rounded-pill bg-ink px-8 py-4 text-action font-semibold text-paper transition-[background-color,transform] duration-[var(--duration-fast)] ease-[var(--ease-genra)] hover:bg-graphite active:scale-[0.98]"
+              className="inline-flex items-center rounded-pill bg-ink px-8 py-4 text-action font-semibold text-paper transition-[background-color,transform] duration-[var(--duration-fast)] ease-[var(--ease-genra)] hover:bg-ink-soft active:scale-[0.98]"
             >
               {cta.software}
             </Link>

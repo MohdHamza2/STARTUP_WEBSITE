@@ -1,11 +1,7 @@
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 
-type LogoTone = "dark" | "light";
-
 interface LogoProps {
-  /** Background the logo sits on. "dark" = on Obsidian, "light" = on Ivory. */
-  tone?: LogoTone;
   /** Hide the wordmark and render the mark alone (compact UI, small sizes). */
   markOnly?: boolean;
   /** Mark height in px. The wordmark scales with it. */
@@ -21,6 +17,10 @@ interface LogoProps {
  * mint-gradient ones — prompt §2 forbids glow/gradient/blur on the dark logo,
  * and the brand kit §2 calls the gradient "an accent, not the default".
  *
+ * Follows the theme (2026-10-07): the Obsidian mark on the light theme, the
+ * Ivory mark on the dark one. Both are rendered and CSS shows one, so the
+ * right mark is there on first paint with no flash and no JavaScript.
+ *
  * The wordmark is live Sora 600 text rather than an image. That is faithful,
  * not a substitution: brand kit §4 defines the wordmark AS Sora SemiBold 600
  * with wide spacing. Live text stays crisp at every size, scales with the user's
@@ -28,33 +28,29 @@ interface LogoProps {
  *
  * The mint underline follows the brand board's primary and dark-mode lockups.
  */
-export function Logo({
-  tone = "light",
-  markOnly = false,
-  size = 28,
-  className,
-}: LogoProps) {
-  const src = tone === "dark" ? "/brand/mark-ivory.png" : "/brand/mark-obsidian.png";
+export function Logo({ markOnly = false, size = 28, className }: LogoProps) {
+  const mark = (src: string, visibility: string) => (
+    <Image
+      src={src}
+      alt=""
+      width={size}
+      height={size}
+      priority
+      aria-hidden="true"
+      className={visibility}
+      style={{ height: size, width: size }}
+    />
+  );
 
   return (
     <span className={cn("inline-flex items-center gap-2.5", className)}>
-      <Image
-        src={src}
-        alt=""
-        width={size}
-        height={size}
-        priority
-        aria-hidden="true"
-        style={{ height: size, width: size }}
-      />
+      {mark("/brand/mark-obsidian.png", "dark:hidden")}
+      {mark("/brand/mark-ivory.png", "hidden dark:block")}
       {!markOnly && (
         <span className="inline-flex flex-col items-start gap-1">
           <span
             translate="no"
-            className={cn(
-              "font-display font-semibold leading-none",
-              tone === "dark" ? "text-ivory" : "text-obsidian",
-            )}
+            className="font-display font-semibold leading-none text-ink"
             style={{ fontSize: size * 0.62, letterSpacing: "0.22em" }}
           >
             GENRA

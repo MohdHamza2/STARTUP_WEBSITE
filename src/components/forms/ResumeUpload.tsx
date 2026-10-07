@@ -94,7 +94,7 @@ export function ResumeUpload({ error }: { error?: string }) {
             "duration-[var(--duration-fast)]",
             dragging
               ? "border-ink bg-surface"
-              : "border-line bg-surface/60 hover:border-graphite",
+              : "border-line bg-surface/60 hover:border-muted",
           )}
         >
           <Upload
@@ -158,7 +158,7 @@ export function ResumeUpload({ error }: { error?: string }) {
       />
 
       {shownError && (
-        <p id={`${id}-error`} role="alert" className="mt-2 text-caption text-red-700">
+        <p id={`${id}-error`} role="alert" className="mt-2 text-caption text-danger">
           {shownError}
         </p>
       )}

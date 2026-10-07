@@ -173,7 +173,7 @@ export function ProjectForm() {
         <p
           role="alert"
           aria-live="assertive"
-          className="border border-red-700/30 bg-red-50 px-5 py-4 text-caption text-red-800"
+          className="border border-danger/30 bg-danger-surface px-5 py-4 text-caption text-danger"
         >
           {state.message}
           {state.retryable && " You can try again."}
@@ -187,8 +187,8 @@ export function ProjectForm() {
           "inline-flex items-center rounded-pill px-8 py-4 text-action font-semibold",
           "transition-[background-color,transform] duration-[var(--duration-fast)] ease-[var(--ease-genra)]",
           pending
-            ? "cursor-not-allowed bg-silver text-graphite"
-            : "bg-ink text-paper hover:bg-graphite active:scale-[0.98]",
+            ? "cursor-not-allowed bg-line text-muted"
+            : "bg-ink text-paper hover:bg-ink-soft active:scale-[0.98]",
         )}
       >
         {pending ? "Sending…" : "Start a Project"}

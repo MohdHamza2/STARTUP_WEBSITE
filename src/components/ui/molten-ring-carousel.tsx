@@ -1204,7 +1204,7 @@ export function MoltenRingCarousel({
       <canvas
         ref={canvasRef}
         aria-hidden="true"
-        className="absolute inset-0 h-full w-full text-silver"
+        className="absolute inset-0 h-full w-full text-line"
       />
       {item ? (
         <Link

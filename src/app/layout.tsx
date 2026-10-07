@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Sora, Inter } from "next/font/google";
 import { site } from "@/config/site";
+import { themeScript } from "@/lib/theme";
 import { Header } from "@/components/navigation/Header";
 import { Footer } from "@/components/navigation/Footer";
 import { SmoothScroll } from "@/components/providers/SmoothScroll";
@@ -48,16 +49,22 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#f5f4ef",
-  colorScheme: "light",
+  // Follows the system setting; the in-page toggle cannot change these hints.
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#f5f4ef" },
+    { media: "(prefers-color-scheme: dark)", color: "#0b0b0b" },
+  ],
+  colorScheme: "light dark",
 };
 
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${sora.variable} ${inter.variable}`}>
+    // suppressHydrationWarning: themeScript sets data-theme before React loads.
+    <html lang="en" className={`${sora.variable} ${inter.variable}`} suppressHydrationWarning>
       <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
         {/*
           Scroll reveals start hidden and are revealed by JavaScript. Without
           JS that would leave the page blank, so force them visible. Content

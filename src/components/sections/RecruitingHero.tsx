@@ -30,7 +30,7 @@ export function RecruitingHero() {
           </p>
           <Link
             href="#apply"
-            className="inline-flex w-fit items-center rounded-pill bg-ink px-8 py-4 text-action font-semibold text-paper transition-[background-color,transform] duration-[var(--duration-fast)] ease-[var(--ease-genra)] hover:bg-graphite active:scale-[0.98]"
+            className="inline-flex w-fit items-center rounded-pill bg-ink px-8 py-4 text-action font-semibold text-paper transition-[background-color,transform] duration-[var(--duration-fast)] ease-[var(--ease-genra)] hover:bg-ink-soft active:scale-[0.98]"
           >
             {cta.recruiting}
           </Link>

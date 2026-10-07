@@ -117,6 +117,19 @@ A monochrome working palette with one green signal.
   progress ticks.
 - **Error Red** (#b91c1c): form errors only.
 
+### Dark theme (owner, 2026-10-07)
+The same roles re-pointed, in `globals.css` under `[data-theme="dark"]`, using
+the brand's original dark palette (the site was dark-first until 2026-10-03):
+paper Obsidian #0b0b0b, mist #101413, surface #111615 (inputs, success
+panel), ink Ivory #f5f4ef, ink-soft #d6d5cf (button hover), muted #a3aba8
+(~8.2:1 on paper), line #26302d, danger #f87171. Primary buttons invert to an
+Ivory pill with an Obsidian label. The logo shows the Ivory mark. Photos and
+the robot are unchanged. Default follows the system setting; the header
+sun/moon toggle saves an explicit choice (`genra-theme` in localStorage), set
+before first paint so there is no flash. Every route is axe-audited (WCAG
+A/AA) in both themes. Components use roles only: a raw palette class
+(`bg-graphite`, `text-silver`, ...) would not follow the theme.
+
 ### Named Rules
 **The Mark Rule.** Mint covers well under 5% of any screen and is never used
 for text: on Ivory it is about 1.7:1. Emphasis in text is Ink with a low mint
@@ -201,9 +214,12 @@ hero are circles. The hero ring's photo cards are the one exception, at about
 - **Shape:** full pill (9999px).
 - **Primary:** Obsidian fill, Ivory label, 16px 32px, Inter 600 15px. One
   primary per view.
-- **Hover / Focus:** fill shifts to Graphite over 150ms; 2px Ink focus ring,
-  3px offset.
-- **Pending:** Silver fill, Graphite label, not-allowed cursor.
+- **Hover / Focus:** fill shifts to `ink-soft` (Graphite on light) over
+  150ms; 2px Ink focus ring, 3px offset.
+- **Pending:** `line` fill, `muted` label, not-allowed cursor.
+- **Homepage "Two directions":** both paths use the filled primary pill with
+  a right arrow (owner, 2026-10-07), equal weight, as the first clear choice
+  after the hero.
 - **Text link (secondary action):** Ink label followed by an 32px mint rule
   that extends to 48px on hover.
 

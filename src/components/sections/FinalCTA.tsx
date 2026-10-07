@@ -60,7 +60,7 @@ export function FinalCTA({
                 Looking for career support instead?
                 <span
                   aria-hidden="true"
-                  className="block h-px w-12 origin-left scale-x-[0.667] bg-silver transition-[transform,background-color] duration-[var(--duration-normal)] ease-[var(--ease-genra)] group-hover:scale-x-100 group-hover:bg-mint"
+                  className="block h-px w-12 origin-left scale-x-[0.667] bg-line transition-[transform,background-color] duration-[var(--duration-normal)] ease-[var(--ease-genra)] group-hover:scale-x-100 group-hover:bg-mint"
                 />
               </Link>
             </Reveal>

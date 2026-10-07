@@ -24,9 +24,15 @@ const ROUTES = [
 
 const TAGS = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"];
 
-for (const route of ROUTES) {
-  test(`${route} has no WCAG A/AA violations`, async ({ page }) => {
+for (const [route, scheme] of ROUTES.flatMap((r) => [
+  [r, "light"],
+  [r, "dark"],
+] as const)) {
+  // Dark theme (2026-10-07) is audited too: contrast must hold in both.
+  test(`${route} has no WCAG A/AA violations (${scheme})`, async ({ page }) => {
+    await page.emulateMedia({ colorScheme: scheme });
     await page.goto(route);
+    await expect(page.locator("html")).toHaveAttribute("data-theme", scheme);
     // Let the hero resolve its motion preference and the reveals settle, so the
     // audit runs against what a visitor actually sees.
     await page.waitForTimeout(1500);

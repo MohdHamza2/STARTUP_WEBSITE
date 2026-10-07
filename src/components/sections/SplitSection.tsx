@@ -100,7 +100,7 @@ function Direction({
             pill, equal weight on both sides because neither path is secondary. */}
         <Link
           href={href}
-          className="group inline-flex w-fit items-center gap-3 rounded-pill bg-ink px-8 py-4 text-action font-semibold text-paper transition-[background-color,transform] duration-[var(--duration-fast)] ease-[var(--ease-genra)] hover:bg-graphite active:scale-[0.98]"
+          className="group inline-flex w-fit items-center gap-3 rounded-pill bg-ink px-8 py-4 text-action font-semibold text-paper transition-[background-color,transform] duration-[var(--duration-fast)] ease-[var(--ease-genra)] hover:bg-ink-soft active:scale-[0.98]"
         >
           {cta}
           <ArrowRight

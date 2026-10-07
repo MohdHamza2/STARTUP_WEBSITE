@@ -46,7 +46,8 @@ export function Turnstile({ onToken }: { onToken?: (token: string) => void }) {
 
     widgetId.current = window.turnstile.render(containerRef.current, {
       sitekey: siteKey,
-      theme: "light",
+      // Matches the site theme when the widget loads (it cannot restyle later).
+      theme: document.documentElement.dataset.theme === "dark" ? "dark" : "light",
       callback: (value) => {
         setToken(value);
         onToken?.(value);

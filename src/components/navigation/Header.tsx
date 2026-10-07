@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 import { Logo } from "@/components/brand/Logo";
+import { ThemeToggle } from "./ThemeToggle";
 import { primaryNav, secondaryNav, legalNav, cta } from "@/config/site";
 import { cn } from "@/lib/utils";
 
@@ -101,7 +102,7 @@ export function Header() {
         )}
       >
         <div className="container-wide flex h-20 items-center justify-between">
-          <Link href="/" aria-label="GENRA — home" className="relative z-10">
+          <Link href="/" aria-label="GENRA home" className="relative z-10">
             <Logo />
           </Link>
 
@@ -137,20 +138,23 @@ export function Header() {
               </ul>
             </nav>
 
-            <button
-              ref={triggerRef}
-              type="button"
-              onClick={() => setMenuOpen(true)}
-              aria-expanded={menuOpen}
-              aria-controls="site-menu"
-              aria-label="Open menu"
-              className={cn(
-                "-mr-2 grid size-10 place-items-center rounded-md text-ink",
-                "transition-colors duration-[var(--duration-fast)] hover:text-muted",
-              )}
-            >
-              <Menu className="size-5" aria-hidden="true" />
-            </button>
+            <div className="flex items-center gap-1">
+              <ThemeToggle />
+              <button
+                ref={triggerRef}
+                type="button"
+                onClick={() => setMenuOpen(true)}
+                aria-expanded={menuOpen}
+                aria-controls="site-menu"
+                aria-label="Open menu"
+                className={cn(
+                  "-mr-2 grid size-10 place-items-center rounded-md text-ink",
+                  "transition-colors duration-[var(--duration-fast)] hover:text-muted",
+                )}
+              >
+                <Menu className="size-5" aria-hidden="true" />
+              </button>
+            </div>
           </div>
         </div>
       </header>
