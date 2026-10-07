@@ -117,7 +117,7 @@ arrows; fake reviews (refused).
 
 ### Commit
 
-Several focused commits on `arsh`; not yet deployed (except the blur fix).
+Several focused commits on `arsh`; deployed: `main` = `c821838` (2026-10-07), verified live.
 
 ---
 

@@ -689,7 +689,10 @@ bugs fixed at the root; dark theme with toggle. Fake reviews REFUSED (§31).
 
 ## Exact next actions
 
-0. **Deploy §31 work** (on `arsh`, not yet on `main`) when the owner says so.
+0. ~~Deploy §31 work~~ done 2026-10-07: `main` fast-forwarded to `c821838` on the
+   owner's "yes"; live in ~60s. Verified on genra.tech: all routes 200, sitemap
+   and robots live, header navigation lands at the top (5/5), dark theme by
+   system setting, toggle + persistence, no page errors.
 
 1. ~~Owner: server key in `.env.local`~~ done. ~~Agent: live spec~~ done, 2/2 passed.
 1a. **Deployed 2026-10-05:** on the owner's instruction `main` was fast-forwarded to
