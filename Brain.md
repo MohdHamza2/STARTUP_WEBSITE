@@ -629,10 +629,11 @@ It passes the a11y audit and every test — the problem is truthfulness, not cod
 section, or keep the component and empty the array so it appears only once real,
 verified feedback exists — and merge the two testimonial systems into one.
 
-## D. Business facts missing (D2/D3)
+## D. Business facts — partly supplied
 
-Production domain, contact email/phone/address, social URLs, legal entity name,
-data-retention period. Every insertion point is marked `TODO(business-facts)`
+Supplied 2026-10-07: domain www.genra.tech (site.url), phone +91 83400 90834,
+Instagram genra.tech. Still missing: contact email, address, other socials,
+legal entity name, data-retention period. Every insertion point is marked `TODO(business-facts)`
 (`grep -rn "TODO(business-facts)" src .env.example`). Most live in
 `src/config/site.ts`; filling a value there makes the UI appear automatically.
 
@@ -680,14 +681,15 @@ Other contributors also commit to this repo — check `git log` before assuming 
 
 # 20. CURRENT HANDOFF
 
-## Last completed (2026-10-05) — Supabase backend integration, see §30
+## Last completed (2026-10-07) — owner change list, see §31
 
-Migrations 0001 to 0003 applied and verified on the live project; generated DB types;
-typed inserts; "Other" project type stored in its own column; anon access proven
-denied; 15 server-action unit tests; live submission E2E written (skips until the key
-exists); `.env.local` created without the secret.
+Hero blur fix deployed alone (imagery reverted on owner's call); Instagram,
+phone and domain; filled CTAs after the hero; equal hero arrow position; scroll
+bugs fixed at the root; dark theme with toggle. Fake reviews REFUSED (§31).
 
 ## Exact next actions
+
+0. **Deploy §31 work** (on `arsh`, not yet on `main`) when the owner says so.
 
 1. ~~Owner: server key in `.env.local`~~ done. ~~Agent: live spec~~ done, 2/2 passed.
 1a. **Deployed 2026-10-05:** on the owner's instruction `main` was fast-forwarded to
@@ -711,6 +713,43 @@ exists); `.env.local` created without the secret.
 - Do not claim email works until a real notification has arrived.
 - Never invent contact details, clients, testimonials, metrics or legal facts.
 - Never edit source files with PowerShell 5.1 `Get-Content` / `Set-Content` (§22).
+
+---
+
+# 31. SESSION 2026-10-07 — OWNER CHANGE LIST (record)
+
+Owner asked, in one message: socials and phone, noticeable CTAs after the hero,
+fix pages opening mid-page and the post-submit jump, a dark theme, fake client
+reviews, deploy only the blur fix, and even out the hero arrows.
+
+- **Deploy:** `main` = `52e5908`: the atlas blur fix only. The 2026-10-06
+  imagery (new page heroes, four section photos) was reverted on `arsh`
+  (`revert(imagery)`), since the owner did not want it; it remains at
+  `2c1186b`. Net live change: 7 lines in molten-ring-carousel.tsx.
+- **Contact:** `site.url` https://www.genra.tech, phone, Instagram
+  (footer + /contact). Sitemap and canonical URLs now absolute.
+- **CTAs:** "Two directions" uses filled pill buttons with arrows.
+- **Hero arrows:** caption title reserves 2 lines, description its clamp
+  height; card 03 shows `heroTitle` "End-to-End Software". Arrow y identical
+  on all 9 cards at 1920/1440/1280/1024/390.
+- **Scroll bug 1 (root cause):** Lenis kept gliding to the OLD page's target
+  after a link click; reproduced landing at the end (4957) and mid-page
+  (3200). `haltScroll()` (Lenis stop+start) runs on internal link clicks
+  (capture) and popstate. All runs now land at 0; #anchors still work.
+- **Scroll bug 2 (root cause):** the short success panel replaced the tall
+  form under the visitor (page −673px, panel at −340px, focus on body).
+  `useRevealOnSuccess` focuses it and scrolls it in under the header.
+- **Dark theme:** roles re-pointed under `[data-theme="dark"]` (DESIGN.md),
+  `ink-soft` and `danger` roles added, every raw palette class replaced (25),
+  Logo shows both marks by CSS, `ThemeToggle` in the header, `themeScript`
+  before paint, Turnstile matches the theme at load. Axe runs every route in
+  both themes.
+- **REFUSED: fake reviews.** Fabricated testimonials presented as real are
+  deceptive and unlawful (US FTC rule on fake reviews, 2024), and conflict with
+  the project's truthfulness rule. The Testimonials section already renders
+  only `published` + `verified` entries; add real ones with permission.
+- Verification: unit 49; E2E 150 passed / 6 skipped (incl. 21 dark-theme axe
+  audits and the live submission spec); tsc + lint clean.
 
 ---
 

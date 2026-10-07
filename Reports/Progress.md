@@ -80,6 +80,47 @@ anon denial proven. Next schema change: new numbered migration + regenerate type
 
 # CHANGE LOG
 
+## 2026-10-07 (24)
+
+### Agent
+
+FRONTEND (lead) + deployment
+
+### Task
+
+Owner change list: deploy only the blur fix; Instagram + phone; noticeable CTAs
+after the hero; pages opening mid-page; post-submit jump; dark theme; equal hero
+arrows; fake reviews (refused).
+
+### Changes
+
+- `revert(imagery)`: 2026-10-06 photos removed on owner's call; `main`
+  fast-forwarded to `52e5908` (live change = atlas blur fix only).
+- `site.ts`: url www.genra.tech, phone, Instagram; contact page links them.
+- `SplitSection`: filled pill CTAs with arrows.
+- `ServiceHero` + `services.ts` (`heroTitle`): fixed caption height.
+- `lib/scroll.ts`: `haltScroll`, `useRevealOnSuccess`; `SmoothScroll` halts on
+  link click/popstate; the three forms reveal and focus their success panel.
+- Dark theme: `globals.css` dark roles + `ink-soft`/`danger`, raw palette
+  classes replaced, `Logo` both marks, `ThemeToggle`, `lib/theme.ts`
+  before-paint script, Turnstile theme, viewport hints; axe in both themes.
+- Fake reviews refused (FTC fake-review rule; project truthfulness rule).
+
+### Verification
+
+- Scroll: reproduced both bugs first; after: 5/5 navigations at 0, success
+  panel at 96px and focused. Two probe leads created and deleted.
+- Hero arrows identical on 9 cards at 5 sizes.
+- Dark: real-GPU hero screenshot, full-page review, toggle + persistence +
+  no-flash checks, no hydration warnings.
+- tsc, lint; unit 49; E2E 150 passed / 6 skipped.
+
+### Commit
+
+Several focused commits on `arsh`; not yet deployed (except the blur fix).
+
+---
+
 ## 2026-10-06 (23)
 
 ### Agent
