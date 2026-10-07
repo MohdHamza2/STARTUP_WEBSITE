@@ -11,6 +11,7 @@ import { Turnstile } from "./Turnstile";
 import { Attribution } from "./Attribution";
 import { createStartTracker, trackEvent } from "@/lib/analytics/track";
 import { cn } from "@/lib/utils";
+import { useRevealOnSuccess } from "@/lib/scroll";
 
 const toOptions = (values: readonly string[]) =>
   values.map((value) => ({ value, label: value }));
@@ -33,6 +34,7 @@ const toOptions = (values: readonly string[]) =>
  */
 export function RecruitingForm() {
   const [state, action, pending] = useActionState(submitRecruiting, IDLE);
+  const successRef = useRevealOnSuccess(state.status);
 
   // Lazy state initialiser rather than a ref: the tracker must be created once
   // and is read during render to attach as a handler, which a ref forbids.
@@ -51,9 +53,11 @@ export function RecruitingForm() {
   if (state.status === "success") {
     return (
       <div
+        ref={successRef}
+        tabIndex={-1}
         role="status"
         aria-live="polite"
-        className="border border-line bg-surface px-8 py-14 text-center sm:px-14"
+        className="outline-none border border-line bg-surface px-8 py-14 text-center sm:px-14"
       >
         <span aria-hidden="true" className="mx-auto block h-px w-16 bg-mint" />
         <h3 className="mt-10 font-display text-h2 text-ink">Received.</h3>

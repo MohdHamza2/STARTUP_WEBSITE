@@ -10,6 +10,7 @@ import { Turnstile } from "./Turnstile";
 import { Attribution } from "./Attribution";
 import { createStartTracker, trackEvent } from "@/lib/analytics/track";
 import { cn } from "@/lib/utils";
+import { useRevealOnSuccess } from "@/lib/scroll";
 
 /**
  * Software project enquiry form (prompt §31).
@@ -26,6 +27,7 @@ import { cn } from "@/lib/utils";
  */
 export function ProjectForm() {
   const [state, action, pending] = useActionState(submitProject, IDLE);
+  const successRef = useRevealOnSuccess(state.status);
   const [projectType, setProjectType] = useState("");
 
   const [trackStart] = useState(() =>
@@ -46,9 +48,11 @@ export function ProjectForm() {
   if (state.status === "success") {
     return (
       <div
+        ref={successRef}
+        tabIndex={-1}
         role="status"
         aria-live="polite"
-        className="border border-line bg-surface px-8 py-14 text-center sm:px-14"
+        className="outline-none border border-line bg-surface px-8 py-14 text-center sm:px-14"
       >
         <span aria-hidden="true" className="mx-auto block h-px w-16 bg-mint" />
         <h3 className="mt-10 font-display text-h2 text-ink">Received.</h3>

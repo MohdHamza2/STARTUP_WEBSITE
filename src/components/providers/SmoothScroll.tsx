@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { registerScroller } from "@/lib/scroll";
+import { haltScroll, registerScroller } from "@/lib/scroll";
 
 /**
  * Lenis smooth scrolling.
@@ -43,7 +43,21 @@ export function SmoothScroll() {
       });
       const unregister = registerScroller(lenis);
 
+      // Stop any glide the instant the visitor follows an internal link or
+      // goes back/forward, before the next page renders (see haltScroll).
+      // Capture phase, so it runs before Next.js handles the click.
+      const onClick = (event: MouseEvent) => {
+        if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+        const link = (event.target as Element | null)?.closest<HTMLAnchorElement>("a[href]");
+        if (!link || link.target === "_blank" || link.origin !== window.location.origin) return;
+        haltScroll();
+      };
+      document.addEventListener("click", onClick, true);
+      window.addEventListener("popstate", haltScroll);
+
       cleanup = () => {
+        document.removeEventListener("click", onClick, true);
+        window.removeEventListener("popstate", haltScroll);
         unregister();
         lenis.destroy();
       };
