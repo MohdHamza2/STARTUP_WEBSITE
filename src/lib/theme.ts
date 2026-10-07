@@ -2,14 +2,15 @@
  * Light / dark theme (owner, 2026-10-07).
  *
  * The theme is `data-theme` on <html>, which re-points the colour roles in
- * globals.css. The visitor's explicit choice is saved under THEME_KEY;
- * without one, the system preference decides and is followed live.
+ * globals.css. Light is the default for every visitor, whatever their system
+ * setting (owner, 2026-10-07); dark applies only after the visitor chooses it
+ * with the header toggle, which saves the choice under THEME_KEY.
  */
 export const THEME_KEY = "genra-theme";
 
 /**
- * Inlined in <head> so the theme is set before first paint: no white flash
- * for a dark-theme visitor. Storage can throw (private mode, blocked site
- * data); light is the fallback.
+ * Inlined in <head> so a saved dark choice applies before first paint (no
+ * flash). Storage can throw (private mode, blocked site data); light is the
+ * fallback.
  */
-export const themeScript = `(function(){var d=document.documentElement;try{var t=localStorage.getItem("${THEME_KEY}");if(t!=="light"&&t!=="dark")t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";d.dataset.theme=t}catch(e){d.dataset.theme="light"}})()`;
+export const themeScript = `(function(){var d=document.documentElement;try{d.dataset.theme=localStorage.getItem("${THEME_KEY}")==="dark"?"dark":"light"}catch(e){d.dataset.theme="light"}})()`;

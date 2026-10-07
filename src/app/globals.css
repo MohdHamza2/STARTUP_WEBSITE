@@ -113,7 +113,7 @@
    (the site was dark-first until 2026-10-03): Obsidian page, #111615 cards,
    #1F2926-family lines, Ivory ink. Components never change; only the roles do.
    `data-theme` is set on <html> before first paint by the inline script in
-   layout.tsx: the visitor's saved choice, else their system preference.
+   layout.tsx: dark only if the visitor chose it; light otherwise.
      ink   on paper  ~18:1      muted on paper ~8.2:1
      muted on mist   ~7.9:1     muted on surface ~7.7:1
    ========================================================================== */

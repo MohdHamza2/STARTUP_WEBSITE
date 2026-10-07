@@ -124,9 +124,10 @@ paper Obsidian #0b0b0b, mist #101413, surface #111615 (inputs, success
 panel), ink Ivory #f5f4ef, ink-soft #d6d5cf (button hover), muted #a3aba8
 (~8.2:1 on paper), line #26302d, danger #f87171. Primary buttons invert to an
 Ivory pill with an Obsidian label. The logo shows the Ivory mark. Photos and
-the robot are unchanged. Default follows the system setting; the header
-sun/moon toggle saves an explicit choice (`genra-theme` in localStorage), set
-before first paint so there is no flash. Every route is axe-audited (WCAG
+the robot are unchanged. **Light is the default for every visitor**, whatever
+their system setting (owner, 2026-10-07); dark applies only through the
+header sun/moon toggle, which saves the choice (`genra-theme` in
+localStorage) and is re-applied before first paint so there is no flash. Every route is axe-audited (WCAG
 A/AA) in both themes. Components use roles only: a raw palette class
 (`bg-graphite`, `text-silver`, ...) would not follow the theme.
 

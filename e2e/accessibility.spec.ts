@@ -29,8 +29,11 @@ for (const [route, scheme] of ROUTES.flatMap((r) => [
   [r, "dark"],
 ] as const)) {
   // Dark theme (2026-10-07) is audited too: contrast must hold in both.
+  // Dark is opt-in, so it is set the way the header toggle saves it.
   test(`${route} has no WCAG A/AA violations (${scheme})`, async ({ page }) => {
-    await page.emulateMedia({ colorScheme: scheme });
+    if (scheme === "dark") {
+      await page.addInitScript(() => localStorage.setItem("genra-theme", "dark"));
+    }
     await page.goto(route);
     await expect(page.locator("html")).toHaveAttribute("data-theme", scheme);
     // Let the hero resolve its motion preference and the reveals settle, so the
@@ -49,6 +52,24 @@ for (const [route, scheme] of ROUTES.flatMap((r) => [
     expect(summary, JSON.stringify(summary, null, 2)).toEqual([]);
   });
 }
+
+// Owner, 2026-10-07: light first for every visitor; dark only by choice.
+test("light by default even when the system prefers dark; the toggle switches and remembers", async ({
+  page,
+}) => {
+  await page.emulateMedia({ colorScheme: "dark" });
+  await page.goto("/");
+  const html = page.locator("html");
+  await expect(html).toHaveAttribute("data-theme", "light");
+
+  await page.getByRole("button", { name: "Dark theme" }).click();
+  await expect(html).toHaveAttribute("data-theme", "dark");
+  await page.reload();
+  await expect(html).toHaveAttribute("data-theme", "dark");
+
+  await page.getByRole("button", { name: "Dark theme" }).click();
+  await expect(html).toHaveAttribute("data-theme", "light");
+});
 
 test("404 page has no WCAG A/AA violations", async ({ page }) => {
   await page.goto("/this-route-does-not-exist");

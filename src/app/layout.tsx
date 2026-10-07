@@ -49,12 +49,10 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  // Follows the system setting; the in-page toggle cannot change these hints.
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f5f4ef" },
-    { media: "(prefers-color-scheme: dark)", color: "#0b0b0b" },
-  ],
-  colorScheme: "light dark",
+  // Light is the default for everyone (dark only by the header toggle), so the
+  // browser hints stay light; "light dark" here could flash a dark canvas.
+  themeColor: "#f5f4ef",
+  colorScheme: "light",
 };
 
 export default function RootLayout({

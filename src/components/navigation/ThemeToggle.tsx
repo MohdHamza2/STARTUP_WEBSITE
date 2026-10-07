@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useSyncExternalStore } from "react";
+import { useSyncExternalStore } from "react";
 import { Moon, Sun } from "lucide-react";
 import { THEME_KEY } from "@/lib/theme";
 import { cn } from "@/lib/utils";
@@ -13,30 +13,13 @@ function subscribe(onChange: () => void) {
 }
 const isDark = () => document.documentElement.dataset.theme === "dark";
 
-function saved(): string | null {
-  try {
-    return localStorage.getItem(THEME_KEY);
-  } catch {
-    return null;
-  }
-}
-
 /**
- * Light / dark switch for the header. The icons swap by CSS (`dark:`), so the
- * right one shows on first paint; `aria-pressed` follows once hydrated.
+ * Light / dark switch for the header. Light is the default; this is the only
+ * way into dark, and the choice is saved. The icons swap by CSS (`dark:`), so
+ * the right one shows on first paint; `aria-pressed` follows once hydrated.
  */
 export function ThemeToggle({ className }: { className?: string }) {
   const dark = useSyncExternalStore(subscribe, isDark, () => false);
-
-  // Until the visitor chooses here, follow the system setting live.
-  useEffect(() => {
-    const query = window.matchMedia("(prefers-color-scheme: dark)");
-    const follow = () => {
-      if (!saved()) document.documentElement.dataset.theme = query.matches ? "dark" : "light";
-    };
-    query.addEventListener("change", follow);
-    return () => query.removeEventListener("change", follow);
-  }, []);
 
   const toggle = () => {
     const next = dark ? "light" : "dark";
