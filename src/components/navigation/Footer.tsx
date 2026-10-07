@@ -6,13 +6,10 @@ import { site, primaryNav, secondaryNav, legalNav } from "@/config/site";
  * Global footer.
  *
  * Prompt §36 and §76: social links and contact details appear ONLY when they
- * are real. `site.social` is empty and `site.contact.*` are null because no
- * verified GENRA account, address or phone number exists in the repository
- * (DOC1 §50 Q22–23 were never answered). Those blocks are therefore omitted
- * rather than filled with plausible-looking placeholders.
- *
- * TODO(business-facts): populate site.social and site.contact, and these
- * sections render automatically. No markup change required.
+ * are real. Phone and Instagram are verified (owner, 2026-10-07); email and
+ * address are still null, so those items are omitted rather than filled with
+ * plausible-looking placeholders. Each renders automatically once set in
+ * `site`. TODO(business-facts): email, address.
  */
 export function Footer() {
   const year = new Date().getFullYear();

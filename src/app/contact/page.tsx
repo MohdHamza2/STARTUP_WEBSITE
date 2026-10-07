@@ -16,9 +16,10 @@ export const metadata: Metadata = {
  * navigation (prompt §34) — it is reachable from the overlay menu, the footer,
  * and every CTA on the site.
  *
- * NO address, phone number or response-time commitment appears here. None is on
- * record, and §34 forbids inventing them. The block below renders only if
- * `site.contact` is populated. TODO(business-facts).
+ * Only verified details appear (phone and Instagram from the owner,
+ * 2026-10-07). No email, address or response-time commitment is on record, and
+ * §34 forbids inventing them; each item renders only when `site` has it.
+ * TODO(business-facts): email, address.
  */
 export default function ContactPage() {
   const hasDetails = Boolean(
@@ -48,8 +49,27 @@ export default function ContactPage() {
               </li>
             )}
             {site.contact.phone && (
-              <li className="text-body text-muted">{site.contact.phone}</li>
+              <li>
+                <a
+                  href={`tel:${site.contact.phone.replace(/\s+/g, "")}`}
+                  className="text-body text-muted transition-colors hover:text-ink"
+                >
+                  {site.contact.phone}
+                </a>
+              </li>
             )}
+            {site.social.map((s) => (
+              <li key={s.href}>
+                <a
+                  href={s.href}
+                  rel="noopener noreferrer"
+                  target="_blank"
+                  className="text-body text-muted transition-colors hover:text-ink"
+                >
+                  {s.label}
+                </a>
+              </li>
+            ))}
             {site.contact.address && (
               <li className="text-body text-muted">{site.contact.address}</li>
             )}

@@ -26,29 +26,31 @@ export const site = {
     "GENRA builds digital products, software systems and automation, and helps candidates handle the job-application workflow.",
 
   /**
-   * TODO(business-facts): production domain. DOC1 §50 Q4 unanswered.
-   * Until this is set, canonical URLs and the sitemap resolve against a
-   * relative base and `robots.txt` stays conservative.
+   * Production domain (owner, 2026-10-05: genra.tech). The apex redirects to
+   * www, so www is canonical. Drives metadataBase, the sitemap and robots.txt.
    */
-  url: null as string | null,
+  url: "https://www.genra.tech" as string | null,
 
   /**
-   * TODO(business-facts): verified contact details. DOC1 §50 Q22 unanswered.
+   * Verified contact details. Phone from the owner, 2026-10-07.
+   * TODO(business-facts): email and address still unanswered (DOC1 §50 Q22).
    * The footer contact block and the /contact detail list render only when a
    * value here is non-null. Do not fill these with examples.
    */
   contact: {
     email: null as string | null,
-    phone: null as string | null,
+    phone: "+91 83400 90834" as string | null,
     address: null as string | null,
   },
 
   /**
-   * TODO(business-facts): verified social accounts. DOC1 §50 Q23 unanswered.
+   * Verified social accounts (owner, 2026-10-07: Instagram genra.tech).
    * Prompt §76 — an account that does not exist must not be linked.
    * Add entries only for profiles that are real and owned by GENRA.
    */
-  social: [] as ReadonlyArray<{ label: string; href: string }>,
+  social: [
+    { label: "Instagram", href: "https://www.instagram.com/genra.tech/" },
+  ] as ReadonlyArray<{ label: string; href: string }>,
 
   /**
    * TODO(business-facts): legal entity name. DOC1 §50 Q24 unanswered.

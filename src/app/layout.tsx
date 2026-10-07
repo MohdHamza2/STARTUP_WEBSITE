@@ -25,12 +25,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  /**
-   * TODO(business-facts): metadataBase requires the production domain.
-   * While site.url is null, Next resolves Open Graph URLs relative to the
-   * deployment origin, which is correct-but-unstable. Set site.url once the
-   * domain exists (DOC1 §50 Q4) and canonical URLs become absolute.
-   */
+  /** Absolute canonical and Open Graph URLs from site.url (www.genra.tech). */
   ...(site.url ? { metadataBase: new URL(site.url) } : {}),
   title: {
     default: `${site.name} | ${site.tagline}`,
